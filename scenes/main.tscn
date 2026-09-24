@@ -1,0 +1,552 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_manager.gd" id="1_battle"]
+[ext_resource type="Script" path="res://scripts/rpg_combatant.gd" id="2_combatant"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_battle")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.11, 0.15, 1)
+
+[node name="Header" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.75, 0.45, 1)
+theme_override_font_sizes/font_size = 22
+text = "⚔️ BATALHA RPG DE TURNOS 2D"
+
+[node name="BattleArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 70.0
+offset_bottom = -210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Heroes" type="HBoxContainer" parent="BattleArea"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 60.0
+offset_top = -140.0
+offset_right = 440.0
+offset_bottom = 140.0
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="Warrior" type="Control" parent="BattleArea/Heroes"]
+custom_minimum_size = Vector2(160, 260)
+layout_mode = 2
+script = ExtResource("2_combatant")
+combatant_name = "Valente (Guerreiro)"
+max_hp = 120
+max_mp = 30
+base_attack = 26
+
+[node name="VBox" type="VBoxContainer" parent="BattleArea/Heroes/Warrior"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Highlight" type="ColorRect" parent="BattleArea/Heroes/Warrior/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(1, 0.9, 0.3, 0.8)
+
+[node name="NameLabel" type="Label" parent="BattleArea/Heroes/Warrior/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.75, 1, 1)
+text = "Valente"
+horizontal_alignment = 1
+
+[node name="VisualContainer" type="PanelContainer" parent="BattleArea/Heroes/Warrior/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="BattleArea/Heroes/Warrior/VBox/VisualContainer"]
+layout_mode = 2
+color = Color(0.2, 0.3, 0.5, 1)
+
+[node name="IconText" type="Label" parent="BattleArea/Heroes/Warrior/VBox/VisualContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "🛡️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HPBar" type="ProgressBar" parent="BattleArea/Heroes/Warrior/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+value = 100.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="BattleArea/Heroes/Warrior/VBox/HPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "120/120"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MPBar" type="ProgressBar" parent="BattleArea/Heroes/Warrior/VBox"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="MPLabel" type="Label" parent="BattleArea/Heroes/Warrior/VBox/MPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 11
+text = "30/30"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Mage" type="Control" parent="BattleArea/Heroes"]
+custom_minimum_size = Vector2(160, 260)
+layout_mode = 2
+script = ExtResource("2_combatant")
+combatant_name = "Luna (Maga)"
+max_hp = 80
+max_mp = 60
+base_attack = 18
+
+[node name="VBox" type="VBoxContainer" parent="BattleArea/Heroes/Mage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Highlight" type="ColorRect" parent="BattleArea/Heroes/Mage/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(1, 0.9, 0.3, 0.8)
+
+[node name="NameLabel" type="Label" parent="BattleArea/Heroes/Mage/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.65, 1, 1)
+text = "Luna"
+horizontal_alignment = 1
+
+[node name="VisualContainer" type="PanelContainer" parent="BattleArea/Heroes/Mage/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="BattleArea/Heroes/Mage/VBox/VisualContainer"]
+layout_mode = 2
+color = Color(0.4, 0.2, 0.5, 1)
+
+[node name="IconText" type="Label" parent="BattleArea/Heroes/Mage/VBox/VisualContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "🔮"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HPBar" type="ProgressBar" parent="BattleArea/Heroes/Mage/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="BattleArea/Heroes/Mage/VBox/HPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "80/80"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MPBar" type="ProgressBar" parent="BattleArea/Heroes/Mage/VBox"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="MPLabel" type="Label" parent="BattleArea/Heroes/Mage/VBox/MPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 11
+text = "60/60"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Enemies" type="HBoxContainer" parent="BattleArea"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -140.0
+offset_right = -60.0
+offset_bottom = 140.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="Minion" type="Control" parent="BattleArea/Enemies"]
+custom_minimum_size = Vector2(160, 260)
+layout_mode = 2
+script = ExtResource("2_combatant")
+combatant_name = "Slime Ácido"
+max_hp = 65
+max_mp = 0
+base_attack = 14
+is_enemy = true
+
+[node name="VBox" type="VBoxContainer" parent="BattleArea/Enemies/Minion"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Highlight" type="ColorRect" parent="BattleArea/Enemies/Minion/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(1, 0.4, 0.4, 0.8)
+
+[node name="NameLabel" type="Label" parent="BattleArea/Enemies/Minion/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.9, 0.6, 1)
+text = "Slime Ácido"
+horizontal_alignment = 1
+
+[node name="VisualContainer" type="PanelContainer" parent="BattleArea/Enemies/Minion/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="BattleArea/Enemies/Minion/VBox/VisualContainer"]
+layout_mode = 2
+color = Color(0.2, 0.45, 0.25, 1)
+
+[node name="IconText" type="Label" parent="BattleArea/Enemies/Minion/VBox/VisualContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "🧪"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HPBar" type="ProgressBar" parent="BattleArea/Enemies/Minion/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="BattleArea/Enemies/Minion/VBox/HPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "65/65"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MPBar" type="ProgressBar" parent="BattleArea/Enemies/Minion/VBox"]
+visible = false
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="BattleArea/Enemies/Minion/VBox/MPBar"]
+layout_mode = 0
+
+[node name="Boss" type="Control" parent="BattleArea/Enemies"]
+custom_minimum_size = Vector2(160, 260)
+layout_mode = 2
+script = ExtResource("2_combatant")
+combatant_name = "Rei Goblin"
+max_hp = 150
+max_mp = 0
+base_attack = 22
+is_enemy = true
+
+[node name="VBox" type="VBoxContainer" parent="BattleArea/Enemies/Boss"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Highlight" type="ColorRect" parent="BattleArea/Enemies/Boss/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+color = Color(1, 0.4, 0.4, 0.8)
+
+[node name="NameLabel" type="Label" parent="BattleArea/Enemies/Boss/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+text = "Rei Goblin"
+horizontal_alignment = 1
+
+[node name="VisualContainer" type="PanelContainer" parent="BattleArea/Enemies/Boss/VBox"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="BattleArea/Enemies/Boss/VBox/VisualContainer"]
+layout_mode = 2
+color = Color(0.5, 0.2, 0.25, 1)
+
+[node name="IconText" type="Label" parent="BattleArea/Enemies/Boss/VBox/VisualContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "👑👹"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HPBar" type="ProgressBar" parent="BattleArea/Enemies/Boss/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="BattleArea/Enemies/Boss/VBox/HPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "150/150"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MPBar" type="ProgressBar" parent="BattleArea/Enemies/Boss/VBox"]
+visible = false
+layout_mode = 2
+
+[node name="MPLabel" type="Label" parent="BattleArea/Enemies/Boss/VBox/MPBar"]
+layout_mode = 0
+
+[node name="ActionPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -180.0
+offset_right = -460.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="ActionPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="HBox" type="HBoxContainer" parent="ActionPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxInfo" type="VBoxContainer" parent="ActionPanel/MarginContainer/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="CurrentHeroLabel" type="Label" parent="ActionPanel/MarginContainer/HBox/VBoxInfo"]
+layout_mode = 2
+text = "Vez do Herói"
+autowrap_mode = 3
+
+[node name="GridActions" type="GridContainer" parent="ActionPanel/MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="BtnAttack" type="Button" parent="ActionPanel/MarginContainer/HBox/GridActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "⚔️ Ataque Básico"
+
+[node name="BtnSkill" type="Button" parent="ActionPanel/MarginContainer/HBox/GridActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "🔥 Habilidade Especial"
+
+[node name="BtnHeal" type="Button" parent="ActionPanel/MarginContainer/HBox/GridActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "💚 Curar"
+
+[node name="BtnDefend" type="Button" parent="ActionPanel/MarginContainer/HBox/GridActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "🛡️ Defender"
+
+[node name="TargetPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -180.0
+offset_right = -460.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TargetPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="TargetPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="TargetPanel/MarginContainer/VBox"]
+layout_mode = 2
+text = "Selecione o Alvo:"
+
+[node name="BtnTargetBoss" type="Button" parent="TargetPanel/MarginContainer/VBox"]
+layout_mode = 2
+text = "🎯 Rei Goblin"
+
+[node name="BtnTargetMinion" type="Button" parent="TargetPanel/MarginContainer/VBox"]
+layout_mode = 2
+text = "🎯 Slime Ácido"
+
+[node name="LogPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -440.0
+offset_top = -180.0
+offset_right = -40.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="LogPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="LogLabel" type="RichTextLabel" parent="LogPanel/MarginContainer"]
+layout_mode = 2
+bbcode_enabled = true
+scroll_following = true
+
+[node name="ResultPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -120.0
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ResultPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ResultTitle" type="Label" parent="ResultPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "VITÓRIA!"
+horizontal_alignment = 1
+
+[node name="ResultDesc" type="Label" parent="ResultPanel/VBox"]
+layout_mode = 2
+text = "Resultado da batalha"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BtnRestart" type="Button" parent="ResultPanel/VBox"]
+layout_mode = 2
+text = "Lutar Novamente"
+
+[connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnAttack" to="." method="_on_attack_pressed"]
+[connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnSkill" to="." method="_on_skill_pressed"]
+[connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnHeal" to="." method="_on_heal_pressed"]
+[connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnDefend" to="." method="_on_defend_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetBoss" to="." method="_on_target_selected" binds= [NodePath("../../../../../BattleArea/Enemies/Boss")]]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetMinion" to="." method="_on_target_selected" binds= [NodePath("../../../../../BattleArea/Enemies/Minion")]]
+[connection signal="pressed" from="ResultPanel/VBox/BtnRestart" to="." method="_on_restart_pressed"]

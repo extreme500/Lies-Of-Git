@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#1e1e2e"/>
+  <!-- Sword and Shield -->
+  <path d="M40 88 L88 40 M78 40 L88 40 L88 50" stroke="#f38ba8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M44 84 L36 92 M32 88 L40 96" stroke="#cdd6f4" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="85" cy="85" r="22" fill="#89b4fa" opacity="0.8"/>
+  <circle cx="85" cy="85" r="14" fill="#1e1e2e"/>
+</svg>
