@@ -1,0 +1,183 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/runner_game_manager.gd" id="1_rgm"]
+[ext_resource type="Script" path="res://scripts/runner_player.gd" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1600, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(26, 48)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_rgm")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Sky" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.12, 0.18, 1)
+
+[node name="Stars" type="ColorRect" parent="Background"]
+offset_left = 120.0
+offset_top = 80.0
+offset_right = 124.0
+offset_bottom = 84.0
+color = Color(0.9, 0.9, 1, 0.8)
+
+[node name="Stars2" type="ColorRect" parent="Background"]
+offset_left = 420.0
+offset_top = 130.0
+offset_right = 424.0
+offset_bottom = 134.0
+color = Color(0.9, 0.9, 1, 0.8)
+
+[node name="Stars3" type="ColorRect" parent="Background"]
+offset_left = 780.0
+offset_top = 60.0
+offset_right = 784.0
+offset_bottom = 64.0
+color = Color(0.9, 0.9, 1, 0.8)
+
+[node name="Stars4" type="ColorRect" parent="Background"]
+offset_left = 980.0
+offset_top = 110.0
+offset_right = 984.0
+offset_bottom = 114.0
+color = Color(0.9, 0.9, 1, 0.8)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(576, 550)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+offset_left = -800.0
+offset_top = -50.0
+offset_right = 800.0
+offset_bottom = 150.0
+color = Color(0.18, 0.22, 0.3, 1)
+
+[node name="Line" type="ColorRect" parent="Ground"]
+offset_left = -800.0
+offset_top = -50.0
+offset_right = 800.0
+offset_bottom = -44.0
+color = Color(0.55, 0.75, 0.98, 1)
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(220, 460)
+script = ExtResource("2_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="DustParticles" type="CPUParticles2D" parent="Player"]
+position = Vector2(-10, 24)
+amount = 12
+lifetime = 0.4
+direction = Vector2(-1, -0.3)
+spread = 20.0
+gravity = Vector2(0, 50)
+initial_velocity_min = 40.0
+initial_velocity_max = 80.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(0.65, 0.7, 0.8, 0.5)
+
+[node name="Visual" type="Node2D" parent="Player"]
+
+[node name="Body" type="ColorRect" parent="Player/Visual"]
+offset_left = -13.0
+offset_top = -24.0
+offset_right = 13.0
+offset_bottom = 24.0
+color = Color(0.98, 0.7, 0.53, 1)
+
+[node name="Visor" type="ColorRect" parent="Player/Visual"]
+offset_left = 2.0
+offset_top = -18.0
+offset_right = 13.0
+offset_bottom = -10.0
+color = Color(0.4, 0.85, 0.95, 1)
+
+[node name="Obstacles" type="Node2D" parent="."]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+offset_right = 350.0
+offset_bottom = 140.0
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+
+[node name="VBox" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="HUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.7, 0.53, 1)
+theme_override_font_sizes/font_size = 18
+text = "🏃 INFINITE RUNNER 2D"
+
+[node name="DistanceLabel" type="Label" parent="HUD/MarginContainer/VBox"]
+layout_mode = 2
+text = "Distância: 0m"
+
+[node name="CoinsLabel" type="Label" parent="HUD/MarginContainer/VBox"]
+layout_mode = 2
+text = "Moedas: 0"
+
+[node name="SpeedLabel" type="Label" parent="HUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
+text = "Velocidade: 42 km/h"
+
+[node name="ControlsLabel" type="Label" parent="HUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+text = "Espaço/W: Pular (Duplo) | S/Baixo: Deslizar | R: Reiniciar"
+
+[node name="GameOverPanel" type="PanelContainer" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -110.0
+offset_right = 200.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/GameOverPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.35, 0.45, 1)
+theme_override_font_sizes/font_size = 24
+text = "💀 FIM DE CORRIDA! 💀"
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox"]
+layout_mode = 2
+text = "Você colidiu contra um obstáculo!"
+horizontal_alignment = 1
+
+[node name="RestartBtn" type="Button" parent="HUD/GameOverPanel/VBox"]
+layout_mode = 2
+text = "Correr Novamente (Espaço)"
+
+[connection signal="pressed" from="HUD/GameOverPanel/VBox/RestartBtn" to="." method="restart"]

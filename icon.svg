@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#181825"/>
+  <rect x="16" y="96" width="96" height="12" rx="4" fill="#585b70"/>
+  <!-- Runner shoe / wind trails -->
+  <path d="M30 76 L65 76 L85 86 L50 86 Z" fill="#fab387"/>
+  <circle cx="80" cy="50" r="12" fill="#89b4fa"/>
+  <line x1="16" y1="50" x2="55" y2="50" stroke="#cdd6f4" stroke-width="4" stroke-linecap="round"/>
+  <line x1="24" y1="62" x2="60" y2="62" stroke="#cdd6f4" stroke-width="4" stroke-linecap="round"/>
+</svg>
