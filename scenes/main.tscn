@@ -1,0 +1,360 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/moving_platform.gd" id="3_plat"]
+[ext_resource type="Script" path="res://scripts/coin.gd" id="4_coin"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="5_enemy"]
+[ext_resource type="Script" path="res://scripts/hazard.gd" id="6_hazard"]
+[ext_resource type="Script" path="res://scripts/goal.gd" id="7_goal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(28, 44)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_box"]
+size = Vector2(100, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
+radius = 12.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy"]
+size = Vector2(32, 28)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_gm")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Sky" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1098, 0.1255, 0.1804, 1)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Ground1" type="StaticBody2D" parent="Platforms"]
+position = Vector2(200, 520)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Ground1"]
+shape = SubResource("RectangleShape2D_box")
+scale = Vector2(4, 2)
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Ground1"]
+offset_left = -200.0
+offset_top = -20.0
+offset_right = 200.0
+offset_bottom = 20.0
+color = Color(0.1882, 0.2235, 0.3176, 1)
+
+[node name="Grass" type="ColorRect" parent="Platforms/Ground1"]
+offset_left = -200.0
+offset_top = -20.0
+offset_right = 200.0
+offset_bottom = -14.0
+color = Color(0.651, 0.89, 0.631, 1)
+
+[node name="Ground2" type="StaticBody2D" parent="Platforms"]
+position = Vector2(750, 520)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Ground2"]
+shape = SubResource("RectangleShape2D_box")
+scale = Vector2(4, 2)
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Ground2"]
+offset_left = -200.0
+offset_top = -20.0
+offset_right = 200.0
+offset_bottom = 20.0
+color = Color(0.1882, 0.2235, 0.3176, 1)
+
+[node name="Grass" type="ColorRect" parent="Platforms/Ground2"]
+offset_left = -200.0
+offset_top = -20.0
+offset_right = 200.0
+offset_bottom = -14.0
+color = Color(0.651, 0.89, 0.631, 1)
+
+[node name="PlatformA" type="StaticBody2D" parent="Platforms"]
+position = Vector2(320, 420)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/PlatformA"]
+shape = SubResource("RectangleShape2D_box")
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/PlatformA"]
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 10.0
+color = Color(0.537, 0.706, 0.98, 1)
+
+[node name="PlatformB" type="StaticBody2D" parent="Platforms"]
+position = Vector2(620, 360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/PlatformB"]
+shape = SubResource("RectangleShape2D_box")
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/PlatformB"]
+offset_left = -50.0
+offset_top = -10.0
+offset_right = 50.0
+offset_bottom = 10.0
+color = Color(0.537, 0.706, 0.98, 1)
+
+[node name="MovingPlatform" type="AnimatableBody2D" parent="Platforms"]
+position = Vector2(400, 500)
+script = ExtResource("3_plat")
+move_offset = Vector2(150, 0)
+duration = 2.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/MovingPlatform"]
+shape = SubResource("RectangleShape2D_box")
+scale = Vector2(0.8, 0.8)
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/MovingPlatform"]
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
+color = Color(0.98, 0.702, 0.529, 1)
+
+[node name="HazardSpikes" type="Area2D" parent="."]
+position = Vector2(475, 570)
+script = ExtResource("6_hazard")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardSpikes"]
+shape = SubResource("RectangleShape2D_box")
+scale = Vector2(1.5, 1.5)
+
+[node name="ColorRect" type="ColorRect" parent="HazardSpikes"]
+offset_left = -75.0
+offset_top = -15.0
+offset_right = 75.0
+offset_bottom = 15.0
+color = Color(0.95, 0.54, 0.65, 1)
+
+[node name="Label" type="Label" parent="HazardSpikes"]
+offset_left = -60.0
+offset_top = -12.0
+offset_right = 60.0
+offset_bottom = 14.0
+text = "▲▲▲▲▲▲▲▲▲"
+horizontal_alignment = 1
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin1" type="Area2D" parent="Coins"]
+position = Vector2(250, 460)
+script = ExtResource("4_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coins/Coin1"]
+shape = SubResource("CircleShape2D_coin")
+
+[node name="Visual" type="ColorRect" parent="Coins/Coin1"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.98, 0.886, 0.686, 1)
+
+[node name="Coin2" type="Area2D" parent="Coins"]
+position = Vector2(320, 370)
+script = ExtResource("4_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coins/Coin2"]
+shape = SubResource("CircleShape2D_coin")
+
+[node name="Visual" type="ColorRect" parent="Coins/Coin2"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.98, 0.886, 0.686, 1)
+
+[node name="Coin3" type="Area2D" parent="Coins"]
+position = Vector2(620, 310)
+script = ExtResource("4_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coins/Coin3"]
+shape = SubResource("CircleShape2D_coin")
+
+[node name="Visual" type="ColorRect" parent="Coins/Coin3"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.98, 0.886, 0.686, 1)
+
+[node name="Enemy" type="CharacterBody2D" parent="."]
+position = Vector2(750, 480)
+script = ExtResource("5_enemy")
+patrol_distance = 100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
+shape = SubResource("RectangleShape2D_enemy")
+
+[node name="Visual" type="Node2D" parent="Enemy"]
+
+[node name="Body" type="ColorRect" parent="Enemy/Visual"]
+offset_left = -16.0
+offset_top = -14.0
+offset_right = 16.0
+offset_bottom = 14.0
+color = Color(0.949, 0.447, 0.471, 1)
+
+[node name="Eye" type="ColorRect" parent="Enemy/Visual"]
+offset_left = 4.0
+offset_top = -8.0
+offset_right = 10.0
+offset_bottom = -2.0
+color = Color(0.067, 0.071, 0.114, 1)
+
+[node name="Hitbox" type="Area2D" parent="Enemy"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Hitbox"]
+shape = SubResource("RectangleShape2D_enemy")
+scale = Vector2(1.1, 1.1)
+
+[node name="Goal" type="Area2D" parent="."]
+position = Vector2(900, 470)
+script = ExtResource("7_goal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Goal"]
+shape = SubResource("RectangleShape2D_box")
+scale = Vector2(0.5, 2.0)
+
+[node name="Pole" type="ColorRect" parent="Goal"]
+offset_left = -4.0
+offset_top = -40.0
+offset_right = 4.0
+offset_bottom = 30.0
+color = Color(0.8, 0.84, 0.9, 1)
+
+[node name="Banner" type="ColorRect" parent="Goal"]
+offset_left = 4.0
+offset_top = -40.0
+offset_right = 36.0
+offset_bottom = -16.0
+color = Color(0.65, 0.89, 0.63, 1)
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(80, 470)
+script = ExtResource("2_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="TrailParticles" type="CPUParticles2D" parent="Player"]
+position = Vector2(0, 20)
+emitting = false
+amount = 8
+lifetime = 0.3
+direction = Vector2(-1, 0)
+spread = 20.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(0.7, 0.75, 0.85, 0.6)
+
+[node name="Visual" type="Node2D" parent="Player"]
+
+[node name="Body" type="ColorRect" parent="Player/Visual"]
+offset_left = -14.0
+offset_top = -22.0
+offset_right = 14.0
+offset_bottom = 22.0
+color = Color(0.537, 0.706, 0.98, 1)
+
+[node name="Band" type="ColorRect" parent="Player/Visual"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = -8.0
+color = Color(0.98, 0.702, 0.529, 1)
+
+[node name="Eye" type="ColorRect" parent="Player/Visual"]
+offset_left = 4.0
+offset_top = -12.0
+offset_right = 10.0
+offset_bottom = -6.0
+color = Color(0.067, 0.071, 0.114, 1)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position_smoothing_enabled = true
+limit_bottom = 800
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+offset_right = 300.0
+offset_bottom = 120.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.702, 0.529, 1)
+text = "PROTÓTIPO: PLATAFORMA 2D"
+
+[node name="CoinsLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Moedas: 0"
+
+[node name="DeathsLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mortes: 0"
+
+[node name="TimerLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Tempo: 00:00"
+
+[node name="ControlsLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+text = "A/D ou Setas: Mover | Espaço/W: Pular | R: Reiniciar"
+
+[node name="VictoryPanel" type="PanelContainer" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -110.0
+offset_right = 180.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/VictoryPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.89, 0.63, 1)
+theme_override_font_sizes/font_size = 24
+text = "🎉 VITÓRIA! 🎉"
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox"]
+layout_mode = 2
+text = "Você concluiu o percurso!"
+horizontal_alignment = 1
+
+[node name="RestartBtn" type="Button" parent="HUD/VictoryPanel/VBox"]
+layout_mode = 2
+text = "Jogar Novamente (R)"
+
+[connection signal="body_entered" from="Enemy/Hitbox" to="Enemy" method="_on_hitbox_body_entered"]
+[connection signal="pressed" from="HUD/VictoryPanel/VBox/RestartBtn" to="." method="_on_restart_button_pressed"]
