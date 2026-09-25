@@ -1,0 +1,107 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/maquina.gd" id="1_maquina"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_core"]
+bg_color = Color(0.2, 0.85, 0.4, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Máquina" type="Node2D"]
+script = ExtResource("1_maquina")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="CablesLeft" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-90, 15, -160, 25, -240, 50, -320, 100)
+width = 6.0
+default_color = Color(0.18, 0.2, 0.25, 1)
+
+[node name="CablesRight" type="Line2D" parent="Visual"]
+points = PackedVector2Array(90, 15, 160, 25, 240, 50, 320, 100)
+width = 6.0
+default_color = Color(0.18, 0.2, 0.25, 1)
+
+[node name="MainChassis" type="ColorRect" parent="Visual"]
+offset_left = -100.0
+offset_top = -30.0
+offset_right = 100.0
+offset_bottom = 35.0
+color = Color(0.22, 0.25, 0.32, 1)
+
+[node name="ChassisBorder" type="ColorRect" parent="Visual"]
+offset_left = -92.0
+offset_top = -24.0
+offset_right = 92.0
+offset_bottom = 28.0
+color = Color(0.14, 0.16, 0.22, 1)
+
+[node name="Core" type="ColorRect" parent="Visual"]
+offset_left = -45.0
+offset_top = -15.0
+offset_right = 45.0
+offset_bottom = 15.0
+color = Color(0.25, 0.7, 0.95, 1)
+
+[node name="IntegrityBar" type="ProgressBar" parent="Visual/Core"]
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 85.0
+offset_bottom = 22.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_core")
+value = 100.0
+show_percentage = false
+
+[node name="AlarmLeft" type="ColorRect" parent="Visual"]
+offset_left = -85.0
+offset_top = -14.0
+offset_right = -60.0
+offset_bottom = 14.0
+color = Color(0.2, 0.8, 0.3, 0.8)
+
+[node name="AlarmRight" type="ColorRect" parent="Visual"]
+offset_left = 60.0
+offset_top = -14.0
+offset_right = 85.0
+offset_bottom = 14.0
+color = Color(0.2, 0.8, 0.3, 0.8)
+
+[node name="SmokeParticles" type="CPUParticles2D" parent="Visual"]
+position = Vector2(0, -25)
+emitting = false
+amount = 20
+lifetime = 1.0
+direction = Vector2(0, -1)
+spread = 30.0
+gravity = Vector2(0, -30)
+initial_velocity_min = 20.0
+initial_velocity_max = 50.0
+scale_amount_min = 4.0
+scale_amount_max = 9.0
+color = Color(0.5, 0.5, 0.5, 0.6)
+
+[node name="SparkParticles" type="CPUParticles2D" parent="Visual"]
+position = Vector2(0, 5)
+emitting = false
+amount = 16
+lifetime = 0.4
+direction = Vector2(0, 1)
+spread = 60.0
+gravity = Vector2(0, 120)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+scale_amount_min = 2.0
+scale_amount_max = 5.0
+color = Color(1, 0.8, 0.2, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+offset_left = -90.0
+offset_top = -54.0
+offset_right = 90.0
+offset_bottom = -31.0
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "⚙️ MÁQUINA PRINCIPAL"
+horizontal_alignment = 1

@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(28, 44)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 45.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="TrailParticles" type="CPUParticles2D" parent="."]
+position = Vector2(0, 22)
+emitting = false
+amount = 8
+lifetime = 0.25
+direction = Vector2(-1, 0)
+spread = 20.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(0.8, 0.85, 0.95, 0.6)
+
+[node name="RepairSparks" type="CPUParticles2D" parent="."]
+position = Vector2(10, 0)
+emitting = false
+amount = 12
+lifetime = 0.3
+direction = Vector2(0, -1)
+spread = 45.0
+gravity = Vector2(0, 150)
+initial_velocity_min = 60.0
+initial_velocity_max = 120.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(1, 0.9, 0.3, 1)
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visual"]
+offset_left = -14.0
+offset_top = -22.0
+offset_right = 14.0
+offset_bottom = 22.0
+color = Color(0.25, 0.65, 0.95, 1)
+
+[node name="Bandana" type="ColorRect" parent="Visual"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = -8.0
+color = Color(0.95, 0.85, 0.2, 1)
+
+[node name="Eye" type="ColorRect" parent="Visual"]
+offset_left = 4.0
+offset_top = -12.0
+offset_right = 10.0
+offset_bottom = -6.0
+color = Color(0.07, 0.07, 0.12, 1)
+
+[node name="InteractionDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector"]
+shape = SubResource("CircleShape2D_interact")
+
+[node name="PromptLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -45.0
+offset_right = 60.0
+offset_bottom = -22.0
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "[E] Consertar"
+horizontal_alignment = 1
+
+[connection signal="area_entered" from="InteractionDetector" to="." method="_on_interaction_area_entered"]
+[connection signal="area_exited" from="InteractionDetector" to="." method="_on_interaction_area_exited"]

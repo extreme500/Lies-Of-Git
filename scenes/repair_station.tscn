@@ -1,0 +1,91 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/repair_station.gd" id="1_station"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_zone"]
+radius = 45.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_progress"]
+bg_color = Color(0.2, 0.85, 0.4, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="RepairStation" type="Node2D" groups=["repair_stations"]]
+script = ExtResource("1_station")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Base" type="ColorRect" parent="Visual"]
+offset_left = -25.0
+offset_top = -20.0
+offset_right = 25.0
+offset_bottom = 20.0
+color = Color(0.25, 0.28, 0.35, 1)
+
+[node name="PanelBorder" type="ColorRect" parent="Visual"]
+offset_left = -22.0
+offset_top = -17.0
+offset_right = 22.0
+offset_bottom = 17.0
+color = Color(0.18, 0.2, 0.26, 1)
+
+[node name="StatusLight" type="ColorRect" parent="Visual"]
+offset_left = 12.0
+offset_top = -14.0
+offset_right = 18.0
+offset_bottom = -8.0
+color = Color(0.2, 0.9, 0.3, 1)
+
+[node name="InteractionZone" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone"]
+shape = SubResource("CircleShape2D_zone")
+
+[node name="WarningIcon" type="Node2D" parent="."]
+position = Vector2(0, -42)
+
+[node name="IconLabel" type="Label" parent="WarningIcon"]
+offset_left = -30.0
+offset_top = -14.0
+offset_right = 30.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚠️ FALHA"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -35.0
+offset_top = -28.0
+offset_right = 35.0
+offset_bottom = -20.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_progress")
+show_percentage = false
+
+[node name="SparksParticles" type="CPUParticles2D" parent="."]
+position = Vector2(0, -10)
+emitting = false
+amount = 14
+lifetime = 0.35
+direction = Vector2(0, -1)
+spread = 60.0
+gravity = Vector2(0, 180)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(1, 0.7, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = 22.0
+offset_right = 60.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 11
+text = "Terminal"
+horizontal_alignment = 1
