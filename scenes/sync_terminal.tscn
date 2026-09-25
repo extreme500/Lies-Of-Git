@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/sync_terminal.gd" id="1_sync"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
+size = Vector2(50, 40)
+
+[node name="SyncTerminal" type="Node2D"]
+script = ExtResource("1_sync")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Base" type="ColorRect" parent="Visual"]
+offset_left = -30.0
+offset_top = -20.0
+offset_right = 30.0
+offset_bottom = 20.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="StatusLight" type="ColorRect" parent="Visual"]
+offset_left = -20.0
+offset_top = -15.0
+offset_right = 20.0
+offset_bottom = -5.0
+color = Color(0.2, 0.8, 0.2, 1)
+
+[node name="AlertLabel" type="Label" parent="."]
+visible = false
+offset_left = -80.0
+offset_top = -60.0
+offset_right = 80.0
+offset_bottom = -25.0
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
+text = "SYNC NECESSÁRIO"
+horizontal_alignment = 1
+
+[node name="P1_Area" type="Area2D" parent="."]
+position = Vector2(-25, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="P1_Area"]
+shape = SubResource("RectangleShape2D_zone")
+
+[node name="P2_Area" type="Area2D" parent="."]
+position = Vector2(25, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="P2_Area"]
+shape = SubResource("RectangleShape2D_zone")

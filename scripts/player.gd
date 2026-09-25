@@ -18,12 +18,16 @@ var was_on_floor: bool = false
 var spawn_position: Vector2
 var facing_direction: float = 1.0
 var is_repairing: bool = false
+var carried_item: bool = false
 
 var nearby_stations: Array[Node] = []
+var nearby_sync_terminal: Node = null
+var nearby_conveyor: Node = null
 
 @onready var visual_root: Node2D = $Visual
 @onready var body_rect: ColorRect = $Visual/Body
 @onready var bandana_rect: ColorRect = $Visual/Bandana
+@onready var carried_item_rect: ColorRect = $Visual/CarriedItem
 @onready var trail_particles: CPUParticles2D = $TrailParticles
 @onready var prompt_label: Label = $PromptLabel
 @onready var repair_sparks: CPUParticles2D = $RepairSparks
@@ -98,9 +102,24 @@ func _physics_process(delta: float) -> void:
 			trail_particles.emitting = false
 
 	move_and_slide()
+	
+	if carried_item_rect:
+		carried_item_rect.visible = carried_item
 
 	# Interação com estação de reparo
 	process_interaction(wants_interact, delta)
+	
+	# Inputs de minigame
+	if Input.is_action_just_pressed("p1_jump") or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+		send_minigame_input("UP")
+	if Input.is_action_just_pressed("p1_left") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+		send_minigame_input("LEFT")
+	if Input.is_action_just_pressed("p1_right") or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+		send_minigame_input("RIGHT")
+	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+		send_minigame_input("DOWN")
+	if Input.is_action_just_pressed("p1_interact") or Input.is_action_just_pressed("p2_interact"):
+		send_minigame_input("INTERACT")
 
 	# Queda do mapa
 	if global_position.y > 900.0:
@@ -144,7 +163,37 @@ func get_active_broken_station() -> Node:
 			return station
 	return null
 
+func send_minigame_input(val: String) -> void:
+	var current_station = get_active_broken_station()
+	if current_station and current_station.has_method("receive_minigame_input"):
+		# Evitar spam contínuo por is_key_pressed usando _unhandled_key_input seria melhor,
+		# mas aqui filtraremos chamando apenas num tick se precisarmos, ou deixamos a station filtrar.
+		# A station filtrará pelo estado.
+		current_station.receive_minigame_input(val)
+
 func process_interaction(holding_interact: bool, delta: float) -> void:
+	# Lógica do Sync Terminal
+	if nearby_sync_terminal:
+		if holding_interact:
+			if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
+				nearby_sync_terminal.set_p1_pressing(true)
+			elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
+				nearby_sync_terminal.set_p2_pressing(true)
+		else:
+			if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
+				nearby_sync_terminal.set_p1_pressing(false)
+			elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
+				nearby_sync_terminal.set_p2_pressing(false)
+
+	# Lógica do Conveyor
+	if nearby_conveyor and Input.is_action_just_pressed("p1_interact" if player_id == 1 else "p2_interact"):
+		if player_id == 1 and carried_item:
+			if nearby_conveyor.try_insert_item(player_id):
+				carried_item = false
+		elif player_id == 2 and not carried_item:
+			if nearby_conveyor.try_take_item(player_id):
+				carried_item = true
+
 	var current_station = get_active_broken_station()
 	if current_station:
 		if prompt_label:
@@ -156,7 +205,7 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = true
 			if repair_sparks:
 				repair_sparks.emitting = true
-			current_station.repair_tick(delta)
+			current_station.repair_tick(delta, self)
 			apply_squash_stretch(Vector2(1.05, 0.95))
 		else:
 			is_repairing = false
@@ -183,10 +232,22 @@ func respawn() -> void:
 
 func _on_interaction_area_entered(area: Area2D) -> void:
 	var station = area.get_parent()
-	if station and not nearby_stations.has(station):
+	if station and station.has_method("set_p1_pressing"): # É o Sync Terminal!
+		nearby_sync_terminal = station
+	elif station and station.has_method("try_insert_item"): # É o Conveyor!
+		nearby_conveyor = station
+	elif station and not nearby_stations.has(station):
 		nearby_stations.append(station)
 
 func _on_interaction_area_exited(area: Area2D) -> void:
 	var station = area.get_parent()
-	if station and nearby_stations.has(station):
+	if station == nearby_sync_terminal:
+		if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
+			nearby_sync_terminal.set_p1_pressing(false)
+		elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
+			nearby_sync_terminal.set_p2_pressing(false)
+		nearby_sync_terminal = null
+	elif station == nearby_conveyor:
+		nearby_conveyor = null
+	elif station and nearby_stations.has(station):
 		nearby_stations.erase(station)

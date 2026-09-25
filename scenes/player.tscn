@@ -60,6 +60,14 @@ offset_right = 14.0
 offset_bottom = -8.0
 color = Color(0.95, 0.85, 0.2, 1)
 
+[node name="CarriedItem" type="ColorRect" parent="Visual"]
+visible = false
+offset_left = -8.0
+offset_top = -35.0
+offset_right = 8.0
+offset_bottom = -25.0
+color = Color(0.8, 0.8, 0.2, 1)
+
 [node name="Eye" type="ColorRect" parent="Visual"]
 offset_left = 4.0
 offset_top = -12.0

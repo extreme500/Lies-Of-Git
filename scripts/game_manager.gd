@@ -18,20 +18,65 @@ var stations: Array[RepairStation] = []
 @onready var faults_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/FaultsContainer/FaultsLabel
 @onready var victory_panel: PanelContainer = $HUD/VictoryPanel
 @onready var game_over_panel: PanelContainer = $HUD/GameOverPanel
+@onready var pause_panel: PanelContainer = $HUD/PausePanel
 
 func _ready() -> void:
 	add_to_group("game_manager")
 	time_remaining = survival_time
 	
+	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
+	
 	if victory_panel:
 		victory_panel.visible = false
 	if game_over_panel:
 		game_over_panel.visible = false
+	if pause_panel:
+		pause_panel.visible = false
 
 	# Localizar todas as estações de reparo na cena
+	var left_stations: Array[RepairStation] = []
+	var right_stations: Array[RepairStation] = []
 	for child in get_tree().get_nodes_in_group("repair_stations"):
 		if child is RepairStation:
 			register_station(child)
+			if child.global_position.x < 640:
+				left_stations.append(child)
+			else:
+				right_stations.append(child)
+				
+	setup_minigames(left_stations, right_stations)
+	
+	var sync_terminals = get_tree().get_nodes_in_group("sync_terminals")
+	for sync in sync_terminals:
+		sync.sync_exploded.connect(game_over)
+
+func setup_minigames(left_arr: Array[RepairStation], right_arr: Array[RepairStation]) -> void:
+	var mg_types = ["password", "item", "skillcheck", "simon"]
+	var assigned_types = []
+	var count = min(left_arr.size(), right_arr.size())
+	for i in range(count):
+		assigned_types.append(mg_types[i % mg_types.size()])
+	assigned_types.shuffle()
+	
+	var colors = [Color(1, 0.4, 0.4), Color(0.4, 0.4, 1), Color(0.4, 1, 0.4), Color(1, 1, 0.4), Color(1, 0.4, 1)]
+	colors.shuffle()
+	
+	left_arr.shuffle()
+	right_arr.shuffle()
+	
+	for i in range(count):
+		var left_st = left_arr[i]
+		var right_st = right_arr[i]
+		var m_type = assigned_types[i]
+		
+		var c = colors[i % colors.size()]
+		var l_base = left_st.get_node_or_null("Visual/Base")
+		if l_base is ColorRect: l_base.color = c
+		var r_base = right_st.get_node_or_null("Visual/Base")
+		if r_base is ColorRect: r_base.color = c
+		
+		left_st.setup_minigame(m_type, "A", right_st)
+		right_st.setup_minigame(m_type, "B", left_st)
 
 	if maquina:
 		maquina.integrity_changed.connect(_on_maquina_integrity_changed)
@@ -45,14 +90,7 @@ func register_station(station: RepairStation) -> void:
 	station.station_fixed.connect(_on_station_fixed)
 
 func _process(delta: float) -> void:
-	if game_finished:
-		if Input.is_key_pressed(KEY_R) or Input.is_action_just_pressed("restart"):
-			restart_game()
-		return
-
-	# Reinício rápido a qualquer momento com R
-	if Input.is_key_pressed(KEY_R) or Input.is_action_just_pressed("restart"):
-		restart_game()
+	if game_finished or get_tree().paused:
 		return
 
 	# Contagem regressiva de sobrevivência
@@ -68,6 +106,13 @@ func _process(delta: float) -> void:
 		failure_timer = randf_range(min_failure_interval, max_failure_interval)
 
 	update_hud()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("restart") or (event is InputEventKey and event.pressed and event.keycode == KEY_R):
+		restart_game()
+	elif event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE):
+		if not game_finished:
+			toggle_pause()
 
 func trigger_random_failure() -> void:
 	var available: Array[RepairStation] = []
@@ -119,7 +164,9 @@ func update_hud() -> void:
 			faults_label.text = "⚠️ Defeitos Ativos: %d" % maquina.broken_stations_count
 
 func win_game() -> void:
+	if game_finished: return
 	game_finished = true
+	get_tree().paused = true
 	SoundManager.play(get_tree(), "win")
 	if victory_panel:
 		victory_panel.visible = true
@@ -128,7 +175,9 @@ func win_game() -> void:
 			summary.text = "Vocês mantiveram a máquina operando!\nIntegridade final: %d%%\nParabéns pela cooperação!" % int(maquina.current_integrity)
 
 func game_over() -> void:
+	if game_finished: return
 	game_finished = true
+	get_tree().paused = true
 	if game_over_panel:
 		game_over_panel.visible = true
 		var summary = game_over_panel.get_node_or_null("VBox/SummaryLabel")
@@ -136,9 +185,19 @@ func game_over() -> void:
 			var survived = survival_time - time_remaining
 			summary.text = "A máquina entrou em colapso catastrófico!\nVocês sobreviveram por %.1f segundos.\nTrabalhem juntos e tentem novamente!" % survived
 
+func toggle_pause() -> void:
+	var new_pause_state = not get_tree().paused
+	get_tree().paused = new_pause_state
+	if pause_panel:
+		pause_panel.visible = new_pause_state
+
 func restart_game() -> void:
+	get_tree().paused = false
 	SoundManager.play(get_tree(), "click")
 	get_tree().reload_current_scene()
 
 func _on_restart_button_pressed() -> void:
 	restart_game()
+
+func _on_resume_button_pressed() -> void:
+	toggle_pause()
