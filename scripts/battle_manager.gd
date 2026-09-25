@@ -19,8 +19,12 @@ var active_hero_index: int = 0
 @onready var btn_defend: Button = $ActionPanel/MarginContainer/HBox/GridActions/BtnDefend
 
 @onready var target_panel: PanelContainer = $TargetPanel
-@onready var btn_target_boss: Button = $TargetPanel/MarginContainer/VBox/BtnTargetBoss
-@onready var btn_target_minion: Button = $TargetPanel/MarginContainer/VBox/BtnTargetMinion
+@onready var target_title: Label = $TargetPanel/MarginContainer/VBox/Title
+@onready var btn_target_boss: Button = $TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetBoss
+@onready var btn_target_minion: Button = $TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetMinion
+@onready var btn_target_warrior: Button = $TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetWarrior
+@onready var btn_target_mage: Button = $TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetMage
+@onready var btn_cancel_target: Button = $TargetPanel/MarginContainer/VBox/BtnCancelTarget
 
 @onready var log_label: RichTextLabel = $LogPanel/MarginContainer/LogLabel
 @onready var result_panel: PanelContainer = $ResultPanel
@@ -79,7 +83,7 @@ func prompt_hero_turn() -> void:
 func _on_attack_pressed() -> void:
 	SoundManager.play(get_tree(), "click")
 	selected_action = "attack"
-	show_target_selection()
+	show_target_selection(false)
 
 func _on_skill_pressed() -> void:
 	var hero = heroes[active_hero_index]
@@ -90,7 +94,7 @@ func _on_skill_pressed() -> void:
 		return
 	SoundManager.play(get_tree(), "click")
 	selected_action = "skill"
-	show_target_selection()
+	show_target_selection(false)
 
 func _on_heal_pressed() -> void:
 	var hero = heroes[active_hero_index]
@@ -99,27 +103,9 @@ func _on_heal_pressed() -> void:
 		log_message("[color=#f38ba8]MP insuficiente para Curar![/color]")
 		SoundManager.play(get_tree(), "hit")
 		return
-
-	# Cura aplica diretamente no aliado ou a si mesmo
-	action_panel.visible = false
-	state = BattleState.ANIMATING
-	hero.spend_mp(cost)
-	hero.step_forward()
-	SoundManager.play(get_tree(), "powerup")
-
-	# Encontra aliado vivo com menor HP
-	var target_ally = hero
-	for h in heroes:
-		if h.is_alive and h.current_hp < target_ally.current_hp:
-			target_ally = h
-
-	var heal_amt = 30 if hero == hero_warrior else 50
-	var recovered = target_ally.heal(heal_amt)
-	spawn_damage_text(target_ally.position + Vector2(40, -10), "+%d HP" % recovered, Color(0.4, 1.0, 0.4))
-	log_message("[color=#a6e3a1]%s curou %s em %d HP![/color]" % [hero.combatant_name, target_ally.combatant_name, recovered])
-
-	await get_tree().create_timer(1.0).timeout
-	next_hero_turn()
+	SoundManager.play(get_tree(), "click")
+	selected_action = "heal"
+	show_target_selection(true)
 
 func _on_defend_pressed() -> void:
 	var hero = heroes[active_hero_index]
@@ -128,17 +114,33 @@ func _on_defend_pressed() -> void:
 	hero.set_defending(true)
 	hero.regain_mp(8)
 	SoundManager.play(get_tree(), "coin")
-	spawn_damage_text(hero.position + Vector2(30, -10), "DEFENDENDO!", Color(0.4, 0.8, 1.0))
+	var text_pos = hero.global_position - $BattleArea.global_position + Vector2(30, -10)
+	spawn_damage_text(text_pos, "DEFENDENDO!", Color(0.4, 0.8, 1.0))
 	log_message("[color=#89b4fa]%s assumiu postura defensiva e recuperou 8 MP![/color]" % hero.combatant_name)
 
 	await get_tree().create_timer(0.8).timeout
 	next_hero_turn()
 
-func show_target_selection() -> void:
+func show_target_selection(is_healing: bool = false) -> void:
 	action_panel.visible = false
 	target_panel.visible = true
-	btn_target_boss.visible = enemy_boss.is_alive
-	btn_target_minion.visible = enemy_minion.is_alive
+
+	if is_healing:
+		if target_title:
+			target_title.text = "Selecione quem deseja Curar:"
+		btn_target_boss.visible = false
+		btn_target_minion.visible = false
+		btn_target_warrior.visible = hero_warrior.is_alive
+		btn_target_mage.visible = hero_mage.is_alive
+		btn_target_warrior.text = "🛡️ Valente (%d/%d HP)" % [hero_warrior.current_hp, hero_warrior.max_hp]
+		btn_target_mage.text = "🔮 Luna (%d/%d HP)" % [hero_mage.current_hp, hero_mage.max_hp]
+	else:
+		if target_title:
+			target_title.text = "Selecione o Inimigo Alvo:"
+		btn_target_boss.visible = enemy_boss.is_alive
+		btn_target_minion.visible = enemy_minion.is_alive
+		btn_target_warrior.visible = false
+		btn_target_mage.visible = false
 
 func _on_target_boss_pressed() -> void:
 	SoundManager.play(get_tree(), "click")
@@ -147,6 +149,20 @@ func _on_target_boss_pressed() -> void:
 func _on_target_minion_pressed() -> void:
 	SoundManager.play(get_tree(), "click")
 	_on_target_selected(enemy_minion)
+
+func _on_target_warrior_pressed() -> void:
+	SoundManager.play(get_tree(), "click")
+	_on_target_selected(hero_warrior)
+
+func _on_target_mage_pressed() -> void:
+	SoundManager.play(get_tree(), "click")
+	_on_target_selected(hero_mage)
+
+func _on_cancel_target_pressed() -> void:
+	SoundManager.play(get_tree(), "click")
+	target_panel.visible = false
+	action_panel.visible = true
+	state = BattleState.HERO_SELECT
 
 func _on_target_selected(target: RPGCombatant) -> void:
 	if target == null or not is_instance_valid(target) or not target.is_alive:
@@ -163,12 +179,14 @@ func execute_hero_action(target: RPGCombatant) -> void:
 	var hero = heroes[active_hero_index]
 	hero.step_forward()
 
+	var text_pos = target.global_position - $BattleArea.global_position + Vector2(40, 20)
+
 	if selected_action == "attack":
 		SoundManager.play(get_tree(), "hit")
 		var dmg = hero.base_attack + randi_range(-3, 6)
 		var actual_dmg = target.take_damage(dmg)
 		hero.regain_mp(5)
-		spawn_damage_text(target.position + Vector2(40, 20), "-%d" % actual_dmg, Color(1, 0.4, 0.4))
+		spawn_damage_text(text_pos, "-%d" % actual_dmg, Color(1, 0.4, 0.4))
 		log_message("%s atacou %s causando [b]%d[/b] de dano!" % [hero.combatant_name, target.combatant_name, actual_dmg])
 
 	elif selected_action == "skill":
@@ -177,15 +195,25 @@ func execute_hero_action(target: RPGCombatant) -> void:
 			SoundManager.play(get_tree(), "hit", 0.3)
 			var dmg = 45 + randi_range(-4, 10)
 			var actual_dmg = target.take_damage(dmg)
-			spawn_damage_text(target.position + Vector2(40, 20), "-%d CRÍTICO!" % actual_dmg, Color(1, 0.2, 0.2))
+			spawn_damage_text(text_pos, "-%d CRÍTICO!" % actual_dmg, Color(1, 0.2, 0.2))
 			log_message("[color=#f38ba8]%s desferiu GOLPE BRUTAL em %s causando %d de dano![/color]" % [hero.combatant_name, target.combatant_name, actual_dmg])
 		else:
 			hero.spend_mp(20)
 			SoundManager.play(get_tree(), "shoot", 0.2)
 			var dmg = 50 + randi_range(-2, 12)
 			var actual_dmg = target.take_damage(dmg)
-			spawn_damage_text(target.position + Vector2(40, 20), "-%d FOGO!" % actual_dmg, Color(1, 0.6, 0.1))
+			spawn_damage_text(text_pos, "-%d FOGO!" % actual_dmg, Color(1, 0.6, 0.1))
 			log_message("[color=#fab387]%s conjurou BOLA DE FOGO em %s causando %d de dano![/color]" % [hero.combatant_name, target.combatant_name, actual_dmg])
+
+	elif selected_action == "heal":
+		var cost = 10 if hero == hero_warrior else 15
+		hero.spend_mp(cost)
+		SoundManager.play(get_tree(), "powerup")
+		var heal_amt = 35 if hero == hero_warrior else 55
+		var recovered = target.heal(heal_amt)
+		var heal_text_pos = target.global_position - $BattleArea.global_position + Vector2(40, -10)
+		spawn_damage_text(heal_text_pos, "+%d HP" % recovered, Color(0.4, 1.0, 0.4))
+		log_message("[color=#a6e3a1]%s curou %s em %d HP![/color]" % [hero.combatant_name, target.combatant_name, recovered])
 
 	await get_tree().create_timer(1.0).timeout
 	if not check_battle_end():
@@ -231,7 +259,8 @@ func start_enemy_turn() -> void:
 
 		var dmg = enemy.base_attack + randi_range(-3, 5)
 		var actual_dmg = target.take_damage(dmg)
-		spawn_damage_text(target.position + Vector2(30, 20), "-%d" % actual_dmg, Color(1, 0.3, 0.3))
+		var text_pos = target.global_position - $BattleArea.global_position + Vector2(30, 20)
+		spawn_damage_text(text_pos, "-%d" % actual_dmg, Color(1, 0.3, 0.3))
 		log_message("[color=#f38ba8]%s atacou %s causando %d de dano![/color]" % [enemy.combatant_name, target.combatant_name, actual_dmg])
 
 		await get_tree().create_timer(0.9).timeout

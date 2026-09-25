@@ -46,21 +46,20 @@ offset_bottom = -210.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Heroes" type="HBoxContainer" parent="BattleArea"]
+[node name="Heroes" type="Control" parent="BattleArea"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 60.0
-offset_top = -140.0
-offset_right = 440.0
-offset_bottom = 140.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 40
 
 [node name="Warrior" type="Control" parent="BattleArea/Heroes"]
-custom_minimum_size = Vector2(160, 260)
-layout_mode = 2
+layout_mode = 0
+offset_left = 80.0
+offset_top = 50.0
+offset_right = 240.0
+offset_bottom = 310.0
 script = ExtResource("2_combatant")
 combatant_name = "Valente (Guerreiro)"
 max_hp = 120
@@ -141,8 +140,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Mage" type="Control" parent="BattleArea/Heroes"]
-custom_minimum_size = Vector2(160, 260)
-layout_mode = 2
+layout_mode = 0
+offset_left = 280.0
+offset_top = 50.0
+offset_right = 440.0
+offset_bottom = 310.0
 script = ExtResource("2_combatant")
 combatant_name = "Luna (Maga)"
 max_hp = 80
@@ -221,24 +223,20 @@ text = "60/60"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Enemies" type="HBoxContainer" parent="BattleArea"]
+[node name="Enemies" type="Control" parent="BattleArea"]
 layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -440.0
-offset_top = -140.0
-offset_right = -60.0
-offset_bottom = 140.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 40
 
 [node name="Minion" type="Control" parent="BattleArea/Enemies"]
-custom_minimum_size = Vector2(160, 260)
-layout_mode = 2
+layout_mode = 0
+offset_left = 710.0
+offset_top = 50.0
+offset_right = 870.0
+offset_bottom = 310.0
 script = ExtResource("2_combatant")
 combatant_name = "Slime Ácido"
 max_hp = 65
@@ -308,8 +306,11 @@ layout_mode = 2
 layout_mode = 0
 
 [node name="Boss" type="Control" parent="BattleArea/Enemies"]
-custom_minimum_size = Vector2(160, 260)
-layout_mode = 2
+layout_mode = 0
+offset_left = 910.0
+offset_top = 50.0
+offset_right = 1070.0
+offset_bottom = 310.0
 script = ExtResource("2_combatant")
 combatant_name = "Rei Goblin"
 max_hp = 150
@@ -466,20 +467,49 @@ theme_override_constants/margin_bottom = 16
 
 [node name="VBox" type="VBoxContainer" parent="TargetPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="Title" type="Label" parent="TargetPanel/MarginContainer/VBox"]
 layout_mode = 2
 text = "Selecione o Alvo:"
 
-[node name="BtnTargetBoss" type="Button" parent="TargetPanel/MarginContainer/VBox"]
+[node name="TargetsGrid" type="GridContainer" parent="TargetPanel/MarginContainer/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="BtnTargetBoss" type="Button" parent="TargetPanel/MarginContainer/VBox/TargetsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "🎯 Rei Goblin"
 
-[node name="BtnTargetMinion" type="Button" parent="TargetPanel/MarginContainer/VBox"]
+[node name="BtnTargetMinion" type="Button" parent="TargetPanel/MarginContainer/VBox/TargetsGrid"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "🎯 Slime Ácido"
+
+[node name="BtnTargetWarrior" type="Button" parent="TargetPanel/MarginContainer/VBox/TargetsGrid"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "🛡️ Valente"
+
+[node name="BtnTargetMage" type="Button" parent="TargetPanel/MarginContainer/VBox/TargetsGrid"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "🔮 Luna"
+
+[node name="BtnCancelTarget" type="Button" parent="TargetPanel/MarginContainer/VBox"]
+layout_mode = 2
+text = "❌ Voltar / Cancelar"
 
 [node name="LogPanel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -547,6 +577,9 @@ text = "Lutar Novamente"
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnSkill" to="." method="_on_skill_pressed"]
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnHeal" to="." method="_on_heal_pressed"]
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnDefend" to="." method="_on_defend_pressed"]
-[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetBoss" to="." method="_on_target_boss_pressed"]
-[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetMinion" to="." method="_on_target_minion_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetBoss" to="." method="_on_target_boss_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetMinion" to="." method="_on_target_minion_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetWarrior" to="." method="_on_target_warrior_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/TargetsGrid/BtnTargetMage" to="." method="_on_target_mage_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnCancelTarget" to="." method="_on_cancel_target_pressed"]
 [connection signal="pressed" from="ResultPanel/VBox/BtnRestart" to="." method="_on_restart_pressed"]
