@@ -1,0 +1,262 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/hub.gd" id="1_hub"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hub")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.11, 0.15, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 24.0
+offset_right = -40.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.75, 0.45, 1)
+theme_override_font_sizes/font_size = 26
+text = "🎮 Lies-Of-Git — GameJam Starter Kit & Hub"
+
+[node name="Subtitle" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+text = "Cada maquete de jogo está pronta e isolada em sua própria branch Git. Escolha a sua favorita para começar a Jam!"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Grid" type="GridContainer" parent="VBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 14
+columns = 2
+
+[node name="Card1" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card1"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card1/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card1/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🏃 Plataforma 2D"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card1/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout plataformer-2d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card1/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Pulo variável, coyote time, jump buffer, plataformas móveis, espinhos, inimigos com stomp e moedas."
+autowrap_mode = 3
+
+[node name="Card2" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card2"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card2/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card2/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.45, 0.55, 1)
+theme_override_font_sizes/font_size = 18
+text = "🎯 Shooter 3D (FPS)"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card2/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout shooter-3d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card2/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Câmera FPS com mouse capturado, head bobbing, recoil, alvos 3D com dano e destruição, jump pad e arena."
+autowrap_mode = 3
+
+[node name="Card3" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card3"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card3/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card3/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.65, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚔️ RPG de Turnos 2D"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card3/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout rpg-de-turnos-2d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card3/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Guerreiro e Maga vs Chefe e Slime, menu de ações, golpes especiais, curas, defesas, textos de dano e log."
+autowrap_mode = 3
+
+[node name="Card4" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card4"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card4/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card4/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.9, 0.65, 1)
+theme_override_font_sizes/font_size = 18
+text = "🔍 Point and Click 2D"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card4/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout point-and-click-2d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card4/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Escape room investigativo com inventário dinâmico, pistas secretas, códigos, fusíveis e porta de fuga."
+autowrap_mode = 3
+
+[node name="Card5" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card5"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card5/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card5/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "🧩 Puzzle 2D (Sokoban)"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card5/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout puzzle-2d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card5/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Movimentação em grade, empurrar caixas até os alvos, sistema de Desfazer passos (Undo: Z) e 3 fases."
+autowrap_mode = 3
+
+[node name="Card6" type="PanelContainer" parent="VBox/ScrollContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="VBox/ScrollContainer/Grid/Card6"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="VBox/ScrollContainer/Grid/Card6/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/ScrollContainer/Grid/Card6/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.5, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = "🧟 Arena Survivor 2D"
+
+[node name="Branch" type="Label" parent="VBox/ScrollContainer/Grid/Card6/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.45, 1)
+text = "git checkout top-down-survivor-2d"
+
+[node name="Desc" type="Label" parent="VBox/ScrollContainer/Grid/Card6/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.8, 0.85, 1)
+text = "Estilo Vampire Survivors: hordas contínuas, armas e orbes automáticos, gemas de XP e cartas de Level Up."
+autowrap_mode = 3
+
+[node name="TipPanel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="VBox/TipPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="TipLabel" type="Label" parent="VBox/TipPanel/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.85, 1, 1)
+text = "💡 DICA: Use git checkout <nome-da-branch> no terminal para alternar para qualquer jogo!"
+autowrap_mode = 3
