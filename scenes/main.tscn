@@ -547,6 +547,6 @@ text = "Lutar Novamente"
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnSkill" to="." method="_on_skill_pressed"]
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnHeal" to="." method="_on_heal_pressed"]
 [connection signal="pressed" from="ActionPanel/MarginContainer/HBox/GridActions/BtnDefend" to="." method="_on_defend_pressed"]
-[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetBoss" to="." method="_on_target_selected" binds= [NodePath("../../../../../BattleArea/Enemies/Boss")]]
-[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetMinion" to="." method="_on_target_selected" binds= [NodePath("../../../../../BattleArea/Enemies/Minion")]]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetBoss" to="." method="_on_target_boss_pressed"]
+[connection signal="pressed" from="TargetPanel/MarginContainer/VBox/BtnTargetMinion" to="." method="_on_target_minion_pressed"]
 [connection signal="pressed" from="ResultPanel/VBox/BtnRestart" to="." method="_on_restart_pressed"]

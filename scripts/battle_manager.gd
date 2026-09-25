@@ -140,9 +140,21 @@ func show_target_selection() -> void:
 	btn_target_boss.visible = enemy_boss.is_alive
 	btn_target_minion.visible = enemy_minion.is_alive
 
-func _on_target_selected(target) -> void:
-	if target is NodePath:
-		target = get_node(target)
+func _on_target_boss_pressed() -> void:
+	SoundManager.play(get_tree(), "click")
+	_on_target_selected(enemy_boss)
+
+func _on_target_minion_pressed() -> void:
+	SoundManager.play(get_tree(), "click")
+	_on_target_selected(enemy_minion)
+
+func _on_target_selected(target: RPGCombatant) -> void:
+	if target == null or not is_instance_valid(target) or not target.is_alive:
+		log_message("[color=#f38ba8]Alvo inválido ou derrotado![/color]")
+		target_panel.visible = false
+		action_panel.visible = true
+		state = BattleState.HERO_SELECT
+		return
 	target_panel.visible = false
 	execute_hero_action(target)
 
