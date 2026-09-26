@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
 [ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="8_outer_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
 texture = ExtResource("7_ui_frame")
@@ -328,35 +328,41 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("8_outer_frame")
 draw_center = false
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 
 [node name="Chamber1Frame" type="NinePatchRect" parent="HUD"]
-offset_left = 30.0
+offset_left = 28.0
 offset_top = 54.0
-offset_right = 625.0
-offset_bottom = 688.0
+offset_right = 604.0
+offset_bottom = 666.0
 texture = ExtResource("8_outer_frame")
 draw_center = false
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
-modulate = Color(0.2, 0.6, 1, 1)
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate = Color(0.2, 0.65, 1, 1)
 
 [node name="Chamber2Frame" type="NinePatchRect" parent="HUD"]
-offset_left = 655.0
+offset_left = 676.0
 offset_top = 54.0
-offset_right = 1250.0
-offset_bottom = 688.0
+offset_right = 1252.0
+offset_bottom = 666.0
 texture = ExtResource("8_outer_frame")
 draw_center = false
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 modulate = Color(1, 0.6, 0.2, 1)
 
 [node name="TopBar" type="PanelContainer" parent="HUD"]
