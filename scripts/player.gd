@@ -72,6 +72,8 @@ var frames_p2: SpriteFrames = preload("res://assets/players/player_2_frames.tres
 @onready var prompt_label: Label = $PromptLabel
 @onready var repair_sparks: CPUParticles2D = $RepairSparks
 
+var fixing_audio: AudioStreamPlayer2D = null
+
 func _ready() -> void:
 	spawn_position = global_position
 	gravity = ProjectSettings.get_setting("physics/2d/default_gravity", 1300.0)
@@ -80,6 +82,20 @@ func _ready() -> void:
 		prompt_label.visible = false
 	if animated_sprite:
 		animated_sprite.animation_finished.connect(_on_animated_sprite_animation_finished)
+	
+	# Efeito sonoro de conserto/interação contínua ("Novos/Fixing.ogg") - bem baixinho
+	fixing_audio = AudioStreamPlayer2D.new()
+	fixing_audio.name = "FixingAudio"
+	var fix_stream = load("res://sfx/Novos/Fixing.ogg")
+	if fix_stream:
+		fixing_audio.stream = fix_stream
+	fixing_audio.volume_db = -18.0
+	fixing_audio.finished.connect(func():
+		if is_repairing and is_instance_valid(fixing_audio):
+			fixing_audio.pitch_scale = randf_range(0.92, 1.08)
+			fixing_audio.play()
+	)
+	add_child(fixing_audio)
 
 func apply_player_identity() -> void:
 	if animated_sprite == null:
@@ -305,6 +321,9 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = true
 			if repair_sparks:
 				repair_sparks.emitting = true
+			if fixing_audio and not fixing_audio.playing:
+				fixing_audio.pitch_scale = randf_range(0.95, 1.05)
+				fixing_audio.play()
 			if current_station.has_method("set_interacting"):
 				current_station.set_interacting(true)
 			current_station.repair_tick(delta, self)
@@ -313,12 +332,16 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = false
 			if repair_sparks:
 				repair_sparks.emitting = false
+			if fixing_audio and fixing_audio.playing:
+				fixing_audio.stop()
 			if current_station.has_method("set_interacting"):
 				current_station.set_interacting(false)
 	elif nearby_conveyor:
 		is_repairing = false
 		if repair_sparks:
 			repair_sparks.emitting = false
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
 		if prompt_label:
 			if player_id == 1:
 				if carried_item:
@@ -338,6 +361,8 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			prompt_label.visible = false
 		if repair_sparks:
 			repair_sparks.emitting = false
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
 
 func apply_squash_stretch(target_scale: Vector2) -> void:
 	if visual_root == null:
@@ -374,6 +399,8 @@ func _on_interaction_area_exited(area: Area2D) -> void:
 		if station.has_method("set_interacting"):
 			station.set_interacting(false)
 		nearby_stations.erase(station)
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
 
 # ==============================================================================
 # 🎬 SISTEMA DE ANIMAÇÃO DOS ROBÔS

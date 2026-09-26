@@ -190,7 +190,7 @@ func update_terminal_frames() -> void:
 				sprite_y_offset = 2.0
 			else:
 				anim_sprite.sprite_frames = FRAMES_ITEM_DELIV
-				sprite_y_offset = 0.0
+				sprite_y_offset = 3.0
 		"skillcheck":
 			if role == "A":
 				anim_sprite.sprite_frames = FRAMES_GEN

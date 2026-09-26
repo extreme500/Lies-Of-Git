@@ -5,8 +5,9 @@ class_name SoundManager
 # Reproduz arquivos da pasta res://sfx/
 
 static var bgm_player: AudioStreamPlayer = null
+static var sfx_default_volume_db: float = -8.0
 
-static func play(tree: SceneTree, sound_name: String, pitch_range: float = 0.1) -> void:
+static func play(tree: SceneTree, sound_name: String, pitch_range: float = 0.1, custom_volume_db: float = -999.0) -> void:
 	if tree == null or tree.root == null:
 		return
 	var path = "res://sfx/" + sound_name + ".wav"
@@ -18,9 +19,10 @@ static func play(tree: SceneTree, sound_name: String, pitch_range: float = 0.1) 
 	
 	var player = AudioStreamPlayer.new()
 	player.stream = stream
+	player.volume_db = custom_volume_db if custom_volume_db != -999.0 else sfx_default_volume_db
 	player.pitch_scale = randf_range(1.0 - pitch_range, 1.0 + pitch_range)
-	tree.root.add_child(player)
-	player.play()
+	tree.root.add_child.call_deferred(player)
+	player.call_deferred("play")
 	player.finished.connect(player.queue_free)
 
 static func play_bgm(tree: SceneTree, music_path: String = "res://assets/Ost/MELHOR loop fundo principal.mp3", volume_db: float = -15.0) -> void:
