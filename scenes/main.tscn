@@ -217,6 +217,21 @@ offset_right = 90.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
+[node name="P1_MidStepPlat" type="StaticBody2D" parent="Environment/Platforms"]
+position = Vector2(360, 350)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidStepPlat"]
+scale = Vector2(140, 20)
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidStepPlat"]
+offset_left = -70.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 10.0
+color = Color(0.28, 0.35, 0.45, 1)
+
 [node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(260, 560)
 
@@ -297,7 +312,7 @@ minigame_type = "skillcheck"
 chamber_id = 1
 
 [node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(100, 360)
+position = Vector2(430, 440)
 station_name = "Receptor de Código"
 station_type = "cabo"
 minigame_type = "password"
@@ -312,7 +327,7 @@ chamber_id = 1
 
 [node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(1070, 200)
-station_name = "Botão de Calibragem"
+station_name = "Gerador de Calibragem"
 station_type = "terminal"
 minigame_type = "skillcheck"
 chamber_id = 2
@@ -332,7 +347,7 @@ minigame_type = "password"
 chamber_id = 2
 
 [node name="Station7_P1_Extra" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(430, 440)
+position = Vector2(120, 360)
 station_name = "Sequência Alfa"
 station_type = "terminal"
 minigame_type = "simon"

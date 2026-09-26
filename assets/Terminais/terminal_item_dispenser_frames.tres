@@ -50,7 +50,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_1jwrd")
+"texture": ExtResource("1_j4b3v")
 }],
 "loop": 0,
 "name": &"idle",
@@ -58,7 +58,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_tfihi")
+"texture": ExtResource("10_f8tvx")
 }],
 "loop": 0,
 "name": &"ready",

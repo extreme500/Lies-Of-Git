@@ -5,7 +5,7 @@ class_name CoopPlayer2D
 @export var speed: float = 300.0
 @export var acceleration: float = 1900.0
 @export var friction: float = 1500.0
-@export var jump_velocity: float = -500.0
+@export var jump_velocity: float = -580.0
 @export var jump_cut_multiplier: float = 0.5
 
 @export var coyote_time: float = 0.12
@@ -55,6 +55,7 @@ var is_repairing: bool = false
 var carried_item: bool = false
 var _password_key_held: bool = false  # Evita múltiplos inputs enquanto tecla está pressionada
 var is_transitioning_to_fix: bool = false
+var _interact_key_was_pressed: bool = false
 
 var nearby_stations: Array[Node] = []
 var nearby_sync_terminal: Node = null
@@ -132,20 +133,15 @@ func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
 	jump_buffer_timer -= delta
 
-	# Input para entrar/sair do modo de interação
-	var can_interact = (get_active_broken_station() != null) or (nearby_sync_terminal != null) or (nearby_conveyor != null)
-	if player_id == 1:
-		if Input.is_key_pressed(KEY_E) and can_interact and not is_repairing:
-			is_repairing = true
-		elif Input.is_key_pressed(KEY_Q) and is_repairing:
-			is_repairing = false
-	else:
-		if Input.is_key_pressed(KEY_COMMA) and can_interact and not is_repairing:
-			is_repairing = true
-		elif Input.is_key_pressed(KEY_PERIOD) and is_repairing:
-			is_repairing = false
-			
-	if not can_interact:
+	# Input para entrar/sair do modo de interação e ações diretas
+	var interact_down = Input.is_key_pressed(KEY_E) if player_id == 1 else Input.is_key_pressed(KEY_COMMA)
+	var interact_just_pressed = interact_down and not _interact_key_was_pressed
+	_interact_key_was_pressed = interact_down
+	
+	var exit_down = Input.is_key_pressed(KEY_Q) if player_id == 1 else Input.is_key_pressed(KEY_PERIOD)
+	
+	var active_station = get_active_broken_station()
+	if is_repairing and (active_station == null or not active_station.is_broken() or exit_down):
 		is_repairing = false
 
 	# Inputs específicos de cada jogador
@@ -192,7 +188,7 @@ func _physics_process(delta: float) -> void:
 		carried_item_rect.visible = carried_item
 
 	# Interação com estação de reparo
-	process_interaction(is_repairing, delta)
+	process_interaction(interact_down, interact_just_pressed, delta)
 	
 	# Atualiza o estado da animação dos sprites (Idle, Run, Jump, Fix, Transition)
 	update_animation_state(delta)
@@ -278,23 +274,16 @@ func send_minigame_input(val: String) -> void:
 		# A station filtrará pelo estado.
 		current_station.receive_minigame_input(val)
 
-func process_interaction(holding_interact: bool, delta: float) -> void:
+func process_interaction(interact_down: bool, interact_just_pressed: bool, delta: float) -> void:
 	# Lógica do Sync Terminal
 	if nearby_sync_terminal:
-		if holding_interact:
-			if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
-				nearby_sync_terminal.set_p1_pressing(true)
-			elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
-				nearby_sync_terminal.set_p2_pressing(true)
-		else:
-			if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
-				nearby_sync_terminal.set_p1_pressing(false)
-			elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
-				nearby_sync_terminal.set_p2_pressing(false)
+		if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
+			nearby_sync_terminal.set_p1_pressing(interact_down)
+		elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
+			nearby_sync_terminal.set_p2_pressing(interact_down)
 
 	# Lógica do Conveyor
-	var conveyor_interact = Input.is_key_pressed(KEY_E) if player_id == 1 else Input.is_key_pressed(KEY_COMMA)
-	if nearby_conveyor and conveyor_interact:
+	if nearby_conveyor and interact_just_pressed:
 		if player_id == 1 and carried_item:
 			if nearby_conveyor.try_insert_item(player_id, global_position.y):
 				carried_item = false
@@ -302,36 +291,86 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			if nearby_conveyor.try_take_item(player_id, global_position.y):
 				carried_item = true
 
+	# Lógica das estações de reparo
 	var current_station = get_active_broken_station()
 	if current_station:
-		if prompt_label:
-			prompt_label.visible = true
-			if holding_interact:
-				var exit_key = "Q" if player_id == 1 else "."
-				prompt_label.text = "[%s] Sair" % exit_key
-			else:
-				var enter_key = "E" if player_id == 1 else ","
-				prompt_label.text = "[%s] Consertar" % enter_key
+		var mg_type = current_station.minigame_type
+		var role = current_station.role
 		
-		if holding_interact:
-			is_repairing = true
-			if repair_sparks:
-				repair_sparks.emitting = true
-			if fixing_audio and not fixing_audio.playing:
-				fixing_audio.pitch_scale = randf_range(0.95, 1.05)
-				fixing_audio.play()
-			if current_station.has_method("set_interacting"):
-				current_station.set_interacting(true)
-			current_station.repair_tick(delta, self)
-			apply_squash_stretch(Vector2(1.05, 0.95))
-		else:
+		# Minigames de ação única (Dispenser, Entrega, Gerador)
+		if mg_type == "item":
+			if role == "A":
+				# Dispenser (Player 1) - Não trava o jogador em modo reparo
+				if prompt_label:
+					prompt_label.visible = true
+					if current_station.mg_state.get("has_item", false):
+						prompt_label.text = "[E] Pegar Peça"
+					elif current_station.anim_sprite and current_station.anim_sprite.animation == "dispense":
+						prompt_label.text = "Dispensando..."
+					else:
+						prompt_label.text = "Aguardando..."
+				if interact_just_pressed:
+					current_station.try_dispenser_pickup(self)
+				is_repairing = false
+			elif role == "B":
+				# Entrega (Player 2) - Entrega direta ao apertar interagir
+				if prompt_label:
+					prompt_label.visible = true
+					prompt_label.text = "[,] Entregar Peça" if carried_item else "Precisa de Peça"
+				if interact_just_pressed and carried_item:
+					current_station.try_deliver_item(self)
+				is_repairing = false
+		elif mg_type == "skillcheck":
+			if role == "B":
+				# Gerador de Calibragem (Player 2) - Calibra ao apertar interagir
+				if prompt_label:
+					prompt_label.visible = true
+					prompt_label.text = "[,] Sincronizar"
+				if interact_just_pressed:
+					current_station.try_skillcheck_calibrate()
+				is_repairing = false
+			elif role == "A":
+				# Gerador (Player 1) - Apenas indicador visual
+				if prompt_label:
+					prompt_label.visible = true
+					prompt_label.text = "Calibrador Ativo"
+				is_repairing = false
+		elif mg_type == "password" and role == "A":
+			# Receptor de Senha (Player 1) - apenas exibe o código para o Player 2
+			if prompt_label:
+				prompt_label.visible = true
+				prompt_label.text = "Código de Acesso"
 			is_repairing = false
-			if repair_sparks:
-				repair_sparks.emitting = false
-			if fixing_audio and fixing_audio.playing:
-				fixing_audio.stop()
-			if current_station.has_method("set_interacting"):
-				current_station.set_interacting(false)
+		else:
+			# Minigames com sequência de setas (Password B e Simon A/B)
+			var enter_key = "E" if player_id == 1 else ","
+			var exit_key = "Q" if player_id == 1 else "."
+			if prompt_label:
+				prompt_label.visible = true
+				if is_repairing:
+					prompt_label.text = "[%s] Sair" % exit_key
+				else:
+					prompt_label.text = "[%s] Interagir" % enter_key
+			
+			if interact_just_pressed and not is_repairing:
+				is_repairing = true
+			
+			if is_repairing:
+				if repair_sparks:
+					repair_sparks.emitting = true
+				if fixing_audio and not fixing_audio.playing:
+					fixing_audio.pitch_scale = randf_range(0.95, 1.05)
+					fixing_audio.play()
+				if current_station.has_method("set_interacting"):
+					current_station.set_interacting(true)
+				current_station.repair_tick(delta, self)
+			else:
+				if repair_sparks:
+					repair_sparks.emitting = false
+				if fixing_audio and fixing_audio.playing:
+					fixing_audio.stop()
+				if current_station.has_method("set_interacting"):
+					current_station.set_interacting(false)
 	elif nearby_conveyor:
 		is_repairing = false
 		if repair_sparks:

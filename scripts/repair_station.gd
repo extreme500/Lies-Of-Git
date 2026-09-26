@@ -16,6 +16,7 @@ var sfx_cooldown: float = 0.0
 var is_interacting: bool = false
 var _interact_timer: float = 0.0
 var _skillcheck_visual_active: bool = false
+var _skillcheck_cooldown: float = 0.0
 
 const FRAMES_PWD_REC = preload("res://assets/Terminais/terminal_password_receive_frames.tres")
 const FRAMES_PWD_INS = preload("res://assets/Terminais/terminal_password_insert_frames.tres")
@@ -65,6 +66,10 @@ func _ready() -> void:
 			minigame_ui.add_child(arrow_container)
 	if arrow_container:
 		arrow_container.hide()
+	if not anim_sprite:
+		anim_sprite = get_node_or_null("Visual/AnimatedSprite2D") as AnimatedSprite2D
+	if anim_sprite and not anim_sprite.animation_finished.is_connected(_on_anim_sprite_animation_finished):
+		anim_sprite.animation_finished.connect(_on_anim_sprite_animation_finished)
 	update_terminal_frames()
 	update_status_visual()
 	call_deferred("snap_to_surface")
@@ -98,14 +103,16 @@ func set_interacting(val: bool) -> void:
 
 func update_ui_visibility() -> void:
 	if minigame_type == "skillcheck" and role == "A":
-		_set_skillcheck_visual_visible(status == "BROKEN" and is_interacting)
+		_set_skillcheck_visual_visible(status == "BROKEN")
 
 	if not minigame_ui: return
 	if status != "BROKEN":
 		minigame_ui.visible = false
 		return
 	
-	if minigame_type in ["password", "skillcheck", "simon"]:
+	if minigame_type == "password" and role == "A":
+		minigame_ui.visible = true
+	elif minigame_type in ["password", "simon"]:
 		minigame_ui.visible = is_interacting
 	else:
 		minigame_ui.visible = true
@@ -177,7 +184,7 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation) ->
 			mg_state["attempts"] = 0
 	elif minigame_type == "item":
 		if role == "A":
-			mg_state["has_item"] = true
+			mg_state["has_item"] = false
 		else:
 			mg_state["needs_item"] = true
 	elif minigame_type == "skillcheck":
@@ -187,7 +194,7 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation) ->
 			mg_state["target_end"] = mg_state["target_start"] + 0.2
 			call_deferred("_position_skillcheck_visual_over_station")
 		else:
-			mg_state["button_active"] = false
+			mg_state["button_active"] = true
 			mg_state["toggle_timer"] = 0.0
 	elif minigame_type == "simon":
 		init_simon(GameSettings.get_simon_iterations())
@@ -269,8 +276,9 @@ func update_terminal_animation() -> void:
 					if anim_sprite.sprite_frames.has_animation("ready"):
 						anim_sprite.play("ready")
 				else:
-					if anim_sprite.sprite_frames.has_animation("idle"):
-						anim_sprite.play("idle")
+					if anim_sprite.animation != "dispense":
+						if anim_sprite.sprite_frames.has_animation("idle"):
+							anim_sprite.play("idle")
 			else:
 				if status == "BROKEN":
 					if anim_sprite.sprite_frames.has_animation("idle"):
@@ -390,6 +398,8 @@ func generate_new_password() -> void:
 		station_b.update_minigame_ui()
 
 func _process(delta: float) -> void:
+	if _skillcheck_cooldown > 0.0:
+		_skillcheck_cooldown -= delta
 	if status == "BROKEN":
 		if warning_icon:
 			warning_icon.scale = Vector2.ONE * (1.0 + 0.15 * sin(Time.get_ticks_msec() * 0.01))
@@ -425,6 +435,10 @@ func break_down(n_iterations: int = -1) -> void:
 		for c in centro_nodes:
 			if is_instance_valid(c) and c.has_method("sortear_novo_alvo"):
 				c.sortear_novo_alvo()
+	elif minigame_type == "item" and role == "A":
+		mg_state["has_item"] = false
+		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("dispense"):
+			anim_sprite.play("dispense")
 	elif minigame_type == "simon":
 		init_simon(iters)
 
@@ -443,13 +457,6 @@ func process_minigame(delta: float) -> void:
 		if role == "A":
 			mg_state["needle"] = wrapf(mg_state["needle"] + delta * 0.8, 0.0, 1.0)
 			update_minigame_ui()
-		elif role == "B":
-			mg_state["toggle_timer"] -= delta
-			if mg_state["toggle_timer"] <= 0:
-				mg_state["button_active"] = not mg_state["button_active"]
-				mg_state["toggle_timer"] = randf_range(1.0, 3.0)
-				update_terminal_animation()
-				update_minigame_ui()
 	elif minigame_type == "simon":
 		var ft = mg_state.get("flash_timer", 0.0)
 		if ft > 0.0:
@@ -490,13 +497,13 @@ func repair_tick(delta: float, player: Node = null) -> void:
 			
 	elif minigame_type == "item":
 		if role == "A":
-			# Pegar item
-			if mg_state.get("has_item", false) and player:
+			if player and not player.carried_item and mg_state.get("has_item", false):
 				player.carried_item = true
 				mg_state["has_item"] = false
-				update_terminal_animation()
+				if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("idle"):
+					anim_sprite.play("idle")
 				update_minigame_ui()
-				SoundManager.play(get_tree(), "powerup", 0.3)
+				SoundManager.play(get_tree(), "powerup", 0.2)
 		elif role == "B":
 			if player and player.carried_item:
 				player.carried_item = false
@@ -506,10 +513,9 @@ func repair_tick(delta: float, player: Node = null) -> void:
 
 	elif minigame_type == "skillcheck":
 		if role == "B":
-			# Tenta clicar no botão
 			if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
 				anim_sprite.play("running")
-			if mg_state.get("button_active", false):
+			if _skillcheck_cooldown <= 0.0:
 				var hit = false
 				var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
 				if not centro_nodes.is_empty() and centro_nodes[0].has_method("is_alvo_atingido"):
@@ -522,15 +528,74 @@ func repair_tick(delta: float, player: Node = null) -> void:
 				if hit:
 					fixed_now = true
 				else:
-					SoundManager.play(get_tree(), "lose", 0.5) # Errou
-			else:
-				SoundManager.play(get_tree(), "lose", 0.5) # Clicou desligado
+					_skillcheck_cooldown = 0.5
+					SoundManager.play(get_tree(), "lose", 0.4)
 
 	elif minigame_type == "simon":
 		pass
 
 	if fixed_now:
 		fix_station()
+
+func _on_anim_sprite_animation_finished() -> void:
+	if minigame_type == "item" and role == "A":
+		if anim_sprite and anim_sprite.animation == "dispense":
+			mg_state["has_item"] = true
+			if anim_sprite.sprite_frames.has_animation("ready"):
+				anim_sprite.play("ready")
+			update_minigame_ui()
+			SoundManager.play(get_tree(), "powerup", 0.15)
+
+func try_dispenser_pickup(player: Node) -> bool:
+	if status != "BROKEN" or minigame_type != "item" or role != "A":
+		return false
+	if mg_state.get("has_item", false) and player and not player.carried_item:
+		player.carried_item = true
+		mg_state["has_item"] = false
+		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("idle"):
+			anim_sprite.play("idle")
+		update_minigame_ui()
+		SoundManager.play(get_tree(), "powerup", 0.2)
+		return true
+	return false
+
+func try_deliver_item(player: Node) -> bool:
+	if status != "BROKEN" or minigame_type != "item" or role != "B":
+		return false
+	if player and player.carried_item:
+		player.carried_item = false
+		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("receiving"):
+			anim_sprite.play("receiving")
+		fix_station()
+		return true
+	return false
+
+func try_skillcheck_calibrate() -> bool:
+	if status != "BROKEN" or minigame_type != "skillcheck" or role != "B":
+		return false
+	if _skillcheck_cooldown > 0.0:
+		return false
+	
+	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
+		anim_sprite.play("running")
+	
+	var hit = false
+	var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
+	if not centro_nodes.is_empty() and centro_nodes[0].has_method("is_alvo_atingido"):
+		hit = centro_nodes[0].is_alvo_atingido()
+	elif paired_station:
+		var n = paired_station.mg_state.get("needle", 0.0)
+		var s = paired_station.mg_state.get("target_start", 0.0)
+		var e = paired_station.mg_state.get("target_end", 0.0)
+		hit = (n >= s and n <= e)
+	
+	if hit:
+		fix_station()
+		return true
+	else:
+		_skillcheck_cooldown = 0.5
+		SoundManager.play(get_tree(), "lose", 0.4)
+		return false
 
 func receive_minigame_input(input_val: String) -> void:
 	if status != "BROKEN": return
@@ -768,14 +833,19 @@ func update_minigame_ui() -> void:
 		
 		if minigame_type == "item":
 			if role == "A":
-				txt = "Peça pronta!" if mg_state.get("has_item", false) else "Aguardando..."
+				if mg_state.get("has_item", false):
+					txt = "Peça pronta!\n[E] Pegar"
+				elif anim_sprite and anim_sprite.animation == "dispense":
+					txt = "Dispensando..."
+				else:
+					txt = "Aguardando..."
 			else:
-				txt = "Precisa de Peça!"
+				txt = "Precisa de Peça!\n[,] Inserir"
 		elif minigame_type == "skillcheck":
 			if role == "A":
-				txt = "Alvo: %.1f a %.1f\nPonteiro: %.1f" % [mg_state.get("target_start",0), mg_state.get("target_end",0), mg_state.get("needle",0)]
+				txt = "Calibrando..."
 			else:
-				txt = "[BOTAO ATIVO]" if mg_state.get("button_active", false) else "[OFF]"
+				txt = "Gerador Alinhado?\n[,] Sincronizar"
 		elif minigame_type == "simon":
 			var cur_rnd = mg_state.get("current_round", 1)
 			var max_rnd = mg_state.get("max_rounds", 3)
