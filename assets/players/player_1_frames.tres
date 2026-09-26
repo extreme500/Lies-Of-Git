@@ -1,4 +1,4 @@
-﻿[gd_resource type="SpriteFrames" load_steps=15 format=3]
+[gd_resource type="SpriteFrames" load_steps=15 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/players/Player 1/run/sprite_0.png" id="1_tex"]
 [ext_resource type="Texture2D" path="res://assets/players/Player 1/run/sprite_1.png" id="2_tex"]

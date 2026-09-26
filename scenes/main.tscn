@@ -255,6 +255,7 @@ offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
 [node name="Máquina" parent="." instance=ExtResource("2_maquina")]
+z_index = 10
 position = Vector2(640, 160)
 
 [node name="Stations" type="Node2D" parent="."]

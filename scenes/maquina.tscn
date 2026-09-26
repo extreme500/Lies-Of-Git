@@ -13,6 +13,7 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="Máquina" type="Node2D"]
+z_index = 10
 script = ExtResource("1_maquina")
 
 [node name="Visual" type="Node2D" parent="."]
