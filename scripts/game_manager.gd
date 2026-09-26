@@ -71,13 +71,20 @@ func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 	var colors = [Color(1, 0.4, 0.4), Color(0.4, 0.4, 1), Color(0.4, 1, 0.4), Color(1, 1, 0.4), Color(1, 0.4, 1)]
 	colors.shuffle()
 	
-	left_arr.shuffle()
-	right_arr.shuffle()
+	# Só embaralha se nenhuma estação tiver minigame pré-configurado
+	var has_preconfigured = false
+	for st in left_arr:
+		if st.minigame_type != "":
+			has_preconfigured = true
+			break
+	if not has_preconfigured:
+		left_arr.shuffle()
+		right_arr.shuffle()
 	
 	for i in range(count):
 		var left_st = left_arr[i]
 		var right_st = right_arr[i]
-		var m_type = assigned_types[i]
+		var m_type = left_st.minigame_type if left_st.minigame_type != "" else assigned_types[i]
 		
 		var c = colors[i % colors.size()]
 		var l_base = left_st.get_node_or_null("Visual/Base")

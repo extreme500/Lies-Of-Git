@@ -69,7 +69,7 @@ func _physics_process(delta: float) -> void:
 	jump_buffer_timer -= delta
 
 	# Input para entrar/sair do modo de interação
-	var can_interact = (get_active_broken_station() != null) or (nearby_sync_terminal != null) or (nearby_conveyor != null)
+	var can_interact = (get_active_station() != null) or (nearby_sync_terminal != null) or (nearby_conveyor != null)
 	if player_id == 1:
 		if Input.is_key_pressed(KEY_E) and can_interact and not is_repairing:
 			is_repairing = true
@@ -207,8 +207,17 @@ func get_active_broken_station() -> Node:
 			return station
 	return null
 
+func get_active_station() -> Node:
+	var broken = get_active_broken_station()
+	if broken:
+		return broken
+	for station in nearby_stations:
+		if is_instance_valid(station):
+			return station
+	return null
+
 func send_minigame_input(val: String) -> void:
-	var current_station = get_active_broken_station()
+	var current_station = get_active_station()
 	if current_station and current_station.has_method("receive_minigame_input"):
 		# Evitar spam contínuo por is_key_pressed usando _unhandled_key_input seria melhor,
 		# mas aqui filtraremos chamando apenas num tick se precisarmos, ou deixamos a station filtrar.
@@ -239,7 +248,7 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			if nearby_conveyor.try_take_item(player_id, global_position.y):
 				carried_item = true
 
-	var current_station = get_active_broken_station()
+	var current_station = get_active_station()
 	if current_station:
 		if prompt_label:
 			prompt_label.visible = true
@@ -248,7 +257,8 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 				prompt_label.text = "[%s] Sair" % exit_key
 			else:
 				var enter_key = "E" if player_id == 1 else ","
-				prompt_label.text = "[%s] Consertar" % enter_key
+				var act_text = "Consertar" if current_station.has_method("is_broken") and current_station.is_broken() else "Interagir"
+				prompt_label.text = "[%s] %s" % [enter_key, act_text]
 		
 		if holding_interact:
 			is_repairing = true

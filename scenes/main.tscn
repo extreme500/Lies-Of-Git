@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
 [ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
 [ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
+[ext_resource type="Script" path="res://scripts/centro_sc.gd" id="9_centro_sc"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
 texture = ExtResource("7_ui_frame")
@@ -309,6 +310,14 @@ chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
 position = Vector2(640, 640)
+
+[node name="AnguloSC" type="Node2D" parent="Stations" groups=["skillcheck_visual"]]
+z_index = 25
+position = Vector2(210, 135)
+
+[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" groups=["centro_sc", "skillcheck_visual"]]
+z_index = 25
+script = ExtResource("9_centro_sc")
 
 [node name="Player1" parent="." instance=ExtResource("3_player")]
 position = Vector2(100, 630)

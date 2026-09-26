@@ -9,7 +9,7 @@ signal station_fixed(station: RepairStation)
 @export var chamber_id: int = 1
 
 var status: String = "OK" # "OK" ou "BROKEN"
-var minigame_type: String = ""
+@export var minigame_type: String = ""
 var role: String = "" # "A" ou "B"
 var paired_station: RepairStation = null
 var sfx_cooldown: float = 0.0
@@ -78,7 +78,7 @@ func set_interacting(val: bool) -> void:
 
 func update_ui_visibility() -> void:
 	if minigame_type == "skillcheck" and role == "A":
-		_set_skillcheck_visual_visible(status == "BROKEN" and is_interacting)
+		_set_skillcheck_visual_visible(is_interacting)
 
 	if not minigame_ui: return
 	if status != "BROKEN":
@@ -94,12 +94,35 @@ func _exit_tree() -> void:
 	if minigame_type == "skillcheck" and role == "A":
 		_set_skillcheck_visual_visible(false)
 
+func _position_skillcheck_visual_over_station() -> void:
+	if not is_inside_tree(): return
+	var nodes = get_tree().get_nodes_in_group("skillcheck_visual")
+	if nodes.is_empty() and get_tree().current_scene:
+		var angulo = get_tree().current_scene.find_child("AnguloSC", true, false)
+		if angulo: nodes.append(angulo)
+		var centro = get_tree().current_scene.find_child("CentroSC", true, false)
+		if centro and not nodes.has(centro): nodes.append(centro)
+	for n in nodes:
+		if is_instance_valid(n):
+			if n.name == "AnguloSC":
+				n.global_position = global_position + Vector2(0, -60)
+			elif n.name == "CentroSC":
+				var p = n.get_parent()
+				if p and p.name == "AnguloSC":
+					p.global_position = global_position + Vector2(0, -60)
+					n.position = Vector2.ZERO
+				else:
+					n.global_position = global_position + Vector2(0, -60)
+
 func _set_skillcheck_visual_visible(val: bool) -> void:
 	if _skillcheck_visual_active == val:
 		return
 	_skillcheck_visual_active = val
 	if not is_inside_tree():
 		return
+	
+	if val:
+		_position_skillcheck_visual_over_station()
 	
 	var nodes = get_tree().get_nodes_in_group("skillcheck_visual")
 	if nodes.is_empty() and get_tree().current_scene:
@@ -141,6 +164,7 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation) ->
 			mg_state["needle"] = 0.0
 			mg_state["target_start"] = randf_range(0.2, 0.6)
 			mg_state["target_end"] = mg_state["target_start"] + 0.2
+			call_deferred("_position_skillcheck_visual_over_station")
 		else:
 			mg_state["button_active"] = false
 			mg_state["toggle_timer"] = 0.0
