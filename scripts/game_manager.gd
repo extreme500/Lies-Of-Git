@@ -19,19 +19,20 @@ var debug_fail_btn: Button = null
 var debug_msg_label: Label = null
 var _debug_msg_timer: float = 0.0
 
-@onready var hud: CanvasLayer = $HUD
-@onready var timer_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/TimeContainer/TimerLabel
-@onready var integrity_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer/IntegrityLabel
-@onready var integrity_bar: ProgressBar = $HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer/IntegrityBar
-@onready var faults_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/FaultsContainer/FaultsLabel
-@onready var victory_panel: PanelContainer = $HUD/VictoryPanel
-@onready var game_over_panel: PanelContainer = $HUD/GameOverPanel
-@onready var pause_panel: PanelContainer = $HUD/PausePanel
-@onready var pause_diff_label: Label = $HUD/PausePanel/VBox/DifficultyBox/DiffVBox/DiffCurrentLabel
-@onready var pause_music_slider: HSlider = $HUD/PausePanel/VBox/AudioBox/MusicContainer/MusicSlider
-@onready var pause_music_label: Label = $HUD/PausePanel/VBox/AudioBox/MusicContainer/MusicLabel
-@onready var pause_sfx_slider: HSlider = $HUD/PausePanel/VBox/AudioBox/SFXContainer/SFXSlider
-@onready var pause_sfx_label: Label = $HUD/PausePanel/VBox/AudioBox/SFXContainer/SFXLabel
+@onready var hud: CanvasLayer = find_child("HUD", true, false)
+@onready var timer_label: Label = find_child("TimerLabel", true, false)
+@onready var integrity_label: Label = find_child("IntegrityLabel", true, false)
+@onready var integrity_bar: ProgressBar = find_child("IntegrityBar", true, false)
+@onready var faults_label: Label = find_child("FaultsLabel", true, false)
+@onready var victory_panel: PanelContainer = find_child("VictoryPanel", true, false)
+@onready var game_over_panel: PanelContainer = find_child("GameOverPanel", true, false)
+@onready var pause_panel: PanelContainer = find_child("PausePanel", true, false)
+
+var pause_diff_label: Label = null
+var pause_music_slider: HSlider = null
+var pause_music_label: Label = null
+var pause_sfx_slider: HSlider = null
+var pause_sfx_label: Label = null
 
 func _ready() -> void:
 	add_to_group("game_manager")
@@ -39,16 +40,19 @@ func _ready() -> void:
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
 	
-	# Inicia música de gameplay
-	SoundManager.play_music(get_tree(), "res://assets/Ost/loop fundo principal.mp3")
+	# Trilha sonora em loop suave durante a gameplay
+	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
 	
-	# Configurações do Menu de Pause
 	_setup_pause_menu()
 	
 	# Localizar máquina principal de forma segura
 	maquina = get_node_or_null("Máquina") as CentralMaquina
 	if not maquina:
 		maquina = get_node_or_null("Maquina") as CentralMaquina
+	if not maquina:
+		maquina = find_child("Máquina", true, false) as CentralMaquina
+	if not maquina:
+		maquina = find_child("Maquina", true, false) as CentralMaquina
 	if not maquina:
 		for child in get_children():
 			if child is CentralMaquina:
@@ -67,13 +71,25 @@ func _ready() -> void:
 	# Localizar todas as estações de reparo na cena
 	var left_stations: Array = []
 	var right_stations: Array = []
-	for child in get_tree().get_nodes_in_group("repair_stations"):
-		if child is RepairStation:
-			register_station(child)
-			if child.global_position.x < 640:
-				left_stations.append(child)
-			else:
-				right_stations.append(child)
+	
+	# Busca tanto do grupo quanto de $Stations
+	var found_stations: Array = []
+	for node in get_tree().get_nodes_in_group("repair_stations"):
+		if node is RepairStation and not found_stations.has(node):
+			found_stations.append(node)
+	
+	var stations_node = get_node_or_null("Stations")
+	if stations_node:
+		for child in stations_node.get_children():
+			if child is RepairStation and not found_stations.has(child):
+				found_stations.append(child)
+				
+	for st in found_stations:
+		register_station(st)
+		if st.global_position.x < 640:
+			left_stations.append(st)
+		else:
+			right_stations.append(st)
 				
 	setup_minigames(left_stations, right_stations)
 	
@@ -138,9 +154,10 @@ func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 	update_hud()
 
 func register_station(station) -> void:
-	stations.append(station)
-	station.station_broken.connect(_on_station_broken)
-	station.station_fixed.connect(_on_station_fixed)
+	if not stations.has(station):
+		stations.append(station)
+		station.station_broken.connect(_on_station_broken)
+		station.station_fixed.connect(_on_station_fixed)
 
 func _process(delta: float) -> void:
 	if game_finished or get_tree().paused:
@@ -348,7 +365,7 @@ func break_terminal_by_index(idx: int) -> void:
 
 func toggle_machine_pause() -> void:
 	is_machine_paused = not is_machine_paused
-	if maquina:
+	if maquina and maquina.has_method("set_machine_paused"):
 		maquina.set_machine_paused(is_machine_paused)
 	_update_debug_ui()
 	_show_debug_msg("Máquina: " + ("PAUSADA" if is_machine_paused else "RETOMADA"))
@@ -388,7 +405,7 @@ func update_hud() -> void:
 	var minutes: int = int(time_remaining / 60.0)
 	var seconds: int = int(time_remaining) % 60
 	if timer_label:
-		timer_label.text = "FUDEU!  Manter por: %02d:%02d" % [minutes, seconds]
+		timer_label.text = "⏱️ Manter por: %02d:%02d" % [minutes, seconds]
 
 	if maquina:
 		var cur = maquina.current_integrity
@@ -414,7 +431,7 @@ func win_game() -> void:
 	SoundManager.play(get_tree(), "win")
 	if victory_panel:
 		victory_panel.visible = true
-		var summary = victory_panel.get_node_or_null("VBox/SummaryLabel")
+		var summary = victory_panel.find_child("SummaryLabel", true, false)
 		if summary and maquina:
 			summary.text = "Vocês mantiveram a máquina operando!\nIntegridade final: %d%%\nParabéns pela cooperação!" % int(maquina.current_integrity)
 
@@ -424,21 +441,31 @@ func game_over() -> void:
 	get_tree().paused = true
 	if game_over_panel:
 		game_over_panel.visible = true
-		var summary = game_over_panel.get_node_or_null("VBox/SummaryLabel")
+		var summary = game_over_panel.find_child("SummaryLabel", true, false)
 		if summary:
 			var survived = survival_time - time_remaining
 			summary.text = "A máquina entrou em colapso catastrófico!\nVocês sobreviveram por %.1f segundos.\nTrabalhem juntos e tentem novamente!" % survived
 
 func _setup_pause_menu() -> void:
+	if not pause_panel: return
+	
+	pause_diff_label = pause_panel.find_child("DiffCurrentLabel", true, false)
+	pause_music_slider = pause_panel.find_child("MusicSlider", true, false)
+	pause_music_label = pause_panel.find_child("MusicLabel", true, false)
+	pause_sfx_slider = pause_panel.find_child("SFXSlider", true, false)
+	pause_sfx_label = pause_panel.find_child("SFXLabel", true, false)
+	
 	if pause_diff_label:
 		pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
 	if pause_music_slider:
 		pause_music_slider.value = SoundManager.get_music_volume() * 100.0
-		pause_music_slider.value_changed.connect(_on_pause_music_slider_changed)
+		if not pause_music_slider.value_changed.is_connected(_on_pause_music_slider_changed):
+			pause_music_slider.value_changed.connect(_on_pause_music_slider_changed)
 		_update_pause_music_label(pause_music_slider.value)
 	if pause_sfx_slider:
 		pause_sfx_slider.value = SoundManager.get_sfx_volume() * 100.0
-		pause_sfx_slider.value_changed.connect(_on_pause_sfx_slider_changed)
+		if not pause_sfx_slider.value_changed.is_connected(_on_pause_sfx_slider_changed):
+			pause_sfx_slider.value_changed.connect(_on_pause_sfx_slider_changed)
 		_update_pause_sfx_label(pause_sfx_slider.value)
 
 func _on_pause_music_slider_changed(val: float) -> void:
@@ -463,7 +490,6 @@ func toggle_pause() -> void:
 	if pause_panel:
 		pause_panel.visible = new_pause_state
 		if new_pause_state:
-			# Atualiza valores ao abrir pause
 			if pause_diff_label:
 				pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
 			if pause_music_slider:
@@ -488,4 +514,3 @@ func _on_main_menu_button_pressed() -> void:
 	get_tree().paused = false
 	SoundManager.play(get_tree(), "click")
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
-

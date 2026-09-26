@@ -108,8 +108,9 @@ func _on_sfx_slider_changed(val: float) -> void:
 
 func _on_play_btn_pressed() -> void:
 	SoundManager.play(get_tree(), "powerup", 0.1)
-	SoundManager.play_music(get_tree(), "res://assets/Ost/loop fundo principal.mp3")
+	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
 	get_tree().change_scene_to_file("res://scenes/main_v2.tscn")
+
 
 func _on_difficulty_btn_pressed() -> void:
 	SoundManager.play(get_tree(), "click", 0.15)

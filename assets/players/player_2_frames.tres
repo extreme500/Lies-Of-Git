@@ -1,0 +1,161 @@
+[gd_resource type="SpriteFrames" load_steps=33 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/run/sprite_0.png" id="1_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/run/sprite_1.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/run/sprite_2.png" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/run/sprite_3.png" id="4_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_0.png" id="5_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_1.png" id="6_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_2.png" id="7_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_3.png" id="8_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_4.png" id="9_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_5.png" id="10_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_6.png" id="11_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/jump/sprite_7.png" id="12_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_00.png" id="13_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_01.png" id="14_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_02.png" id="15_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_03.png" id="16_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_04.png" id="17_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_05.png" id="18_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_06.png" id="19_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_07.png" id="20_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_08.png" id="21_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/transition/sprite_09.png" id="22_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_00.png" id="23_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_01.png" id="24_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_02.png" id="25_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_03.png" id="26_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_04.png" id="27_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_05.png" id="28_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_06.png" id="29_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_07.png" id="30_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_08.png" id="31_tex"]
+[ext_resource type="Texture2D" path="res://assets/players/Player 2/fix/sprite_09.png" id="32_tex"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tex")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_tex")
+}],
+"loop": true,
+"name": &"run",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_tex")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_tex")
+}],
+"loop": false,
+"name": &"transition",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_tex")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_tex")
+}],
+"loop": true,
+"name": &"fix",
+"speed": 10.0
+}]

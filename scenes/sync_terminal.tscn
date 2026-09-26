@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/sync_terminal.gd" id="1_sync"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_04.png" id="2_frame"]
+[ext_resource type="SpriteFrames" path="res://assets/Terminais/terminal_urgent_button_frames.tres" id="2_btn_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/Terminais/terminal_urgent_screen_frames.tres" id="3_scr_frames"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
 size = Vector2(50, 40)
@@ -9,38 +10,36 @@ size = Vector2(50, 40)
 [node name="SyncTerminal" type="Node2D"]
 script = ExtResource("1_sync")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Screen" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -25)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("3_scr_frames")
+animation = &"idle"
 
-[node name="Base" type="NinePatchRect" parent="Visual"]
-offset_left = -30.0
-offset_top = -20.0
-offset_right = 30.0
-offset_bottom = 20.0
-texture = ExtResource("2_frame")
-patch_margin_left = 6
-patch_margin_top = 6
-patch_margin_right = 6
-patch_margin_bottom = 6
+[node name="P1_Button" type="AnimatedSprite2D" parent="."]
+position = Vector2(-64, 4)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("2_btn_frames")
+animation = &"idle"
 
-[node name="StatusLight" type="ColorRect" parent="Visual"]
-offset_left = -20.0
-offset_top = -15.0
-offset_right = 20.0
-offset_bottom = -5.0
-color = Color(0.2, 0.8, 0.2, 1)
+[node name="P2_Button" type="AnimatedSprite2D" parent="."]
+position = Vector2(64, 4)
+scale = Vector2(-2, 2)
+sprite_frames = ExtResource("2_btn_frames")
+animation = &"idle"
 
 [node name="AlertLabel" type="Label" parent="."]
 visible = false
 offset_left = -80.0
-offset_top = -60.0
+offset_top = -68.0
 offset_right = 80.0
-offset_bottom = -25.0
+offset_bottom = -33.0
 theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 text = "SYNC NECESSÁRIO"
 horizontal_alignment = 1
 
 [node name="P1_Area" type="Area2D" parent="."]
-position = Vector2(-25, 0)
+position = Vector2(-64, 4)
 collision_layer = 4
 collision_mask = 0
 
@@ -48,7 +47,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_zone")
 
 [node name="P2_Area" type="Area2D" parent="."]
-position = Vector2(25, 0)
+position = Vector2(64, 4)
 collision_layer = 4
 collision_mask = 0
 

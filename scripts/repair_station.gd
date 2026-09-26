@@ -6,10 +6,10 @@ signal station_fixed(station: RepairStation)
 
 @export var station_name: String = "Terminal"
 @export var station_type: String = "terminal"
+@export var minigame_type: String = ""
 @export var chamber_id: int = 1
 
 var status: String = "OK" # "OK" ou "BROKEN"
-@export var minigame_type: String = ""
 var role: String = "" # "A" ou "B"
 var paired_station: RepairStation = null
 var sfx_cooldown: float = 0.0
@@ -17,17 +17,24 @@ var is_interacting: bool = false
 var _interact_timer: float = 0.0
 var _skillcheck_visual_active: bool = false
 
+const FRAMES_PWD_REC = preload("res://assets/Terminais/terminal_password_receive_frames.tres")
+const FRAMES_PWD_INS = preload("res://assets/Terminais/terminal_password_insert_frames.tres")
+const FRAMES_ITEM_DISP = preload("res://assets/Terminais/terminal_item_dispenser_frames.tres")
+const FRAMES_ITEM_DELIV = preload("res://assets/Terminais/terminal_item_delivery_frames.tres")
+const FRAMES_SIMON = preload("res://assets/Terminais/terminal_simon_frames.tres")
+const FRAMES_GEN = preload("res://assets/Terminais/terminal_generator_frames.tres")
+const FRAMES_BTN = preload("res://assets/Terminais/terminal_urgent_button_frames.tres")
+const FRAMES_SCR = preload("res://assets/Terminais/terminal_urgent_screen_frames.tres")
+
 # Minigame variables
 var mg_state: Dictionary = {}
 
-const FRAMES_SIMON = preload("res://assets/Terminais/terminal_simon_frames.tres")
-
 @onready var visual_root: Node2D = $Visual
-@onready var warning_icon: Node2D = $WarningIcon
-@onready var status_light: ColorRect = $Visual/StatusLight
+@onready var anim_sprite: AnimatedSprite2D = $Visual/AnimatedSprite2D if has_node("Visual/AnimatedSprite2D") else null
 @onready var base_rect: NinePatchRect = $Visual/Base if has_node("Visual/Base") else null
 @onready var panel_border: NinePatchRect = $Visual/PanelBorder if has_node("Visual/PanelBorder") else null
-@onready var anim_sprite: AnimatedSprite2D = $Visual/AnimatedSprite2D if has_node("Visual/AnimatedSprite2D") else null
+@onready var warning_icon: Node2D = $WarningIcon
+@onready var status_light: ColorRect = $Visual/StatusLight
 @onready var progress_bar: ProgressBar = $ProgressBar
 @onready var sparks_particles: CPUParticles2D = $SparksParticles
 @onready var name_label: Label = $NameLabel
@@ -38,7 +45,9 @@ const FRAMES_SIMON = preload("res://assets/Terminais/terminal_simon_frames.tres"
 var _arrow_textures_cache: Dictionary = {}
 
 func _ready() -> void:
-	if name_label: name_label.text = station_name
+	if name_label: 
+		name_label.text = station_name
+		name_label.hide()
 	if progress_bar: progress_bar.hide()
 	if warning_icon: warning_icon.hide()
 	if sparks_particles: sparks_particles.emitting = false
@@ -70,6 +79,8 @@ func _ready() -> void:
 	update_terminal_frames()
 	update_status_visual()
 	call_deferred("snap_to_surface")
+	if minigame_type == "skillcheck" and role == "A":
+		_set_skillcheck_visual_visible(false)
 
 func snap_to_surface() -> void:
 	if not is_inside_tree() or not get_world_2d():
@@ -92,6 +103,9 @@ func set_interacting(val: bool) -> void:
 	else:
 		_interact_timer = 0.3
 	update_ui_visibility()
+	if minigame_type == "skillcheck" and role == "A":
+		if val:
+			_position_skillcheck_visual_over_station()
 
 func update_ui_visibility() -> void:
 	if minigame_type == "skillcheck" and role == "A":
@@ -166,7 +180,8 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_
 	mg_state.clear()
 	if minigame_type == "password":
 		if role == "A":
-			mg_state["password"] = generate_password(GameSettings.get_password_length())
+			var pwd_len = GameSettings.get_password_length()
+			mg_state["password"] = generate_password(pwd_len)
 		else:
 			mg_state["input_idx"] = 0
 			mg_state["user_inputs"] = []
@@ -187,67 +202,138 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_
 			mg_state["toggle_timer"] = 0.0
 	elif minigame_type == "simon":
 		var iters = n_iterations if n_iterations > 0 else GameSettings.get_simon_iterations()
-		mg_state["max_rounds"] = iters
-		mg_state["current_round"] = 1
-		mg_state["turn"] = "A"
-		mg_state["input_idx"] = 0
-		mg_state["full_sequence"] = []
-		mg_state["blink_timer"] = 0.55
-		mg_state["blink_state"] = true
-		mg_state["flash_queue"] = []
-		mg_state["flash_timer"] = 0.0
+		init_simon(iters)
 
 	update_terminal_frames()
 	update_minigame_ui()
 
 func update_terminal_frames() -> void:
-	if not anim_sprite and visual_root:
-		anim_sprite = visual_root.get_node_or_null("AnimatedSprite2D")
+	if not anim_sprite:
+		anim_sprite = get_node_or_null("Visual/AnimatedSprite2D") as AnimatedSprite2D
 	if not anim_sprite:
 		return
 	
-	if minigame_type == "simon":
-		anim_sprite.sprite_frames = FRAMES_SIMON
-		anim_sprite.position = Vector2(0, 0)
-		anim_sprite.scale = Vector2(2, 2)
-		anim_sprite.visible = true
+	var sprite_y_offset: float = -2.0
+	
+	match minigame_type:
+		"password":
+			if role == "A":
+				anim_sprite.sprite_frames = FRAMES_PWD_REC
+			else:
+				anim_sprite.sprite_frames = FRAMES_PWD_INS
+			sprite_y_offset = -4.0
+		"item":
+			if role == "A":
+				anim_sprite.sprite_frames = FRAMES_ITEM_DISP
+				sprite_y_offset = 2.0
+			else:
+				anim_sprite.sprite_frames = FRAMES_ITEM_DELIV
+				sprite_y_offset = 3.0
+		"skillcheck":
+			if role == "A":
+				anim_sprite.sprite_frames = FRAMES_GEN
+				sprite_y_offset = -5.0
+			else:
+				anim_sprite.sprite_frames = FRAMES_BTN
+				sprite_y_offset = 2.0
+		"simon":
+			anim_sprite.sprite_frames = FRAMES_SIMON
+			sprite_y_offset = 4.0
+		_:
+			if station_type == "cabo":
+				anim_sprite.sprite_frames = FRAMES_SCR
+				sprite_y_offset = -8.0
+			elif station_type == "valvula":
+				anim_sprite.sprite_frames = FRAMES_GEN
+				sprite_y_offset = -5.0
+			elif station_type == "bobina":
+				anim_sprite.sprite_frames = FRAMES_BTN
+				sprite_y_offset = 2.0
+			else:
+				anim_sprite.sprite_frames = FRAMES_PWD_REC
+				sprite_y_offset = -4.0
+
+	anim_sprite.position = Vector2(0, sprite_y_offset)
+
+	if anim_sprite.sprite_frames:
 		if base_rect: base_rect.visible = false
 		if panel_border: panel_border.visible = false
 		if status_light: status_light.visible = false
+		anim_sprite.visible = true
 		update_terminal_animation()
-	else:
-		if base_rect: base_rect.visible = true
-		if panel_border: panel_border.visible = true
-		if status_light: status_light.visible = true
-		anim_sprite.visible = false
 
 func update_terminal_animation() -> void:
 	if not anim_sprite or not anim_sprite.sprite_frames:
 		return
 	
-	if minigame_type == "simon":
-		if status == "BROKEN":
-			if mg_state.get("flash_timer", 0.0) > 0.0:
-				return
-			
-			if mg_state.get("turn") == role:
-				var seq: Array = mg_state.get("full_sequence", [])
-				var round_idx = mg_state.get("current_round", 1) - 1
-				var target_color = ""
-				if round_idx >= 0 and round_idx < seq.size():
-					target_color = seq[round_idx].to_lower()
+	match minigame_type:
+		"password":
+			if status == "BROKEN":
+				if anim_sprite.sprite_frames.has_animation("broken"):
+					anim_sprite.play("broken")
+			else:
+				if anim_sprite.sprite_frames.has_animation("idle"):
+					anim_sprite.play("idle")
+		
+		"item":
+			if role == "A":
+				if mg_state.get("has_item", false):
+					if anim_sprite.sprite_frames.has_animation("ready"):
+						anim_sprite.play("ready")
+				else:
+					if anim_sprite.sprite_frames.has_animation("idle"):
+						anim_sprite.play("idle")
+			else:
+				if status == "BROKEN":
+					if anim_sprite.sprite_frames.has_animation("idle"):
+						anim_sprite.play("idle")
+				else:
+					if anim_sprite.sprite_frames.has_animation("success"):
+						anim_sprite.play("success")
+		
+		"skillcheck":
+			if role == "A":
+				if status == "BROKEN" or is_interacting:
+					if anim_sprite.sprite_frames.has_animation("running"):
+						anim_sprite.play("running")
+				else:
+					if anim_sprite.sprite_frames.has_animation("idle"):
+						anim_sprite.play("idle")
+			else:
+				if mg_state.get("button_active", false):
+					if anim_sprite.sprite_frames.has_animation("active"):
+						anim_sprite.play("active")
+				else:
+					if anim_sprite.sprite_frames.has_animation("idle"):
+						anim_sprite.play("idle")
+		
+		"simon":
+			if status == "BROKEN":
+				if mg_state.get("flash_timer", 0.0) > 0.0:
+					return
 				
-				if mg_state.get("blink_state", true) and target_color != "":
-					if anim_sprite.animation != target_color:
-						anim_sprite.play(target_color)
+				if mg_state.get("turn") == role:
+					var seq: Array = mg_state.get("full_sequence", [])
+					var round_idx = mg_state.get("current_round", 1) - 1
+					var target_color = ""
+					if round_idx >= 0 and round_idx < seq.size():
+						target_color = seq[round_idx].to_lower()
+					
+					if mg_state.get("blink_state", true) and target_color != "":
+						if anim_sprite.animation != target_color:
+							anim_sprite.play(target_color)
+					else:
+						if anim_sprite.animation != "idle":
+							anim_sprite.play("idle")
 				else:
 					if anim_sprite.animation != "idle":
 						anim_sprite.play("idle")
 			else:
-				if anim_sprite.animation != "idle":
+				if anim_sprite.sprite_frames.has_animation("idle"):
 					anim_sprite.play("idle")
-		else:
-			if anim_sprite.animation != "idle":
+		
+		_:
+			if anim_sprite.sprite_frames.has_animation("idle"):
 				anim_sprite.play("idle")
 
 func init_simon(n_iterations: int = 3) -> void:
@@ -382,6 +468,7 @@ func process_minigame(delta: float) -> void:
 			if mg_state["toggle_timer"] <= 0:
 				mg_state["button_active"] = not mg_state["button_active"]
 				mg_state["toggle_timer"] = randf_range(1.0, 3.0)
+				update_terminal_animation()
 				update_minigame_ui()
 	elif minigame_type == "simon":
 		var ft = mg_state.get("flash_timer", 0.0)
@@ -417,11 +504,8 @@ func repair_tick(delta: float, player: Node = null) -> void:
 	
 	if minigame_type == "password":
 		if role == "A":
-			# Apenas lê a senha
 			pass 
 		elif role == "B":
-			# No caso B, a senha é inserida pelas setas/WASD pelo jogador B
-			# Isso requer detecção de input específica no B, que o player script fará
 			pass
 			
 	elif minigame_type == "item":
@@ -430,16 +514,21 @@ func repair_tick(delta: float, player: Node = null) -> void:
 			if mg_state.get("has_item", false) and player:
 				player.carried_item = true
 				mg_state["has_item"] = false
+				update_terminal_animation()
 				update_minigame_ui()
 				SoundManager.play(get_tree(), "powerup", 0.3)
 		elif role == "B":
 			if player and player.carried_item:
 				player.carried_item = false
+				if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("receiving"):
+					anim_sprite.play("receiving")
 				fixed_now = true
 
 	elif minigame_type == "skillcheck":
 		if role == "B":
 			# Tenta clicar no botão
+			if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("pressing"):
+				anim_sprite.play("pressing")
 			if mg_state.get("button_active", false):
 				var hit = false
 				var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
@@ -458,7 +547,6 @@ func repair_tick(delta: float, player: Node = null) -> void:
 				SoundManager.play(get_tree(), "lose", 0.5) # Clicou desligado
 
 	elif minigame_type == "simon":
-		# Simon says: O input real será tratado pelo script do player chamando um método específico
 		pass
 
 	if fixed_now:
@@ -564,7 +652,6 @@ func receive_minigame_input(input_val: String) -> void:
 				mg_state["input_idx"] = 0
 		
 		update_minigame_ui()
-
 
 func fix_station() -> void:
 	status = "OK"

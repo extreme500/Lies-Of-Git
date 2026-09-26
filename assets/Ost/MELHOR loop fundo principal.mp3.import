@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b065q22cj44c3"
+path="res://.godot/imported/MELHOR loop fundo principal.mp3-8860017ea8d67ae6e03ac39be1cca1cc.mp3str"
+
+[deps]
+
+source_file="res://assets/Ost/MELHOR loop fundo principal.mp3"
+dest_files=["res://.godot/imported/MELHOR loop fundo principal.mp3-8860017ea8d67ae6e03ac39be1cca1cc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

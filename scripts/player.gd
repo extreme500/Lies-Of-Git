@@ -11,6 +11,40 @@ class_name CoopPlayer2D
 @export var coyote_time: float = 0.12
 @export var jump_buffer_time: float = 0.12
 
+# ==============================================================================
+# 🎮 CONFIGURAÇÃO DE ANIMAÇÕES DOS ROBÔS (PLAYER 1 & PLAYER 2)
+# ==============================================================================
+@export_group("Animation Settings")
+## Escala visual do sprite (o pixel art original é 32x32)
+@export var sprite_scale: Vector2 = Vector2(2.0, 2.0)
+## Deslocamento do sprite para o Player 1 (Azul) - Pés alinhados perfeitamente com o chão
+@export var sprite_offset_p1: Vector2 = Vector2(0, 8)
+## Deslocamento do sprite para o Player 2 (Laranja) - Pés alinhados com o chão
+@export var sprite_offset_p2: Vector2 = Vector2(0, -2)
+
+@export_subgroup("Animation Speeds (FPS)")
+## Velocidade (frames por segundo) da animação Idle (parado)
+@export var idle_fps: float = 4.0
+## Velocidade da animação Run (correndo)
+@export var run_fps: float = 8.0
+## Velocidade da animação Fix (consertando a estação)
+@export var fix_fps: float = 8.0
+## Velocidade da animação de Transição (Run -> Fix) do Player 2
+@export var transition_fps: float = 12.0
+## Velocidade da animação de Pulo
+@export var jump_fps: float = 10.0
+
+@export_subgroup("Jump Frame Configuration")
+## Se true, usa controle inteligente de frames de pulo (impulso, no ar, descida)
+@export var enable_jump_air_control: bool = true
+## Frame que representa o robô NO AR ("on air" / ápice do pulo)
+## Dica: Player 1 = 3 (ou entre 2 e 4) | Player 2 = 4 (ou entre 4 e 6)
+@export var jump_air_frame: int = 3
+## Frame de impulso / subida inicial do pulo
+@export var jump_takeoff_frame: int = 1
+## Frame de descida / queda livre
+@export var jump_fall_frame: int = 4
+
 var gravity: float = 1300.0
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
@@ -20,18 +54,25 @@ var facing_direction: float = 1.0
 var is_repairing: bool = false
 var carried_item: bool = false
 var _password_key_held: bool = false  # Evita múltiplos inputs enquanto tecla está pressionada
+var is_transitioning_to_fix: bool = false
 
 var nearby_stations: Array[Node] = []
 var nearby_sync_terminal: Node = null
 var nearby_conveyor: Node = null
 
+var frames_p1: SpriteFrames = preload("res://assets/players/player_1_frames.tres")
+var frames_p2: SpriteFrames = preload("res://assets/players/player_2_frames.tres")
+
 @onready var visual_root: Node2D = $Visual
-@onready var body_rect: ColorRect = $Visual/Body
-@onready var bandana_rect: ColorRect = $Visual/Bandana
+@onready var animated_sprite: AnimatedSprite2D = $Visual/AnimatedSprite2D
+@onready var body_rect: ColorRect = get_node_or_null("Visual/Body")
+@onready var bandana_rect: ColorRect = get_node_or_null("Visual/Bandana")
 @onready var carried_item_rect: ColorRect = $Visual/CarriedItem
 @onready var trail_particles: CPUParticles2D = $TrailParticles
 @onready var prompt_label: Label = $PromptLabel
 @onready var repair_sparks: CPUParticles2D = $RepairSparks
+
+var fixing_audio: AudioStreamPlayer2D = null
 
 func _ready() -> void:
 	spawn_position = global_position
@@ -39,20 +80,43 @@ func _ready() -> void:
 	apply_player_identity()
 	if prompt_label:
 		prompt_label.visible = false
+	if animated_sprite:
+		animated_sprite.animation_finished.connect(_on_animated_sprite_animation_finished)
+	
+	# Efeito sonoro de conserto/interação contínua ("Novos/Fixing.ogg") - bem baixinho
+	fixing_audio = AudioStreamPlayer2D.new()
+	fixing_audio.name = "FixingAudio"
+	var fix_stream = load("res://sfx/Novos/Fixing.ogg")
+	if fix_stream:
+		fixing_audio.stream = fix_stream
+	fixing_audio.volume_db = -18.0
+	fixing_audio.finished.connect(func():
+		if is_repairing and is_instance_valid(fixing_audio):
+			fixing_audio.pitch_scale = randf_range(0.92, 1.08)
+			fixing_audio.play()
+	)
+	add_child(fixing_audio)
 
 func apply_player_identity() -> void:
-	if visual_root == null:
+	if animated_sprite == null:
 		return
+	
 	if player_id == 1:
-		if body_rect:
-			body_rect.color = Color(0.25, 0.65, 0.95, 1.0) # Azul elétrico P1
-		if bandana_rect:
-			bandana_rect.color = Color(0.95, 0.85, 0.2, 1.0) # Faixa Amarela
+		# Player 1 = Robô Azul
+		animated_sprite.sprite_frames = frames_p1
+		animated_sprite.position = sprite_offset_p1
 	else:
-		if body_rect:
-			body_rect.color = Color(0.95, 0.45, 0.2, 1.0) # Laranja mecânico P2
-		if bandana_rect:
-			bandana_rect.color = Color(0.2, 0.85, 0.4, 1.0) # Faixa Verde
+		# Player 2 = Robô Laranja
+		animated_sprite.sprite_frames = frames_p2
+		animated_sprite.position = sprite_offset_p2
+		# Ajusta valores padrão para os 8 frames de pulo do Player 2 se estiverem nos padrões
+		if jump_air_frame == 3:
+			jump_air_frame = 4
+		if jump_fall_frame == 4:
+			jump_fall_frame = 6
+	
+	animated_sprite.scale = sprite_scale
+	animated_sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
 	# Gravidade
@@ -129,6 +193,9 @@ func _physics_process(delta: float) -> void:
 
 	# Interação com estação de reparo
 	process_interaction(is_repairing, delta)
+	
+	# Atualiza o estado da animação dos sprites (Idle, Run, Jump, Fix, Transition)
+	update_animation_state(delta)
 	
 	# Inputs de minigame (password: só aceita um input por pressionamento)
 	if is_repairing:
@@ -277,6 +344,9 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = true
 			if repair_sparks:
 				repair_sparks.emitting = true
+			if fixing_audio and not fixing_audio.playing:
+				fixing_audio.pitch_scale = randf_range(0.95, 1.05)
+				fixing_audio.play()
 			if current_station.has_method("set_interacting"):
 				current_station.set_interacting(true)
 			current_station.repair_tick(delta, self)
@@ -285,12 +355,16 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = false
 			if repair_sparks:
 				repair_sparks.emitting = false
+			if fixing_audio and fixing_audio.playing:
+				fixing_audio.stop()
 			if current_station.has_method("set_interacting"):
 				current_station.set_interacting(false)
 	elif nearby_conveyor:
 		is_repairing = false
 		if repair_sparks:
 			repair_sparks.emitting = false
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
 		if prompt_label:
 			if player_id == 1:
 				if carried_item:
@@ -310,6 +384,8 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			prompt_label.visible = false
 		if repair_sparks:
 			repair_sparks.emitting = false
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
 
 func apply_squash_stretch(target_scale: Vector2) -> void:
 	if visual_root == null:
@@ -346,3 +422,84 @@ func _on_interaction_area_exited(area: Area2D) -> void:
 		if station.has_method("set_interacting"):
 			station.set_interacting(false)
 		nearby_stations.erase(station)
+		if fixing_audio and fixing_audio.playing:
+			fixing_audio.stop()
+
+# ==============================================================================
+# 🎬 SISTEMA DE ANIMAÇÃO DOS ROBÔS
+# ==============================================================================
+func update_animation_state(_delta: float) -> void:
+	if animated_sprite == null:
+		return
+
+	if is_repairing:
+		if player_id == 2:
+			# Player 2: Para ir de walking/run para fix, precisa passar por transition
+			if is_transitioning_to_fix:
+				# Continua executando a animação de transição até o fim
+				pass
+			elif animated_sprite.animation != "fix":
+				# Iniciando conserto: toca a animação de transição primeiro!
+				is_transitioning_to_fix = true
+				play_anim("transition", transition_fps)
+		else:
+			# Player 1: Transiciona diretamente para o fix
+			play_anim("fix", fix_fps)
+	else:
+		# Não está consertando: cancela transição caso estivesse no meio
+		is_transitioning_to_fix = false
+		
+		if not is_on_floor():
+			# No ar / pulando
+			if enable_jump_air_control:
+				if velocity.y < -120.0:
+					# Subida / Decolagem
+					play_jump_frame(jump_takeoff_frame)
+				elif abs(velocity.y) <= 120.0:
+					# Ápice / No ar ("on air")
+					play_jump_frame(jump_air_frame)
+				else:
+					# Queda / Descida
+					play_jump_frame(jump_fall_frame)
+			else:
+				play_anim("jump", jump_fps)
+		else:
+			# No chão
+			if abs(velocity.x) > 10.0:
+				play_anim("run", run_fps)
+			else:
+				play_anim("idle", idle_fps)
+
+func play_anim(anim_name: String, speed_fps: float) -> void:
+	if animated_sprite == null or animated_sprite.sprite_frames == null:
+		return
+	if not animated_sprite.sprite_frames.has_animation(anim_name):
+		return
+	
+	if animated_sprite.animation != anim_name or not animated_sprite.is_playing():
+		animated_sprite.play(anim_name)
+	
+	# Ajusta a velocidade de reprodução baseada no FPS configurado
+	var default_speed = animated_sprite.sprite_frames.get_animation_speed(anim_name)
+	if default_speed > 0.0:
+		animated_sprite.speed_scale = speed_fps / default_speed
+
+func play_jump_frame(frame_idx: int) -> void:
+	if animated_sprite == null or animated_sprite.sprite_frames == null:
+		return
+	if not animated_sprite.sprite_frames.has_animation("jump"):
+		return
+	
+	if animated_sprite.animation != "jump":
+		animated_sprite.play("jump")
+	
+	animated_sprite.pause()
+	var total_frames = animated_sprite.sprite_frames.get_frame_count("jump")
+	animated_sprite.frame = clamp(frame_idx, 0, total_frames - 1)
+
+func _on_animated_sprite_animation_finished() -> void:
+	# Quando a animação de transition do Player 2 chega ao final, começa a animação de fix
+	if is_transitioning_to_fix:
+		is_transitioning_to_fix = false
+		if is_repairing:
+			play_anim("fix", fix_fps)
