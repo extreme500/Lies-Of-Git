@@ -30,6 +30,12 @@ var current_bg_index: int = 0
 @onready var victory_panel: PanelContainer = find_child("VictoryPanel", true, false)
 @onready var game_over_panel: PanelContainer = find_child("GameOverPanel", true, false)
 @onready var pause_panel: PanelContainer = find_child("PausePanel", true, false)
+@onready var tutorial_briefing_panel: PanelContainer = find_child("TutorialBriefingPanel", true, false)
+
+var tutorial_phase: int = 0
+var _current_tutorial_explanation: String = ""
+var _tutorial_urgent_started: bool = false
+
 
 var pause_diff_label: Label = null
 var pause_music_slider: HSlider = null
@@ -100,9 +106,23 @@ func _ready() -> void:
 	
 	var sync_terminals = get_tree().get_nodes_in_group("sync_terminals")
 	for sync in sync_terminals:
-		sync.sync_exploded.connect(game_over)
+		sync.sync_exploded.connect(func():
+			if not GameSettings.is_tutorial_mode:
+				game_over("urgent_timeout")
+		)
+		if sync.has_signal("sync_resolved"):
+			sync.sync_resolved.connect(_on_sync_resolved)
 		if sync.has_method("set_paused"):
 			sync.set_paused(not auto_failures_enabled)
+	
+	if GameSettings.is_tutorial_mode:
+		auto_failures_enabled = false
+		time_remaining = 999999.0
+		for sync in sync_terminals:
+			if sync.has_method("set_paused"):
+				sync.set_paused(true)
+		call_deferred("start_tutorial_phase", 1)
+
 
 func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 	var pairs: Array = []
@@ -170,18 +190,20 @@ func _process(delta: float) -> void:
 	if game_finished or get_tree().paused:
 		return
 
-	# Contagem regressiva de sobrevivência
-	time_remaining -= delta
-	if time_remaining <= 0.0:
-		time_remaining = 0.0
-		win_game()
+	if not GameSettings.is_tutorial_mode:
+		# Contagem regressiva de sobrevivência
+		time_remaining -= delta
+		if time_remaining <= 0.0:
+			time_remaining = 0.0
+			win_game()
 
-	# Gerador de falhas periódicas (se ativado pelo debug)
-	if auto_failures_enabled:
-		failure_timer -= delta
-		if failure_timer <= 0.0:
-			trigger_random_failure()
-			failure_timer = randf_range(min_failure_interval, max_failure_interval)
+		# Gerador de falhas periódicas (se ativado pelo debug)
+		if auto_failures_enabled:
+			failure_timer -= delta
+			if failure_timer <= 0.0:
+				trigger_random_failure()
+				failure_timer = randf_range(min_failure_interval, max_failure_interval)
+
 
 	if _debug_msg_timer > 0.0:
 		_debug_msg_timer -= delta
@@ -629,22 +651,30 @@ func _on_station_broken(_station) -> void:
 		maquina.register_broken_station()
 	update_hud()
 
-func _on_station_fixed(_station) -> void:
+func _on_station_fixed(station) -> void:
 	if maquina:
 		maquina.register_fixed_station()
 	update_hud()
+	
+	if GameSettings.is_tutorial_mode and not game_finished:
+		_check_tutorial_progression(station)
 
 func _on_maquina_integrity_changed(_new_integrity: float) -> void:
 	update_hud()
 
 func _on_maquina_exploded() -> void:
-	game_over()
+	if not GameSettings.is_tutorial_mode:
+		game_over()
 
 func update_hud() -> void:
-	var minutes: int = int(time_remaining / 60.0)
-	var seconds: int = int(time_remaining) % 60
-	if timer_label:
-		timer_label.text = "⏱️ Manter por: %02d:%02d" % [minutes, seconds]
+	if GameSettings.is_tutorial_mode:
+		if timer_label:
+			timer_label.text = "TUTORIAL - ETAPA %d/3" % tutorial_phase
+	else:
+		var minutes: int = int(time_remaining / 60.0)
+		var seconds: int = int(time_remaining) % 60
+		if timer_label:
+			timer_label.text = "Tempo de Operação: %02d:%02d" % [minutes, seconds]
 
 	if maquina:
 		var cur = maquina.current_integrity
@@ -661,29 +691,210 @@ func update_hud() -> void:
 				integrity_bar.modulate = Color(1.0, 0.25, 0.25, 1.0)
 		
 		if faults_label:
-			faults_label.text = "⚠️ Defeitos Ativos: %d" % maquina.broken_stations_count
+			faults_label.text = "Defeitos Ativos: %d" % maquina.broken_stations_count
 
 func win_game() -> void:
 	if game_finished: return
 	game_finished = true
 	get_tree().paused = true
 	SoundManager.play(get_tree(), "win")
+	
+	# Interrompe qualquer áudio de reator ativo
+	for sync in get_tree().get_nodes_in_group("sync_terminals"):
+		if sync.has_method("stop_reator_audio"):
+			sync.stop_reator_audio()
+			
 	if victory_panel:
 		victory_panel.visible = true
+		var title_node = victory_panel.find_child("Title", true, false)
+		var subtitle_node = victory_panel.find_child("Subtitle", true, false)
 		var summary = victory_panel.find_child("SummaryLabel", true, false)
-		if summary and maquina:
-			summary.text = "Vocês mantiveram a máquina operando!\nIntegridade final: %d%%\nParabéns pela cooperação!" % int(maquina.current_integrity)
+		var restart_btn = victory_panel.find_child("RestartBtn", true, false)
+		
+		var font_res = load("res://assets/Xeriko-R9R1A.otf") if ResourceLoader.exists("res://assets/Xeriko-R9R1A.otf") else null
+		if title_node:
+			title_node.text = "PARABÉNS"
+			if font_res:
+				title_node.add_theme_font_override("font", font_res)
+				
+		if GameSettings.is_tutorial_mode:
+			if subtitle_node: subtitle_node.text = "TREINAMENTO CONCLUÍDO COM SUCESSO"
+			if summary:
+				summary.text = "Todos os protocolos de reparo foram dominados com êxito!\nA equipe está pronta para a operação real."
+			if restart_btn: restart_btn.text = "REPETIR TUTORIAL (R)"
+		else:
+			if subtitle_node: subtitle_node.text = "SISTEMA ESTABILIZADO COM SUCESSO"
+			if summary and maquina:
+				summary.text = "A máquina suportou a sobrecarga graças à sua cooperação!\nIntegridade final preservada: %d%%\nParabéns pelo excelente trabalho em equipe!" % int(maquina.current_integrity)
+			if restart_btn: restart_btn.text = "JOGAR NOVAMENTE (R)"
 
-func game_over() -> void:
+func game_over(reason: String = "") -> void:
 	if game_finished: return
 	game_finished = true
 	get_tree().paused = true
+	
+	# Som retrô de explosão
+	SoundManager.play(get_tree(), "explosion", 0.05, -5.0)
+	
+	# Interrompe qualquer áudio de reator ativo
+	for sync in get_tree().get_nodes_in_group("sync_terminals"):
+		if sync.has_method("stop_reator_audio"):
+			sync.stop_reator_audio()
+			
 	if game_over_panel:
 		game_over_panel.visible = true
+		var title_node = game_over_panel.find_child("Title", true, false)
+		var subtitle_node = game_over_panel.find_child("Subtitle", true, false)
+		var cause_node = game_over_panel.find_child("CriticalCauseLabel", true, false)
 		var summary = game_over_panel.find_child("SummaryLabel", true, false)
-		if summary:
-			var survived = survival_time - time_remaining
-			summary.text = "A máquina entrou em colapso catastrófico!\nVocês sobreviveram por %.1f segundos.\nTrabalhem juntos e tentem novamente!" % survived
+		
+		var font_res = load("res://assets/Xeriko-R9R1A.otf") if ResourceLoader.exists("res://assets/Xeriko-R9R1A.otf") else null
+		if title_node:
+			title_node.text = "DERROTA"
+			if font_res:
+				title_node.add_theme_font_override("font", font_res)
+				
+		var survived_sec = survival_time - time_remaining
+		var survived_m = int(survived_sec / 60.0)
+		var survived_s = int(survived_sec) % 60
+		
+		if reason == "urgent_timeout":
+			if subtitle_node: subtitle_node.text = "A FALHA URGENTE NÃO FOI SOLUCIONADA A TEMPO"
+			if cause_node: cause_node.text = "Falha crítica: O reator sobrecarregou e detonou a instalação."
+			if summary:
+				summary.text = "O alarme de emergência expirou sem sincronização dos botões.\nTempo resistido: %02d:%02d" % [survived_m, survived_s]
+		else:
+			if subtitle_node: subtitle_node.text = "A MÁQUINA EXPLODIU"
+			if cause_node:
+				if maquina and maquina.last_damage_cause != "":
+					cause_node.text = "Falha crítica: %s" % maquina.last_damage_cause
+				else:
+					cause_node.text = "Falha crítica: Desgaste estrutural extremo por falhas operacionais acumuladas."
+			if summary:
+				summary.text = "A integridade da fábrica foi reduzida a zero.\nTempo resistido: %02d:%02d" % [survived_m, survived_s]
+
+func start_tutorial_phase(phase: int) -> void:
+	tutorial_phase = phase
+	_tutorial_urgent_started = false
+	
+	if maquina:
+		maquina.current_integrity = 100.0
+		maquina.update_visuals()
+	
+	match phase:
+		1:
+			_current_tutorial_explanation = (
+				"A máquina está com defeito no setor de suprimentos!\n\n" +
+				"Dever do Jogador 1 (Esquerda):\n" +
+				"• Vá até o Dispensador de Peças e pressione [E] para pegar a peça.\n" +
+				"• Suba até a esteira transportadora e jogue a peça com cuidado.\n" +
+				"• ATENÇÃO: Se a peça cair no triturador de descarte, ela é destruída e a máquina sofre dano!\n\n" +
+				"Dever do Jogador 2 (Direita):\n" +
+				"• Aguarde a peça chegar na esteira do seu lado e pegue-a com [,].\n" +
+				"• Leve a peça até a Entrada de Peças e pressione [,] para inseri-la.\n\n" +
+				"Consertem o terminal para concluir esta etapa."
+			)
+			_show_tutorial_briefing("ETAPA 1/3: ENTREGA DE PEÇAS", _current_tutorial_explanation)
+		2:
+			_current_tutorial_explanation = (
+				"Dois subsistemas críticos entraram em colapso simultâneo!\n\n" +
+				"1. GERADORES DE FORÇA (SKILLCHECK):\n" +
+				"• Ambos os jogadores devem se posicionar nos seus respectivos geradores.\n" +
+				"• Jogador 1 (Esquerda): Segure [E] no gerador para manter o dial ativo.\n" +
+				"• Jogador 2 (Direita): Ao interagir [,], use o pulo [Seta Cima] para manter a barra na zona verde. Pressione [,] no momento exato em que a agulha atingir o alvo do dial para calibrar.\n\n" +
+				"2. SISTEMA DE SENHA:\n" +
+				"• Jogador 1 (Esquerda): Vá ao Receptor de Código [E] para visualizar a sequência de setas.\n" +
+				"• Jogador 2 (Direita): Vá ao Terminal de Inserção [,] e digite as setas na ordem correta usando as teclas de direção.\n\n" +
+				"Reparem ambos os sistemas para avançar."
+			)
+			_show_tutorial_briefing("ETAPA 2/3: CALIBRAÇÃO & SENHA", _current_tutorial_explanation)
+		3:
+			_current_tutorial_explanation = (
+				"Fase final do treinamento cooperativo!\n\n" +
+				"1. SIMON SAYS:\n" +
+				"• O terminal piscará uma sequência de cores (Cima: Vermelho, Direita: Azul, Baixo: Amarelo, Esquerda: Verde).\n" +
+				"• Vocês alternam turnos inserindo a sequência com as teclas de direção.\n" +
+				"• Completar 2 iterações resolverá o terminal.\n\n" +
+				"2. ALERTA URGENTE DO REATOR:\n" +
+				"• Assim que a 2ª iteração do Simon Says for concluída, o alarme de emergência urgente será disparado!\n" +
+				"• O som do reator começará a tocar em alerta contínuo.\n" +
+				"• Ambos os jogadores devem correr imediatamente aos botões na parede e segurar a interação juntos para estabilizar o reator!\n\n" +
+				"Solucionem o Simon Says e desativem o alerta urgente para finalizar o treinamento."
+			)
+			_show_tutorial_briefing("ETAPA 3/3: SIMON SAYS & ALERTA URGENTE", _current_tutorial_explanation)
+
+func _show_tutorial_briefing(stage_title: String, desc: String) -> void:
+	if tutorial_briefing_panel:
+		var title_label = tutorial_briefing_panel.find_child("StageTitle", true, false)
+		var desc_label = tutorial_briefing_panel.find_child("StageDesc", true, false)
+		var font_res = load("res://assets/Xeriko-R9R1A.otf") if ResourceLoader.exists("res://assets/Xeriko-R9R1A.otf") else null
+		if title_label:
+			title_label.text = stage_title
+			if font_res:
+				title_label.add_theme_font_override("font", font_res)
+		if desc_label: desc_label.text = desc
+		tutorial_briefing_panel.visible = true
+		get_tree().paused = true
+
+func _on_start_tutorial_stage_pressed() -> void:
+	if tutorial_briefing_panel:
+		tutorial_briefing_panel.visible = false
+	get_tree().paused = false
+	SoundManager.play(get_tree(), "click")
+	
+	match tutorial_phase:
+		1:
+			break_item_terminal()
+		2:
+			break_skillcheck_terminal()
+			break_password_terminal()
+		3:
+			break_simon_terminal(2)
+
+func _check_tutorial_progression(station) -> void:
+	match tutorial_phase:
+		1:
+			if station and station.minigame_type == "item":
+				var all_fixed = true
+				for s in stations:
+					if s.minigame_type == "item" and s.is_broken():
+						all_fixed = false
+						break
+				if all_fixed:
+					SoundManager.play(get_tree(), "powerup", 0.3)
+					get_tree().create_timer(1.0).timeout.connect(func():
+						start_tutorial_phase(2)
+					)
+		2:
+			var all_fixed = true
+			for s in stations:
+				if (s.minigame_type == "skillcheck" or s.minigame_type == "password") and s.is_broken():
+					all_fixed = false
+					break
+			if all_fixed:
+				SoundManager.play(get_tree(), "powerup", 0.3)
+				get_tree().create_timer(1.0).timeout.connect(func():
+					start_tutorial_phase(3)
+				)
+		3:
+			if station and station.minigame_type == "simon":
+				var simon_fixed = true
+				for s in stations:
+					if s.minigame_type == "simon" and s.is_broken():
+						simon_fixed = false
+						break
+				if simon_fixed and not _tutorial_urgent_started:
+					_tutorial_urgent_started = true
+					SoundManager.play(get_tree(), "powerup", 0.3)
+					get_tree().create_timer(0.6).timeout.connect(func():
+						break_sync_terminal()
+					)
+
+func _on_sync_resolved() -> void:
+	if GameSettings.is_tutorial_mode and tutorial_phase == 3 and _tutorial_urgent_started:
+		get_tree().create_timer(0.6).timeout.connect(func():
+			win_game()
+		)
 
 func _setup_pause_menu() -> void:
 	if not pause_panel: return
@@ -727,6 +938,17 @@ func toggle_pause() -> void:
 	if pause_panel:
 		pause_panel.visible = new_pause_state
 		if new_pause_state:
+			var tut_box = pause_panel.find_child("TutorialBox", true, false)
+			if tut_box:
+				if GameSettings.is_tutorial_mode and tutorial_phase > 0:
+					tut_box.visible = true
+					var tut_title = tut_box.find_child("TutTitle", true, false)
+					var tut_desc = tut_box.find_child("TutDesc", true, false)
+					if tut_title: tut_title.text = "TUTORIAL - INSTRUÇÕES DA ETAPA %d/3" % tutorial_phase
+					if tut_desc: tut_desc.text = _current_tutorial_explanation
+				else:
+					tut_box.visible = false
+			
 			if pause_diff_label:
 				pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
 			if pause_music_slider:
@@ -739,6 +961,9 @@ func toggle_pause() -> void:
 func restart_game() -> void:
 	get_tree().paused = false
 	SoundManager.play(get_tree(), "click")
+	for sync in get_tree().get_nodes_in_group("sync_terminals"):
+		if sync.has_method("stop_reator_audio"):
+			sync.stop_reator_audio()
 	get_tree().reload_current_scene()
 
 func _on_restart_button_pressed() -> void:
@@ -750,4 +975,8 @@ func _on_resume_button_pressed() -> void:
 func _on_main_menu_button_pressed() -> void:
 	get_tree().paused = false
 	SoundManager.play(get_tree(), "click")
+	for sync in get_tree().get_nodes_in_group("sync_terminals"):
+		if sync.has_method("stop_reator_audio"):
+			sync.stop_reator_audio()
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+

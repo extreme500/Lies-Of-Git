@@ -107,9 +107,17 @@ func _on_sfx_slider_changed(val: float) -> void:
 		sfx_val_label.text = "%d%%" % int(val)
 
 func _on_play_btn_pressed() -> void:
+	GameSettings.is_tutorial_mode = false
 	SoundManager.play(get_tree(), "powerup", 0.1)
 	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
+
+func _on_tutorial_btn_pressed() -> void:
+	GameSettings.is_tutorial_mode = true
+	SoundManager.play(get_tree(), "powerup", 0.1)
+	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
+
 
 func _on_difficulty_btn_pressed() -> void:
 	SoundManager.play(get_tree(), "click", 0.15)

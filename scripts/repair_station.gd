@@ -647,6 +647,13 @@ func try_deliver_item(player: Node) -> bool:
 func get_skillcheck_interval_left() -> float:
 	return max(0.0, _skillcheck_cooldown)
 
+func _report_failure(cause: String, amount: float = 5.0) -> void:
+	var maquina = get_tree().get_first_node_in_group("maquina")
+	if maquina and maquina.has_method("apply_minor_failure"):
+		maquina.apply_minor_failure(cause, amount)
+	else:
+		SoundManager.play(get_tree(), "lose", 0.15)
+
 func try_skillcheck_calibrate() -> bool:
 	if status != "BROKEN" or minigame_type != "skillcheck":
 		return false
@@ -659,7 +666,7 @@ func try_skillcheck_calibrate() -> bool:
 	# O outro jogador PRECISA estar no gerador dele E interagindo!
 	if paired_station and not paired_station.is_interacting:
 		skillcheck_fails += 1
-		SoundManager.play(get_tree(), "lose", 0.4)
+		_report_failure("Falha na calibração do gerador")
 		return false
 	
 	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
@@ -687,7 +694,7 @@ func try_skillcheck_calibrate() -> bool:
 	# Condição obrigatória: SÓ pode dar ok se estiver dentro da barra verde!
 	if not barra_na_zona:
 		skillcheck_fails += 1
-		SoundManager.play(get_tree(), "lose", 0.4)
+		_report_failure("Falha na calibração do gerador")
 		return false
 	
 	# Se a barra está na zona verde e o dial giratório acertou a área alvo:
@@ -696,7 +703,7 @@ func try_skillcheck_calibrate() -> bool:
 		return true
 	else:
 		skillcheck_fails += 1
-		SoundManager.play(get_tree(), "lose", 0.4)
+		_report_failure("Falha na calibração do gerador")
 		return false
 
 func receive_minigame_input(input_val: String) -> void:
@@ -726,7 +733,7 @@ func receive_minigame_input(input_val: String) -> void:
 				fix_station()
 			else:
 				# Errou!
-				SoundManager.play(get_tree(), "lose", 0.2)
+				_report_failure("Código de acesso incorreto")
 				generate_new_password()
 		return
 
@@ -792,7 +799,7 @@ func receive_minigame_input(input_val: String) -> void:
 					])
 			else:
 				# Errou a cor!
-				SoundManager.play(get_tree(), "lose", 0.35)
+				_report_failure("Sequência incorreta no Simon Says")
 				_play_simon_flash_sequence([
 					{"anim": "idle", "time": 0.3}
 				])

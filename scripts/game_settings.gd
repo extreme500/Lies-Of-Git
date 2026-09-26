@@ -10,6 +10,8 @@ enum Difficulty {
 static var difficulty: Difficulty = Difficulty.NORMAL
 static var music_volume: float = 0.8
 static var sfx_volume: float = 0.9
+static var is_tutorial_mode: bool = false
+
 
 static func set_difficulty(d: Difficulty) -> void:
 	difficulty = d

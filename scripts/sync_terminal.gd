@@ -1,6 +1,7 @@
 extends Node2D
 
 signal sync_exploded
+signal sync_resolved
 
 @export var cooldown_min: float = 20.0
 @export var cooldown_max: float = 35.0
@@ -15,6 +16,8 @@ var is_paused: bool = false
 var p1_pressing: bool = false
 var p2_pressing: bool = false
 
+var _reator_player: AudioStreamPlayer = null
+
 @onready var p1_button: AnimatedSprite2D = $P1_Button
 @onready var p2_button: AnimatedSprite2D = $P2_Button
 @onready var screen_p1: AnimatedSprite2D = $Screen_P1 if has_node("Screen_P1") else null
@@ -28,6 +31,8 @@ func _ready() -> void:
 	timer = randf_range(cooldown_min, cooldown_max)
 	if alert_label: alert_label.hide()
 	
+	_init_reator_audio()
+	
 	if p1_button:
 		p1_button.animation_finished.connect(_on_p1_anim_finished)
 	if p2_button:
@@ -39,6 +44,38 @@ func _ready() -> void:
 		
 	update_visual()
 	call_deferred("snap_to_surface")
+
+func _init_reator_audio() -> void:
+	_reator_player = AudioStreamPlayer.new()
+	_reator_player.name = "ReatorAudioPlayer"
+	_reator_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	var path = "res://sfx/Novos/reator.mp3"
+	if ResourceLoader.exists(path):
+		var stream = load(path)
+		if stream is AudioStreamMP3:
+			stream.loop = true
+		_reator_player.stream = stream
+	_reator_player.volume_db = -12.0 # Volume diminuído para não ficar tão alto
+	add_child(_reator_player)
+	_reator_player.finished.connect(func():
+		if status == "ALERT" and is_instance_valid(_reator_player):
+			_reator_player.play()
+	)
+
+func _start_reator_audio() -> void:
+	if _reator_player and not _reator_player.playing:
+		_reator_player.play()
+
+func _stop_reator_audio() -> void:
+	if _reator_player and _reator_player.playing:
+		_reator_player.stop()
+
+func stop_reator_audio() -> void:
+	_stop_reator_audio()
+
+func _exit_tree() -> void:
+	_stop_reator_audio()
+
 
 func set_paused(val: bool) -> void:
 	is_paused = val
@@ -116,6 +153,7 @@ func start_alert_phase() -> void:
 	explosion_timer = time_to_press
 	if alert_label: alert_label.show()
 	SoundManager.play(get_tree(), "lose", 0.25)
+	_start_reator_audio()
 	
 	# Transição de fechado para aberto nos botões e telas em alerta (aguardando)
 	if p1_button: p1_button.play("opening")
@@ -128,6 +166,7 @@ func start_alert_phase() -> void:
 
 func resolve_sync() -> void:
 	status = "OK"
+	_stop_reator_audio()
 	timer = randf_range(cooldown_min, cooldown_max)
 	if alert_label: alert_label.hide()
 	if p1_prompt: p1_prompt.hide()
@@ -142,12 +181,24 @@ func resolve_sync() -> void:
 	if screen_p1: screen_p1.play("idle")
 	if screen_p2: screen_p2.play("idle")
 	if screen_anim: screen_anim.play("idle")
+	sync_resolved.emit()
 
 func explode() -> void:
+	_stop_reator_audio()
+	if GameSettings.is_tutorial_mode:
+		explosion_timer = time_to_press
+		SoundManager.play(get_tree(), "lose", 0.3)
+		var maquina = get_tree().get_first_node_in_group("maquina")
+		if maquina and maquina.has_method("apply_minor_failure"):
+			maquina.apply_minor_failure("Falha urgente expirou", 5.0)
+		_start_reator_audio()
+		return
+
 	status = "EXPLODED"
 	if p1_prompt: p1_prompt.hide()
 	if p2_prompt: p2_prompt.hide()
 	sync_exploded.emit()
+
 
 func update_visual() -> void:
 	if status == "OK":

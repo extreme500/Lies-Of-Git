@@ -111,6 +111,10 @@ func destroy_piece() -> void:
 		
 	SoundManager.play(get_tree(), "lose", 0.4)
 	
+	var m = get_tree().get_first_node_in_group("maquina")
+	if m and m.has_method("apply_minor_failure"):
+		m.apply_minor_failure("Peça destruída no triturador", 5.0)
+	
 	# Respawn da peça na Estação A com animação de transição caso o minigame "item" esteja pendente
 	for station in get_tree().get_nodes_in_group("repair_stations"):
 		if is_instance_valid(station) and station.has_method("redispensa_peca"):
