@@ -40,15 +40,18 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 	if is_dead:
 		return
 
-	if body is Player2D or body.name == "Player":
+	if body is CoopPlayer2D or body.name.begins_with("Player"):
 		# Se o jogador estiver caindo e acima da cabeça do inimigo -> STOMP
 		if body.velocity.y > 0.0 and body.global_position.y < global_position.y - 10.0:
 			stomp(body)
 		else:
 			# Jogador tomou dano
-			body.die()
+			if body.has_method("die"):
+				body.die()
+			elif body.has_method("respawn"):
+				body.respawn()
 
-func stomp(player: Player2D) -> void:
+func stomp(player: CoopPlayer2D) -> void:
 	is_dead = true
 	SoundManager.play(get_tree(), "hit", 0.2)
 	player.bounce(-480.0)
