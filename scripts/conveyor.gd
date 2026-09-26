@@ -18,6 +18,7 @@ var _alert_timer: float = 0.0
 @onready var alert_label: Label = $AlertLabel
 
 func _ready() -> void:
+	belt_speed = GameSettings.get_conveyor_speed()
 	if piece_visual: piece_visual.visible = false
 	if alert_label: alert_label.visible = false
 

@@ -41,7 +41,8 @@ func set_active(active: bool) -> void:
 		sortear_novo_alvo()
 
 func sortear_novo_alvo() -> void:
-	# Escolhe uma posição aleatória na circunferência (0 a 360 graus)
+	# Escolhe uma posição aleatória na circunferência (0 a 360 graus) e ajusta pelo nível de dificuldade
+	tamanho_area_alvo = deg_to_rad(GameSettings.get_skillcheck_target_angle_deg())
 	angulo_alvo = randf_range(0.0, TAU)
 	queue_redraw()
 

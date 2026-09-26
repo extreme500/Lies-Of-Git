@@ -157,7 +157,7 @@ func _set_skillcheck_visual_visible(val: bool) -> void:
 			else:
 				n.visible = val
 
-func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_iterations: int = 3) -> void:
+func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_iterations: int = -1) -> void:
 	minigame_type = type
 	role = assigned_role
 	paired_station = pair
@@ -166,7 +166,7 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_
 	mg_state.clear()
 	if minigame_type == "password":
 		if role == "A":
-			mg_state["password"] = generate_password(4)
+			mg_state["password"] = generate_password(GameSettings.get_password_length())
 		else:
 			mg_state["input_idx"] = 0
 			mg_state["user_inputs"] = []
@@ -186,7 +186,8 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation, n_
 			mg_state["button_active"] = false
 			mg_state["toggle_timer"] = 0.0
 	elif minigame_type == "simon":
-		mg_state["max_rounds"] = n_iterations
+		var iters = n_iterations if n_iterations > 0 else GameSettings.get_simon_iterations()
+		mg_state["max_rounds"] = iters
 		mg_state["current_round"] = 1
 		mg_state["turn"] = "A"
 		mg_state["input_idx"] = 0
@@ -307,10 +308,11 @@ func generate_new_password() -> void:
 	
 	if station_a:
 		var old_pwd = station_a.mg_state.get("password", [])
-		var new_pwd = station_a.generate_password(4)
+		var pwd_len = GameSettings.get_password_length()
+		var new_pwd = station_a.generate_password(pwd_len)
 		var attempts = 0
 		while new_pwd == old_pwd and attempts < 10:
-			new_pwd = station_a.generate_password(4)
+			new_pwd = station_a.generate_password(pwd_len)
 			attempts += 1
 		station_a.mg_state["password"] = new_pwd
 		station_a.update_minigame_ui()
@@ -339,12 +341,14 @@ func is_broken() -> bool:
 func get_minigame_type() -> String:
 	return minigame_type
 
-func break_down(n_iterations: int = 3) -> void:
+func break_down(n_iterations: int = -1) -> void:
 	if status == "BROKEN": return
 	status = "BROKEN"
 	if warning_icon: warning_icon.show()
 	if sparks_particles: sparks_particles.emitting = true
 	update_ui_visibility()
+	
+	var iters = n_iterations if n_iterations > 0 else GameSettings.get_simon_iterations()
 	
 	# Reseta estado do minigame ao quebrar
 	if minigame_type == "password" and role == "B":
@@ -356,7 +360,7 @@ func break_down(n_iterations: int = 3) -> void:
 			if is_instance_valid(c) and c.has_method("sortear_novo_alvo"):
 				c.sortear_novo_alvo()
 	elif minigame_type == "simon":
-		init_simon(n_iterations)
+		init_simon(iters)
 
 	update_status_visual()
 	update_terminal_animation()
@@ -366,7 +370,7 @@ func break_down(n_iterations: int = 3) -> void:
 	
 	# Quebra o par também, se for sincronizado
 	if paired_station and not paired_station.is_broken():
-		paired_station.break_down(n_iterations)
+		paired_station.break_down(iters)
 
 func process_minigame(delta: float) -> void:
 	if minigame_type == "skillcheck":

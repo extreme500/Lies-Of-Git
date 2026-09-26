@@ -27,12 +27,23 @@ var _debug_msg_timer: float = 0.0
 @onready var victory_panel: PanelContainer = $HUD/VictoryPanel
 @onready var game_over_panel: PanelContainer = $HUD/GameOverPanel
 @onready var pause_panel: PanelContainer = $HUD/PausePanel
+@onready var pause_diff_label: Label = $HUD/PausePanel/VBox/DifficultyBox/DiffVBox/DiffCurrentLabel
+@onready var pause_music_slider: HSlider = $HUD/PausePanel/VBox/AudioBox/MusicContainer/MusicSlider
+@onready var pause_music_label: Label = $HUD/PausePanel/VBox/AudioBox/MusicContainer/MusicLabel
+@onready var pause_sfx_slider: HSlider = $HUD/PausePanel/VBox/AudioBox/SFXContainer/SFXSlider
+@onready var pause_sfx_label: Label = $HUD/PausePanel/VBox/AudioBox/SFXContainer/SFXLabel
 
 func _ready() -> void:
 	add_to_group("game_manager")
 	time_remaining = survival_time
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
+	
+	# Inicia música de gameplay
+	SoundManager.play_music(get_tree(), "res://assets/Ost/loop fundo principal.mp3")
+	
+	# Configurações do Menu de Pause
+	_setup_pause_menu()
 	
 	# Localizar máquina principal de forma segura
 	maquina = get_node_or_null("Máquina") as CentralMaquina
@@ -418,11 +429,49 @@ func game_over() -> void:
 			var survived = survival_time - time_remaining
 			summary.text = "A máquina entrou em colapso catastrófico!\nVocês sobreviveram por %.1f segundos.\nTrabalhem juntos e tentem novamente!" % survived
 
+func _setup_pause_menu() -> void:
+	if pause_diff_label:
+		pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
+	if pause_music_slider:
+		pause_music_slider.value = SoundManager.get_music_volume() * 100.0
+		pause_music_slider.value_changed.connect(_on_pause_music_slider_changed)
+		_update_pause_music_label(pause_music_slider.value)
+	if pause_sfx_slider:
+		pause_sfx_slider.value = SoundManager.get_sfx_volume() * 100.0
+		pause_sfx_slider.value_changed.connect(_on_pause_sfx_slider_changed)
+		_update_pause_sfx_label(pause_sfx_slider.value)
+
+func _on_pause_music_slider_changed(val: float) -> void:
+	SoundManager.set_music_volume(val / 100.0)
+	_update_pause_music_label(val)
+
+func _update_pause_music_label(val: float) -> void:
+	if pause_music_label:
+		pause_music_label.text = "Música: %d%%" % int(val)
+
+func _on_pause_sfx_slider_changed(val: float) -> void:
+	SoundManager.set_sfx_volume(val / 100.0)
+	_update_pause_sfx_label(val)
+
+func _update_pause_sfx_label(val: float) -> void:
+	if pause_sfx_label:
+		pause_sfx_label.text = "Efeitos (SFX): %d%%" % int(val)
+
 func toggle_pause() -> void:
 	var new_pause_state = not get_tree().paused
 	get_tree().paused = new_pause_state
 	if pause_panel:
 		pause_panel.visible = new_pause_state
+		if new_pause_state:
+			# Atualiza valores ao abrir pause
+			if pause_diff_label:
+				pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
+			if pause_music_slider:
+				pause_music_slider.value = SoundManager.get_music_volume() * 100.0
+				_update_pause_music_label(pause_music_slider.value)
+			if pause_sfx_slider:
+				pause_sfx_slider.value = SoundManager.get_sfx_volume() * 100.0
+				_update_pause_sfx_label(pause_sfx_slider.value)
 
 func restart_game() -> void:
 	get_tree().paused = false
@@ -434,3 +483,9 @@ func _on_restart_button_pressed() -> void:
 
 func _on_resume_button_pressed() -> void:
 	toggle_pause()
+
+func _on_main_menu_button_pressed() -> void:
+	get_tree().paused = false
+	SoundManager.play(get_tree(), "click")
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
