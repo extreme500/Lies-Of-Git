@@ -12,13 +12,13 @@ var stations: Array = []
 
 var maquina: CentralMaquina = null
 @onready var hud: CanvasLayer = $HUD
-@onready var timer_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/TimeContainer/TimerLabel
-@onready var integrity_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer/IntegrityLabel
-@onready var integrity_bar: ProgressBar = $HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer/IntegrityBar
-@onready var faults_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/FaultsContainer/FaultsLabel
-@onready var victory_panel: PanelContainer = $HUD/VictoryPanel
-@onready var game_over_panel: PanelContainer = $HUD/GameOverPanel
-@onready var pause_panel: PanelContainer = $HUD/PausePanel
+@onready var timer_label: Label = find_child("TimerLabel", true, false)
+@onready var integrity_label: Label = find_child("IntegrityLabel", true, false)
+@onready var integrity_bar: ProgressBar = find_child("IntegrityBar", true, false)
+@onready var faults_label: Label = find_child("FaultsLabel", true, false)
+@onready var victory_panel: PanelContainer = find_child("VictoryPanel", true, false)
+@onready var game_over_panel: PanelContainer = find_child("GameOverPanel", true, false)
+@onready var pause_panel: PanelContainer = find_child("PausePanel", true, false)
 
 func _ready() -> void:
 	add_to_group("game_manager")
@@ -27,14 +27,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
 	
 	# Localizar máquina principal de forma segura
-	maquina = get_node_or_null("Máquina") as CentralMaquina
+	maquina = find_child("Máquina", true, false) as CentralMaquina
 	if not maquina:
-		maquina = get_node_or_null("Maquina") as CentralMaquina
-	if not maquina:
-		for child in get_children():
-			if child is CentralMaquina:
-				maquina = child
-				break
+		maquina = find_child("Maquina", true, false) as CentralMaquina
 	
 	if victory_panel:
 		victory_panel.visible = false

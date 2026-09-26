@@ -29,17 +29,17 @@ width = 6.0
 default_color = Color(0.18, 0.2, 0.25, 1)
 
 [node name="TennaContainer" type="SubViewportContainer" parent="Visual"]
-offset_left = -60.0
-offset_top = -80.0
-offset_right = 60.0
-offset_bottom = 40.0
+offset_left = -100.0
+offset_top = -140.0
+offset_right = 100.0
+offset_bottom = 60.0
 mouse_filter = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Visual/TennaContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(120, 120)
+size = Vector2i(200, 200)
 render_target_update_mode = 3
 
 [node name="TennaSphere3D" parent="Visual/TennaContainer/SubViewport" instance=ExtResource("4_tenna_3d")]
@@ -97,7 +97,7 @@ offset_bottom = 45.0
 color = Color(0.2, 0.8, 0.3, 0.8)
 
 [node name="SmokeParticles" type="CPUParticles2D" parent="Visual"]
-position = Vector2(0, -35)
+position = Vector2(0, -60)
 emitting = false
 amount = 20
 lifetime = 1.0
@@ -126,9 +126,9 @@ color = Color(1, 0.8, 0.2, 1)
 
 [node name="TitleLabel" type="Label" parent="."]
 offset_left = -90.0
-offset_top = -98.0
+offset_top = -160.0
 offset_right = 90.0
-offset_bottom = -75.0
+offset_bottom = -137.0
 theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "⚙️ MÁQUINA PRINCIPAL"

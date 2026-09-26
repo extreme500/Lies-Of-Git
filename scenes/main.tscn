@@ -254,74 +254,10 @@ offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="Máquina" parent="." instance=ExtResource("2_maquina")]
-z_index = 10
-position = Vector2(640, 160)
+[node name="FramesLayer" type="CanvasLayer" parent="."]
+layer = 1
 
-[node name="Stations" type="Node2D" parent="."]
-
-[node name="Station1_P1_Terminal" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(210, 200)
-station_name = "Terminal Alpha"
-station_type = "terminal"
-chamber_id = 1
-
-[node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(100, 360)
-station_name = "Fiação Elétrica"
-station_type = "cabo"
-chamber_id = 1
-
-[node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(490, 640)
-station_name = "Válvula de Vapor"
-station_type = "valvula"
-chamber_id = 1
-
-[node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(1070, 200)
-station_name = "Terminal Beta"
-station_type = "terminal"
-chamber_id = 2
-
-[node name="Station5_P2_Bobina" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(880, 530)
-station_name = "Bobina de Pressão"
-station_type = "bobina"
-chamber_id = 2
-
-[node name="Station6_P2_Juncao" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(740, 640)
-station_name = "Painel de Fusíveis"
-station_type = "cabo"
-chamber_id = 2
-
-[node name="Station7_P1_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(430, 440)
-station_name = "Filtro Auxiliar"
-station_type = "terminal"
-chamber_id = 1
-
-[node name="Station8_P2_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(1150, 430)
-station_name = "Compressor"
-station_type = "bobina"
-chamber_id = 2
-
-[node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
-position = Vector2(640, 640)
-
-[node name="Player1" parent="." instance=ExtResource("3_player")]
-position = Vector2(100, 630)
-player_id = 1
-
-[node name="Player2" parent="." instance=ExtResource("3_player")]
-position = Vector2(1180, 630)
-player_id = 2
-
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="MainFrame" type="NinePatchRect" parent="HUD"]
+[node name="MainFrame" type="NinePatchRect" parent="FramesLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -337,7 +273,7 @@ patch_margin_bottom = 32
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Chamber1Frame" type="NinePatchRect" parent="HUD"]
+[node name="Chamber1Frame" type="NinePatchRect" parent="FramesLayer"]
 offset_left = 28.0
 offset_top = 54.0
 offset_right = 604.0
@@ -352,7 +288,7 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate = Color(0.2, 0.65, 1, 1)
 
-[node name="Chamber2Frame" type="NinePatchRect" parent="HUD"]
+[node name="Chamber2Frame" type="NinePatchRect" parent="FramesLayer"]
 offset_left = 676.0
 offset_top = 54.0
 offset_right = 1252.0
@@ -367,61 +303,61 @@ axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 modulate = Color(1, 0.6, 0.2, 1)
 
-[node name="TopBar" type="PanelContainer" parent="HUD"]
+[node name="TopBar" type="PanelContainer" parent="FramesLayer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 54.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="MarginContainer" type="MarginContainer" parent="HUD/TopBar"]
+[node name="MarginContainer" type="MarginContainer" parent="FramesLayer/TopBar"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="TimeContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer"]
+[node name="TimeContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="TimerLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/TimeContainer"]
+[node name="TimerLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/TimeContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "⏱️ Manter por: 01:00"
 
-[node name="IntegrityContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer"]
+[node name="IntegrityContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="IntegrityLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
+[node name="IntegrityLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
 theme_override_font_sizes/font_size = 16
 text = "Integridade da Máquina: 100%"
 
-[node name="IntegrityBar" type="ProgressBar" parent="HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
+[node name="IntegrityBar" type="ProgressBar" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
 custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 size_flags_vertical = 4
 value = 100.0
 show_percentage = false
 
-[node name="FaultsContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer"]
+[node name="FaultsContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="FaultsLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/FaultsContainer"]
+[node name="FaultsLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/FaultsContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
 theme_override_font_sizes/font_size = 16
 text = "⚠️ Defeitos Ativos: 0"
 
-[node name="BottomBar" type="PanelContainer" parent="HUD"]
+[node name="BottomBar" type="PanelContainer" parent="FramesLayer"]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -431,12 +367,21 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="Label" type="Label" parent="HUD/BottomBar"]
+[node name="Label" type="Label" parent="FramesLayer/BottomBar"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 12
 text = "P1 (Azul): [A/D] Andar | [W/Espaço] Pular | [E] Consertar   |||   P2 (Laranja): [Setas] Andar | [Cima] Pular | [ENTER] Consertar   |||   [R] Reiniciar"
 horizontal_alignment = 1
+
+[node name="MachineLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Máquina" parent="MachineLayer" instance=ExtResource("2_maquina")]
+position = Vector2(640, 185)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="VictoryPanel" type="PanelContainer" parent="HUD"]
 process_mode = 3
