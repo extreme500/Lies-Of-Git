@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
 [ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="8_outer_frame"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
 texture = ExtResource("7_ui_frame")
@@ -318,6 +319,45 @@ position = Vector2(1180, 630)
 player_id = 2
 
 [node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="MainFrame" type="NinePatchRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="Chamber1Frame" type="NinePatchRect" parent="HUD"]
+offset_left = 30.0
+offset_top = 54.0
+offset_right = 625.0
+offset_bottom = 688.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+modulate = Color(0.2, 0.6, 1, 1)
+
+[node name="Chamber2Frame" type="NinePatchRect" parent="HUD"]
+offset_left = 655.0
+offset_top = 54.0
+offset_right = 1250.0
+offset_bottom = 688.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+modulate = Color(1, 0.6, 0.2, 1)
 
 [node name="TopBar" type="PanelContainer" parent="HUD"]
 anchors_preset = 10
