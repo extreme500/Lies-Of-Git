@@ -17,8 +17,10 @@ class_name CoopPlayer2D
 @export_group("Animation Settings")
 ## Escala visual do sprite (o pixel art original é 32x32)
 @export var sprite_scale: Vector2 = Vector2(2.0, 2.0)
-## Deslocamento do sprite para ajustar o alinhamento dos pés com o chão
-@export var sprite_offset: Vector2 = Vector2(0, -2)
+## Deslocamento do sprite para o Player 1 (Azul) - Pés alinhados perfeitamente com o chão
+@export var sprite_offset_p1: Vector2 = Vector2(0, 8)
+## Deslocamento do sprite para o Player 2 (Laranja) - Pés alinhados com o chão
+@export var sprite_offset_p2: Vector2 = Vector2(0, -2)
 
 @export_subgroup("Animation Speeds (FPS)")
 ## Velocidade (frames por segundo) da animação Idle (parado)
@@ -86,9 +88,11 @@ func apply_player_identity() -> void:
 	if player_id == 1:
 		# Player 1 = Robô Azul
 		animated_sprite.sprite_frames = frames_p1
+		animated_sprite.position = sprite_offset_p1
 	else:
 		# Player 2 = Robô Laranja
 		animated_sprite.sprite_frames = frames_p2
+		animated_sprite.position = sprite_offset_p2
 		# Ajusta valores padrão para os 8 frames de pulo do Player 2 se estiverem nos padrões
 		if jump_air_frame == 3:
 			jump_air_frame = 4
@@ -96,7 +100,6 @@ func apply_player_identity() -> void:
 			jump_fall_frame = 6
 	
 	animated_sprite.scale = sprite_scale
-	animated_sprite.position = sprite_offset
 	animated_sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
