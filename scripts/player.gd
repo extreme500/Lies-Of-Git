@@ -134,15 +134,28 @@ func _physics_process(delta: float) -> void:
 	if is_repairing:
 		var current_station = get_active_broken_station()
 		var is_password = current_station != null and current_station.has_method("get_minigame_type") and current_station.get_minigame_type() == "password"
+		var is_simon = current_station != null and current_station.has_method("get_minigame_type") and current_station.get_minigame_type() == "simon"
 		
-		var up_pressed    = Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
-		var down_pressed  = Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
-		var left_pressed  = Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)
-		var right_pressed = Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)
+		var up_pressed = false
+		var down_pressed = false
+		var left_pressed = false
+		var right_pressed = false
+		
+		if player_id == 1:
+			up_pressed = Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
+			down_pressed = Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
+			left_pressed = Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)
+			right_pressed = Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)
+		else:
+			up_pressed = Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W)
+			down_pressed = Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S)
+			left_pressed = Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A)
+			right_pressed = Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D)
+		
 		var any_dir_pressed = up_pressed or down_pressed or left_pressed or right_pressed
 		
-		if is_password:
-			# Modo senha: registra apenas UM input por pressionamento
+		if is_password or is_simon:
+			# Registra apenas UM input por pressionamento (debounce)
 			if not any_dir_pressed:
 				_password_key_held = false  # Tecla solta, pronto para nova leitura
 			elif not _password_key_held:

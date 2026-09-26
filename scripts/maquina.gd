@@ -11,6 +11,10 @@ signal machine_exploded
 var current_integrity: float = 100.0
 var broken_stations_count: int = 0
 var is_destroyed: bool = false
+var is_machine_paused: bool = false
+
+func set_machine_paused(val: bool) -> void:
+	is_machine_paused = val
 
 @onready var visual_root: Node2D = $Visual
 @onready var core_light: ColorRect = $Visual/Core
@@ -28,7 +32,7 @@ func _ready() -> void:
 	update_visuals()
 
 func _process(delta: float) -> void:
-	if is_destroyed:
+	if is_destroyed or is_machine_paused:
 		return
 
 	# Drenagem de integridade proporcional aos defeitos ativos

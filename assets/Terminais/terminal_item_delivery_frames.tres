@@ -1,0 +1,62 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_0.png" id="1_tgh4a"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_1.png" id="2_qsxpv"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_2.png" id="3_mh0ds"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_3.png" id="4_umjbh"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_4.png" id="5_t5h01"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_5.png" id="6_o1ath"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_6.png" id="7_b1tqn"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_7.png" id="8_dokor"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Entrega)/sprite_8.png" id="9_lvihe"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tgh4a")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tgh4a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_qsxpv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_mh0ds")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_umjbh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_t5h01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_o1ath")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_b1tqn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_dokor")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lvihe")
+}],
+"loop": 0,
+"name": &"receiving",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_lvihe")
+}],
+"loop": 0,
+"name": &"success",
+"speed": 1.0
+}]

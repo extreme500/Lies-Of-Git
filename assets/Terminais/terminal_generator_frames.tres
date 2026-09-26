@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Skillcheck (Gerador)/sprite_0.png" id="1_bu1t2"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Skillcheck (Gerador)/sprite_1.png" id="2_73lmh"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bu1t2")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bu1t2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_73lmh")
+}],
+"loop": 1,
+"name": &"running",
+"speed": 8.0
+}]

@@ -276,8 +276,8 @@ station_type = "valvula"
 [node name="Station4_P2_Terminal" parent="Stations" unique_id=1337458876 instance=ExtResource("4_station")]
 position = Vector2(1070, 200)
 station_name = "Terminal Beta"
-minigame_type = "skillcheck"
 chamber_id = 2
+minigame_type = "skillcheck"
 
 [node name="Station5_P2_Bobina" parent="Stations" unique_id=189274913 instance=ExtResource("4_station")]
 position = Vector2(880, 530)
@@ -293,12 +293,13 @@ chamber_id = 2
 
 [node name="Station7_P1_Extra" parent="Stations" unique_id=128232386 instance=ExtResource("4_station")]
 position = Vector2(260, 530)
-station_name = "Filtro Auxiliar"
+station_name = "Simon Says Alpha"
+minigame_type = "simon"
 
 [node name="Station8_P2_Extra" parent="Stations" unique_id=346839100 instance=ExtResource("4_station")]
 position = Vector2(1080, 430)
-station_name = "Compressor"
-station_type = "bobina"
+station_name = "Simon Says Beta"
+minigame_type = "simon"
 chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" unique_id=763704838 groups=["sync_terminals"] instance=ExtResource("5_sync")]
@@ -310,6 +311,8 @@ position = Vector2(210, 135)
 
 [node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=1259149520 groups=["centro_sc", "skillcheck_visual"]]
 z_index = 25
+z_as_relative = false
+position = Vector2(-376, 40)
 script = ExtResource("6_m14vd")
 
 [node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=325126713]
