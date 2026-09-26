@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/repair_station.gd" id="1_station"]
 
@@ -11,6 +11,18 @@ corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_minigame"]
+bg_color = Color(0.08, 0.1, 0.15, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.35, 0.48, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="RepairStation" type="Node2D" groups=["repair_stations"]]
 script = ExtResource("1_station")
@@ -94,19 +106,19 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 3
 anchors_preset = 0
-offset_left = -50.0
-offset_top = -100.0
-offset_right = 50.0
-offset_bottom = -50.0
+offset_left = -90.0
+offset_top = -120.0
+offset_right = 90.0
+offset_bottom = -54.0
 
-[node name="Panel" type="ColorRect" parent="MinigameUI"]
+[node name="Panel" type="Panel" parent="MinigameUI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.15, 0.85)
+theme_override_styles/panel = SubResource("StyleBoxFlat_minigame")
 
 [node name="Label" type="Label" parent="MinigameUI"]
 layout_mode = 1
@@ -115,8 +127,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 11
 text = "Minigame"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="ArrowContainer" type="HBoxContainer" parent="MinigameUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -38.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+theme_override_constants/separation = 12

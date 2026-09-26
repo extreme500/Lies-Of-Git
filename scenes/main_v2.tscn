@@ -6,6 +6,13 @@
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
+[ext_resource type="Script" uid="uid://dybnb6g8y0bfw" path="res://scripts/centro_sc.gd" id="6_m14vd"]
+[ext_resource type="FontFile" uid="uid://b8fvccynkdd65" path="res://assets/Xeriko-R9R1A.otf" id="7_vapg3"]
+[ext_resource type="Texture2D" uid="uid://33wxuhway7h" path="res://assets/cimaa.png" id="8_vh1sb"]
+[ext_resource type="Texture2D" uid="uid://buxy6x513mn5q" path="res://assets/direit ).png" id="9_vapg3"]
+[ext_resource type="Texture2D" uid="uid://d0c1v128gbhpy" path="res://assets/baixo ).png" id="10_88uni"]
+[ext_resource type="Texture2D" uid="uid://06ox1qmfynye" path="res://assets/esquerda.png" id="11_ec30c"]
+[ext_resource type="Texture2D" uid="uid://wmeo37heky1e" path="res://assets/relogio.png" id="13_88uni"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -49,9 +56,9 @@ color = Color(0.2, 0.16, 0.14, 0.6)
 
 [node name="DividerWindow" type="ColorRect" parent="Background" unique_id=68406317]
 offset_left = 600.0
-offset_top = 320.0
+offset_top = 130.0
 offset_right = 680.0
-offset_bottom = 460.0
+offset_bottom = 640.0
 color = Color(0.35, 0.6, 0.8, 0.4)
 
 [node name="DividerWindowGlow" type="ColorRect" parent="Background/DividerWindow" unique_id=1164179813]
@@ -59,7 +66,7 @@ layout_mode = 0
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 76.0
-offset_bottom = 138.0
+offset_bottom = 506.0
 color = Color(0.6, 0.85, 1, 0.2)
 
 [node name="Environment" type="Node2D" parent="." unique_id=1275015510]
@@ -130,7 +137,7 @@ offset_bottom = 280.0
 color = Color(0.2, 0.23, 0.3, 1)
 
 [node name="Conveyor" parent="Environment" unique_id=1662467420 instance=ExtResource("6_conv")]
-position = Vector2(640, 380)
+position = Vector2(640, 385)
 
 [node name="Platforms" type="Node2D" parent="Environment" unique_id=950206165]
 
@@ -142,10 +149,10 @@ scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1657411451]
-offset_left = -183.0
-offset_top = -94.0
-offset_right = 17.0
-offset_bottom = -74.0
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
 [node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=851829317]
@@ -212,10 +219,10 @@ scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=979949071]
-offset_left = -90.0
-offset_top = -10.0
-offset_right = 90.0
-offset_bottom = 10.0
+offset_left = -141.0
+offset_top = -11.0
+offset_right = 87.0
+offset_bottom = 9.0
 color = Color(0.45, 0.32, 0.28, 1)
 
 [node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=2041609180]
@@ -240,9 +247,9 @@ scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1518040819]
-offset_left = -80.0
+offset_left = -166.0
 offset_top = -10.0
-offset_right = 80.0
+offset_right = 81.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
@@ -252,48 +259,67 @@ position = Vector2(640, 95)
 [node name="Stations" type="Node2D" parent="." unique_id=791068265]
 
 [node name="Station1_P1_Terminal" parent="Stations" unique_id=143693884 instance=ExtResource("4_station")]
-position = Vector2(210, 195)
+position = Vector2(210, 200)
 station_name = "Terminal Alpha"
 
 [node name="Station2_P1_Fiacao" parent="Stations" unique_id=1687299288 instance=ExtResource("4_station")]
-position = Vector2(100, 355)
+position = Vector2(100, 360)
 station_name = "Fiação Elétrica"
 station_type = "cabo"
 
 [node name="Station3_P1_Valvula" parent="Stations" unique_id=841848892 instance=ExtResource("4_station")]
-position = Vector2(490, 625)
+position = Vector2(430, 440)
 station_name = "Válvula de Vapor"
 station_type = "valvula"
 
 [node name="Station4_P2_Terminal" parent="Stations" unique_id=1337458876 instance=ExtResource("4_station")]
-position = Vector2(1070, 195)
+position = Vector2(1070, 200)
 station_name = "Terminal Beta"
 chamber_id = 2
 
 [node name="Station5_P2_Bobina" parent="Stations" unique_id=189274913 instance=ExtResource("4_station")]
-position = Vector2(880, 525)
+position = Vector2(880, 530)
 station_name = "Bobina de Pressão"
 station_type = "bobina"
 chamber_id = 2
 
 [node name="Station6_P2_Juncao" parent="Stations" unique_id=1823664103 instance=ExtResource("4_station")]
-position = Vector2(740, 625)
+position = Vector2(740, 640)
 station_name = "Painel de Fusíveis"
 station_type = "cabo"
 chamber_id = 2
 
 [node name="Station7_P1_Extra" parent="Stations" unique_id=128232386 instance=ExtResource("4_station")]
-position = Vector2(100, 520)
+position = Vector2(260, 530)
 station_name = "Filtro Auxiliar"
 
 [node name="Station8_P2_Extra" parent="Stations" unique_id=346839100 instance=ExtResource("4_station")]
-position = Vector2(1150, 520)
+position = Vector2(1080, 430)
 station_name = "Compressor"
 station_type = "bobina"
 chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" unique_id=763704838 groups=["sync_terminals"] instance=ExtResource("5_sync")]
-position = Vector2(640, 680)
+position = Vector2(640, 640)
+
+[node name="AnguloSC" type="Node2D" parent="Stations" unique_id=355257020 groups=["skillcheck_visual"]]
+visible = false
+position = Vector2(-198, 35)
+
+[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=1259149520 groups=["centro_sc", "skillcheck_visual"]]
+visible = false
+position = Vector2(895, 272)
+script = ExtResource("6_m14vd")
+
+[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=325126713]
+position = Vector2(709, -198)
+points = PackedVector2Array(-2, -3, 170, 43)
+width = 25.0
+
+[node name="FontePC" type="Label" parent="Stations/AnguloSC" unique_id=1061159550]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("7_vapg3")
 
 [node name="Player1" parent="." unique_id=150972943 instance=ExtResource("3_player")]
 position = Vector2(100, 630)
@@ -329,7 +355,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "⏱️ Manter por: 01:00"
+text = "Manter por: 01:00"
 
 [node name="IntegrityContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer" unique_id=783346044]
 layout_mode = 2
@@ -479,6 +505,31 @@ text = "Continuar (ESC)"
 [node name="RestartBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=280565442]
 layout_mode = 2
 text = "Reiniciar Fase (R)"
+
+[node name="cima png" type="Sprite2D" parent="." unique_id=825239355]
+position = Vector2(-202, 23)
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("8_vh1sb")
+
+[node name="direita png" type="Sprite2D" parent="." unique_id=1341364888]
+position = Vector2(-193, 25)
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("9_vapg3")
+
+[node name="baixo png" type="Sprite2D" parent="." unique_id=661193449]
+position = Vector2(-204, 28)
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("10_88uni")
+
+[node name="esquerda png" type="Sprite2D" parent="." unique_id=1038247931]
+position = Vector2(-206, 27)
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("11_ec30c")
+
+[node name="Relogio" type="Sprite2D" parent="." unique_id=1293429293]
+position = Vector2(-57.99997, 18)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("13_88uni")
 
 [connection signal="pressed" from="HUD/VictoryPanel/VBox/RestartBtn" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="HUD/GameOverPanel/VBox/RestartBtn" to="." method="_on_restart_button_pressed"]
