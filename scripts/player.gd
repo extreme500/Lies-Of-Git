@@ -410,9 +410,16 @@ func respawn() -> void:
 	SoundManager.play(get_tree(), "hit", 0.1)
 	global_position = spawn_position
 	velocity = Vector2.ZERO
+	if carried_item:
+		carried_item = false
+		for st in get_tree().get_nodes_in_group("repair_stations"):
+			if is_instance_valid(st) and st.has_method("redispensa_peca"):
+				st.redispensa_peca()
 
 func _on_interaction_area_entered(area: Area2D) -> void:
 	var station = area.get_parent()
+	if station and station.has_method("on_player_entered"):
+		station.on_player_entered(self)
 	if station and station.has_method("set_p1_pressing"): # É o Sync Terminal!
 		nearby_sync_terminal = station
 	elif station and station.has_method("try_insert_item"): # É o Conveyor!
@@ -422,6 +429,8 @@ func _on_interaction_area_entered(area: Area2D) -> void:
 
 func _on_interaction_area_exited(area: Area2D) -> void:
 	var station = area.get_parent()
+	if station and station.has_method("on_player_exited"):
+		station.on_player_exited(self)
 	if station == nearby_sync_terminal:
 		if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
 			nearby_sync_terminal.set_p1_pressing(false)

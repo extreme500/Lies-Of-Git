@@ -111,8 +111,7 @@ func destroy_piece() -> void:
 		
 	SoundManager.play(get_tree(), "lose", 0.4)
 	
-	# Respawn da peça na Estação A caso o minigame "item" esteja pendente
+	# Respawn da peça na Estação A com animação de transição caso o minigame "item" esteja pendente
 	for station in get_tree().get_nodes_in_group("repair_stations"):
-		if is_instance_valid(station) and station.get("minigame_type") == "item" and station.get("role") == "A" and station.is_broken():
-			station.mg_state["has_item"] = true
-			station.update_minigame_ui()
+		if is_instance_valid(station) and station.has_method("redispensa_peca"):
+			station.redispensa_peca()

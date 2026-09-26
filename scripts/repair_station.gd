@@ -90,6 +90,20 @@ func snap_to_surface() -> void:
 	if result and not result.is_empty():
 		global_position.y = result.position.y - 20.0
 
+var present_players: Array = []
+
+func on_player_entered(p: Node) -> void:
+	if not present_players.has(p):
+		present_players.append(p)
+	update_ui_visibility()
+
+func on_player_exited(p: Node) -> void:
+	present_players.erase(p)
+	update_ui_visibility()
+
+func is_player_present() -> bool:
+	return present_players.size() > 0
+
 func set_interacting(val: bool) -> void:
 	is_interacting = val
 	if not val:
@@ -103,7 +117,8 @@ func set_interacting(val: bool) -> void:
 
 func update_ui_visibility() -> void:
 	if minigame_type == "skillcheck" and role == "A":
-		_set_skillcheck_visual_visible(status == "BROKEN")
+		# Só exibe se estiver quebrado E o Jogador A estiver presente no gerador!
+		_set_skillcheck_visual_visible(status == "BROKEN" and is_player_present())
 
 	if not minigame_ui: return
 	if status != "BROKEN":
@@ -280,6 +295,8 @@ func update_terminal_animation() -> void:
 						if anim_sprite.sprite_frames.has_animation("idle"):
 							anim_sprite.play("idle")
 			else:
+				if mg_state.get("is_receiving_item", false):
+					return
 				if status == "BROKEN":
 					if anim_sprite.sprite_frames.has_animation("idle"):
 						anim_sprite.play("idle")
@@ -421,7 +438,7 @@ func break_down(n_iterations: int = -1) -> void:
 	if status == "BROKEN": return
 	status = "BROKEN"
 	if warning_icon: warning_icon.show()
-	if sparks_particles: sparks_particles.emitting = true
+	if sparks_particles: sparks_particles.emitting = false
 	update_ui_visibility()
 	
 	var iters = n_iterations if n_iterations > 0 else GameSettings.get_simon_iterations()
@@ -545,6 +562,20 @@ func _on_anim_sprite_animation_finished() -> void:
 				anim_sprite.play("ready")
 			update_minigame_ui()
 			SoundManager.play(get_tree(), "powerup", 0.15)
+	elif minigame_type == "item" and role == "B":
+		if anim_sprite and anim_sprite.animation == "receiving":
+			mg_state["is_receiving_item"] = false
+			fix_station()
+			if anim_sprite.sprite_frames.has_animation("success"):
+				anim_sprite.play("success")
+
+func redispensa_peca() -> void:
+	if minigame_type == "item" and role == "A" and status == "BROKEN":
+		mg_state["has_item"] = false
+		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("dispense"):
+			anim_sprite.play("dispense")
+		update_minigame_ui()
+		SoundManager.play(get_tree(), "hit", 0.15)
 
 func try_dispenser_pickup(player: Node) -> bool:
 	if status != "BROKEN" or minigame_type != "item" or role != "A":
@@ -564,9 +595,10 @@ func try_deliver_item(player: Node) -> bool:
 		return false
 	if player and player.carried_item:
 		player.carried_item = false
+		mg_state["is_receiving_item"] = true
 		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("receiving"):
 			anim_sprite.play("receiving")
-		fix_station()
+		SoundManager.play(get_tree(), "click", 0.2)
 		return true
 	return false
 
@@ -574,6 +606,12 @@ func try_skillcheck_calibrate() -> bool:
 	if status != "BROKEN" or minigame_type != "skillcheck" or role != "B":
 		return false
 	if _skillcheck_cooldown > 0.0:
+		return false
+	
+	# O Jogador A PRECISA estar no gerador dele também!
+	if paired_station and not paired_station.is_player_present():
+		_skillcheck_cooldown = 0.5
+		SoundManager.play(get_tree(), "lose", 0.4)
 		return false
 	
 	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):

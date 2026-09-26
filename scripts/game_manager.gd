@@ -95,6 +95,8 @@ func _ready() -> void:
 	var sync_terminals = get_tree().get_nodes_in_group("sync_terminals")
 	for sync in sync_terminals:
 		sync.sync_exploded.connect(game_over)
+		if sync.has_method("set_paused"):
+			sync.set_paused(not auto_failures_enabled)
 
 func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 	var pairs: Array = []
@@ -202,14 +204,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				toggle_machine_pause()
 			KEY_O:
 				toggle_auto_failures()
-			KEY_1: break_terminal_by_index(0)
-			KEY_2: break_terminal_by_index(1)
-			KEY_3: break_terminal_by_index(2)
-			KEY_4: break_terminal_by_index(3)
-			KEY_5: break_terminal_by_index(4)
-			KEY_6: break_terminal_by_index(5)
-			KEY_7: break_terminal_by_index(6)
-			KEY_8: break_terminal_by_index(7)
+			KEY_1: break_pair(1)
+			KEY_2: break_pair(2)
+			KEY_3: break_pair(3)
+			KEY_4: break_pair(4)
+			KEY_5: break_pair(5)
 			KEY_H: toggle_debug_ui()
 
 func toggle_debug_ui() -> void:
@@ -225,7 +224,7 @@ func create_debug_ui() -> void:
 	debug_panel.offset_left = 12.0
 	debug_panel.offset_top = 58.0
 	debug_panel.offset_right = 265.0
-	debug_panel.offset_bottom = 295.0
+	debug_panel.offset_bottom = 370.0
 	
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.06, 0.09, 0.14, 0.90)
@@ -248,26 +247,36 @@ func create_debug_ui() -> void:
 	title.add_theme_font_size_override("font_size", 12)
 	vbox.add_child(title)
 	
-	# Botão F1: Quebrar Simon (3 iter)
-	var btn_simon3 = Button.new()
-	btn_simon3.text = "[F1] Quebrar Simon (3 iter)"
-	btn_simon3.add_theme_font_size_override("font_size", 11)
-	btn_simon3.pressed.connect(func(): break_simon_terminal(3))
-	vbox.add_child(btn_simon3)
+	# Botões [1] a [5] para os 5 pares
+	var btn_p1 = Button.new()
+	btn_p1.text = "[1] Par 1: Geradores (Skillcheck)"
+	btn_p1.add_theme_font_size_override("font_size", 11)
+	btn_p1.pressed.connect(func(): break_pair(1))
+	vbox.add_child(btn_p1)
 	
-	# Botão F2: Quebrar Simon (5 iter)
-	var btn_simon5 = Button.new()
-	btn_simon5.text = "[F2] Quebrar Simon (5 iter)"
-	btn_simon5.add_theme_font_size_override("font_size", 11)
-	btn_simon5.pressed.connect(func(): break_simon_terminal(5))
-	vbox.add_child(btn_simon5)
+	var btn_p2 = Button.new()
+	btn_p2.text = "[2] Par 2: Senha"
+	btn_p2.add_theme_font_size_override("font_size", 11)
+	btn_p2.pressed.connect(func(): break_pair(2))
+	vbox.add_child(btn_p2)
 	
-	# Botão F3: Quebrar Skillcheck
-	var btn_sc = Button.new()
-	btn_sc.text = "[F3] Quebrar Skillcheck"
-	btn_sc.add_theme_font_size_override("font_size", 11)
-	btn_sc.pressed.connect(func(): break_skillcheck_terminal())
-	vbox.add_child(btn_sc)
+	var btn_p3 = Button.new()
+	btn_p3.text = "[3] Par 3: Dispensador/Entrega"
+	btn_p3.add_theme_font_size_override("font_size", 11)
+	btn_p3.pressed.connect(func(): break_pair(3))
+	vbox.add_child(btn_p3)
+	
+	var btn_p4 = Button.new()
+	btn_p4.text = "[4] Par 4: Simon Says"
+	btn_p4.add_theme_font_size_override("font_size", 11)
+	btn_p4.pressed.connect(func(): break_pair(4))
+	vbox.add_child(btn_p4)
+	
+	var btn_p5 = Button.new()
+	btn_p5.text = "[5] Par 5: Terminal Urgente"
+	btn_p5.add_theme_font_size_override("font_size", 11)
+	btn_p5.pressed.connect(func(): break_pair(5))
+	vbox.add_child(btn_p5)
 	
 	# Botão F4: Quebrar Aleatório
 	var btn_rand = Button.new()
@@ -290,9 +299,9 @@ func create_debug_ui() -> void:
 	debug_fail_btn.pressed.connect(func(): toggle_auto_failures())
 	vbox.add_child(debug_fail_btn)
 	
-	# Dica teclas 1 a 8 e H
+	# Dica teclas 1 a 5 e H
 	var hint = Label.new()
-	hint.text = "Teclas [1] a [8]: Quebrar terminal\nTecla [H]: Ocultar/Mostrar este menu"
+	hint.text = "Teclas [1] a [5]: Quebrar pares\nTecla [H]: Ocultar/Mostrar menu"
 	hint.add_theme_color_override("font_color", Color(0.65, 0.75, 0.85, 0.8))
 	hint.add_theme_font_size_override("font_size", 10)
 	vbox.add_child(hint)
@@ -330,34 +339,74 @@ func _show_debug_msg(msg: String) -> void:
 		debug_msg_label.text = msg
 		_debug_msg_timer = 3.0
 
+func break_pair(pair_num: int) -> void:
+	match pair_num:
+		1:
+			break_skillcheck_terminal()
+		2:
+			break_password_terminal()
+		3:
+			break_item_terminal()
+		4:
+			break_simon_terminal(3)
+		5:
+			break_sync_terminal()
+		_:
+			_show_debug_msg("Par %d desconhecido!" % pair_num)
+
 func break_simon_terminal(n_iterations: int = 3) -> void:
-	var simon_found = false
+	var count = 0
 	for st in stations:
 		if st.minigame_type == "simon":
-			simon_found = true
 			st.break_down(n_iterations)
-			_show_debug_msg("Simon quebrado (%d rodadas)!" % n_iterations)
-			break
-	if not simon_found:
+			count += 1
+	if count > 0:
+		_show_debug_msg("Par 4 (Simon Says - %d rodadas) quebrado!" % n_iterations)
+	else:
 		_show_debug_msg("Nenhum terminal Simon encontrado!")
 
 func break_skillcheck_terminal() -> void:
-	var sc_found = false
+	var count = 0
 	for st in stations:
 		if st.minigame_type == "skillcheck":
-			sc_found = true
 			st.break_down()
-			_show_debug_msg("Skillcheck quebrado!")
-			break
-	if not sc_found:
+			count += 1
+	if count > 0:
+		_show_debug_msg("Par 1 (Skillcheck / Geradores) quebrado!")
+	else:
 		_show_debug_msg("Nenhum terminal Skillcheck encontrado!")
 
 func break_password_terminal() -> void:
+	var count = 0
 	for st in stations:
 		if st.minigame_type == "password":
 			st.break_down()
-			_show_debug_msg("Senha quebrada!")
-			break
+			count += 1
+	if count > 0:
+		_show_debug_msg("Par 2 (Senha) quebrado!")
+	else:
+		_show_debug_msg("Nenhum terminal Senha encontrado!")
+
+func break_item_terminal() -> void:
+	var count = 0
+	for st in stations:
+		if st.minigame_type == "item":
+			st.break_down()
+			count += 1
+	if count > 0:
+		_show_debug_msg("Par 3 (Peças / Entrega) quebrado!")
+	else:
+		_show_debug_msg("Nenhum terminal de Peças encontrado!")
+
+func break_sync_terminal() -> void:
+	var sync_terminals = get_tree().get_nodes_in_group("sync_terminals")
+	if sync_terminals.is_empty():
+		_show_debug_msg("Nenhum Terminal Urgente encontrado!")
+		return
+	for sync in sync_terminals:
+		if sync.has_method("trigger_sync_event"):
+			sync.trigger_sync_event()
+	_show_debug_msg("Par 5 (Terminal Urgente) acionado!")
 
 func break_terminal_by_index(idx: int) -> void:
 	if idx >= 0 and idx < stations.size():
@@ -376,6 +425,9 @@ func toggle_machine_pause() -> void:
 
 func toggle_auto_failures() -> void:
 	auto_failures_enabled = not auto_failures_enabled
+	for sync in get_tree().get_nodes_in_group("sync_terminals"):
+		if sync.has_method("set_paused"):
+			sync.set_paused(not auto_failures_enabled)
 	_update_debug_ui()
 	_show_debug_msg("Quebra Automática: " + ("LIGADA" if auto_failures_enabled else "PARADA"))
 

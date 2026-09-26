@@ -12,15 +12,15 @@ script = ExtResource("1_sync")
 
 [node name="Screen_P1" type="AnimatedSprite2D" parent="."]
 top_level = true
-position = Vector2(80, 95)
-scale = Vector2(2.5, 2.5)
+position = Vector2(100, 140)
+scale = Vector2(3.5, 3.5)
 sprite_frames = ExtResource("3_scr_frames")
 animation = &"idle"
 
 [node name="Screen_P2" type="AnimatedSprite2D" parent="."]
 top_level = true
-position = Vector2(1200, 95)
-scale = Vector2(2.5, 2.5)
+position = Vector2(1180, 140)
+scale = Vector2(3.5, 3.5)
 sprite_frames = ExtResource("3_scr_frames")
 animation = &"idle"
 
