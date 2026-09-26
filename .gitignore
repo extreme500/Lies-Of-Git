@@ -17,6 +17,3 @@ mono_crash.*.json
 Thumbs.db
 *.tmp
 
-# User specific ignores
-project.godot
-scripts/*.uid
