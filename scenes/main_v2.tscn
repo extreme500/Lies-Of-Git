@@ -1,30 +1,21 @@
-[gd_scene format=3 uid="uid://bqev7clf2ujmv"]
+[gd_scene load_steps=12 format=3]
 
-[ext_resource type="Script" uid="uid://b4io8bayc12jl" path="res://scripts/game_manager.gd" id="1_gm"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
-[ext_resource type="Script" uid="uid://dybnb6g8y0bfw" path="res://scripts/centro_sc.gd" id="6_m14vd"]
-[ext_resource type="FontFile" uid="uid://b8fvccynkdd65" path="res://assets/Xeriko-R9R1A.otf" id="7_vapg3"]
-[ext_resource type="Texture2D" uid="uid://33wxuhway7h" path="res://assets/cimaa.png" id="8_vh1sb"]
-[ext_resource type="Texture2D" uid="uid://buxy6x513mn5q" path="res://assets/direit ).png" id="9_vapg3"]
-[ext_resource type="Texture2D" uid="uid://d0c1v128gbhpy" path="res://assets/baixo ).png" id="10_88uni"]
-[ext_resource type="Texture2D" uid="uid://06ox1qmfynye" path="res://assets/esquerda.png" id="11_ec30c"]
-[ext_resource type="Texture2D" uid="uid://wmeo37heky1e" path="res://assets/relogio.png" id="13_88uni"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
+[ext_resource type="Script" path="res://scripts/centro_sc.gd" id="9_centro"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(1280, 60)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
-size = Vector2(30, 720)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_divider"]
-size = Vector2(80, 560)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
-size = Vector2(1, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
+texture = ExtResource("7_ui_frame")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause"]
 bg_color = Color(0.08, 0.1, 0.16, 0.96)
@@ -58,13 +49,25 @@ content_margin_top = 8.0
 content_margin_right = 12.0
 content_margin_bottom = 8.0
 
-[node name="Main" type="Node2D" unique_id=1491414026]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1280, 60)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(30, 720)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_divider"]
+size = Vector2(80, 560)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(1, 1)
+
+[node name="Main" type="Node2D"]
 script = ExtResource("1_gm")
 
-[node name="Background" type="CanvasLayer" parent="." unique_id=353987022]
+[node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="Backdrop" type="ColorRect" parent="Background" unique_id=1024749076]
+[node name="Backdrop" type="ColorRect" parent="Background"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -72,355 +75,405 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.12, 0.16, 1)
 
-[node name="Chamber1Tint" type="ColorRect" parent="Background" unique_id=1984189772]
+[node name="Chamber1Tint" type="ColorRect" parent="Background"]
 offset_left = 30.0
 offset_top = 30.0
 offset_right = 625.0
 offset_bottom = 660.0
 color = Color(0.12, 0.15, 0.22, 0.6)
 
-[node name="Chamber2Tint" type="ColorRect" parent="Background" unique_id=1773106110]
+[node name="Chamber2Tint" type="ColorRect" parent="Background"]
 offset_left = 655.0
 offset_top = 30.0
 offset_right = 1250.0
 offset_bottom = 660.0
 color = Color(0.2, 0.16, 0.14, 0.6)
 
-[node name="DividerWindow" type="ColorRect" parent="Background" unique_id=68406317]
+[node name="DividerWindow" type="ColorRect" parent="Background"]
 offset_left = 600.0
-offset_top = 130.0
+offset_top = 320.0
 offset_right = 680.0
-offset_bottom = 640.0
+offset_bottom = 460.0
 color = Color(0.35, 0.6, 0.8, 0.4)
 
-[node name="DividerWindowGlow" type="ColorRect" parent="Background/DividerWindow" unique_id=1164179813]
-layout_mode = 0
+[node name="DividerWindowGlow" type="ColorRect" parent="Background/DividerWindow"]
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 76.0
-offset_bottom = 506.0
+offset_bottom = 138.0
 color = Color(0.6, 0.85, 1, 0.2)
 
-[node name="Environment" type="Node2D" parent="." unique_id=1275015510]
+[node name="Environment" type="Node2D" parent="."]
 
-[node name="Floor" type="StaticBody2D" parent="Environment" unique_id=231524328]
+[node name="Floor" type="StaticBody2D" parent="Environment"]
 position = Vector2(640, 690)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor" unique_id=1651385577]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Visual" type="ColorRect" parent="Environment/Floor" unique_id=1489239743]
+[node name="Visual" type="ColorRect" parent="Environment/Floor"]
 offset_left = -640.0
 offset_top = -30.0
 offset_right = 640.0
 offset_bottom = 30.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="Ceiling" type="StaticBody2D" parent="Environment" unique_id=1550782860]
+[node name="Ceiling" type="StaticBody2D" parent="Environment"]
 position = Vector2(640, 10)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling" unique_id=1102166588]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling"]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Visual" type="ColorRect" parent="Environment/Ceiling" unique_id=81144751]
+[node name="Visual" type="ColorRect" parent="Environment/Ceiling"]
 offset_left = -640.0
 offset_top = -30.0
 offset_right = 640.0
 offset_bottom = 30.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="LeftWall" type="StaticBody2D" parent="Environment" unique_id=2043195779]
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
 position = Vector2(15, 360)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall" unique_id=1492026317]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="Visual" type="ColorRect" parent="Environment/LeftWall" unique_id=1641607915]
+[node name="Visual" type="ColorRect" parent="Environment/LeftWall"]
 offset_left = -15.0
 offset_top = -360.0
 offset_right = 15.0
 offset_bottom = 360.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="RightWall" type="StaticBody2D" parent="Environment" unique_id=939628786]
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
 position = Vector2(1265, 360)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall" unique_id=1652133416]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="Visual" type="ColorRect" parent="Environment/RightWall" unique_id=1951714136]
+[node name="Visual" type="ColorRect" parent="Environment/RightWall"]
 offset_left = -15.0
 offset_top = -360.0
 offset_right = 15.0
 offset_bottom = 360.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="CenterDivider" type="StaticBody2D" parent="Environment" unique_id=1864363862]
+[node name="CenterDivider" type="StaticBody2D" parent="Environment"]
 position = Vector2(640, 410)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/CenterDivider" unique_id=1463230396]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/CenterDivider"]
 shape = SubResource("RectangleShape2D_divider")
 
-[node name="Visual" type="ColorRect" parent="Environment/CenterDivider" unique_id=1340141527]
+[node name="Visual" type="ColorRect" parent="Environment/CenterDivider"]
 offset_left = -40.0
 offset_top = -280.0
 offset_right = 40.0
 offset_bottom = 280.0
 color = Color(0.2, 0.23, 0.3, 1)
 
-[node name="Conveyor" parent="Environment" unique_id=1662467420 instance=ExtResource("6_conv")]
-position = Vector2(640, 385)
+[node name="Conveyor" parent="Environment" instance=ExtResource("6_conv")]
+position = Vector2(640, 380)
 
-[node name="Platforms" type="Node2D" parent="Environment" unique_id=950206165]
+[node name="Platforms" type="Node2D" parent="Environment"]
 
-[node name="P1_TopPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=2031458962]
+[node name="P1_TopPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(210, 230)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat" unique_id=963207675]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat"]
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1657411451]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat"]
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=851829317]
+[node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(120, 390)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1103325271]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat"]
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=2088967343]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat"]
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1407724848]
+[node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(430, 470)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat" unique_id=1490862572]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat"]
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat" unique_id=275474062]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat"]
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms" unique_id=1948865942]
+[node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(260, 560)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep" unique_id=1869062100]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep"]
 scale = Vector2(140, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep" unique_id=827652909]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep"]
 offset_left = -70.0
 offset_top = -10.0
 offset_right = 70.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1239859163]
+[node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(1070, 230)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat" unique_id=263410990]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat"]
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat" unique_id=1750334885]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat"]
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1835126638]
+[node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(850, 350)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=1557612547]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat"]
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=979949071]
-offset_left = -141.0
-offset_top = -11.0
-offset_right = 87.0
-offset_bottom = 9.0
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=2041609180]
+[node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(1080, 460)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidRightPlat" unique_id=1306775087]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidRightPlat"]
 scale = Vector2(170, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat" unique_id=835968420]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat"]
 offset_left = -85.0
 offset_top = -10.0
 offset_right = 85.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1010392369]
+[node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(880, 560)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat" unique_id=1637097033]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat"]
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1518040819]
-offset_left = -166.0
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat"]
+offset_left = -80.0
 offset_top = -10.0
-offset_right = 81.0
+offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="Máquina" parent="." unique_id=882343323 instance=ExtResource("2_maquina")]
-position = Vector2(640, 160)
+[node name="Stations" type="Node2D" parent="."]
 
-[node name="Stations" type="Node2D" parent="." unique_id=791068265]
-
-[node name="Station1_P1_Terminal" parent="Stations" unique_id=143693884 instance=ExtResource("4_station")]
+[node name="Station1_P1_Terminal" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(210, 200)
-station_name = "Terminal Alpha"
+station_name = "Gerador de Força"
+station_type = "gerador"
 minigame_type = "skillcheck"
+chamber_id = 1
 
-[node name="Station2_P1_Fiacao" parent="Stations" unique_id=1687299288 instance=ExtResource("4_station")]
+[node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(100, 360)
-station_name = "Fiação Elétrica"
+station_name = "Receptor de Código"
 station_type = "cabo"
+minigame_type = "password"
+chamber_id = 1
 
-[node name="Station3_P1_Valvula" parent="Stations" unique_id=841848892 instance=ExtResource("4_station")]
-position = Vector2(430, 440)
-station_name = "Válvula de Vapor"
+[node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(490, 640)
+station_name = "Dispensador de Peças"
 station_type = "valvula"
+minigame_type = "item"
+chamber_id = 1
 
-[node name="Station4_P2_Terminal" parent="Stations" unique_id=1337458876 instance=ExtResource("4_station")]
+[node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(1070, 200)
-station_name = "Terminal Beta"
-chamber_id = 2
+station_name = "Botão de Calibragem"
+station_type = "terminal"
 minigame_type = "skillcheck"
+chamber_id = 2
 
-[node name="Station5_P2_Bobina" parent="Stations" unique_id=189274913 instance=ExtResource("4_station")]
+[node name="Station5_P2_Bobina" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(880, 530)
-station_name = "Bobina de Pressão"
+station_name = "Entrada de Peças"
 station_type = "bobina"
+minigame_type = "item"
 chamber_id = 2
 
-[node name="Station6_P2_Juncao" parent="Stations" unique_id=1823664103 instance=ExtResource("4_station")]
+[node name="Station6_P2_Juncao" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(740, 640)
-station_name = "Painel de Fusíveis"
+station_name = "Terminal de Inserção"
 station_type = "cabo"
+minigame_type = "password"
 chamber_id = 2
 
-[node name="Station7_P1_Extra" parent="Stations" unique_id=128232386 instance=ExtResource("4_station")]
-position = Vector2(260, 530)
-station_name = "Simon Says Alpha"
+[node name="Station7_P1_Extra" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(430, 440)
+station_name = "Sequência Alfa"
+station_type = "terminal"
 minigame_type = "simon"
+chamber_id = 1
 
-[node name="Station8_P2_Extra" parent="Stations" unique_id=346839100 instance=ExtResource("4_station")]
+[node name="Station8_P2_Extra" parent="Stations" instance=ExtResource("4_station")]
 position = Vector2(1080, 430)
-station_name = "Simon Says Beta"
+station_name = "Sequência Beta"
+station_type = "bobina"
 minigame_type = "simon"
 chamber_id = 2
 
-[node name="SyncTerminal" parent="Stations" unique_id=763704838 groups=["sync_terminals"] instance=ExtResource("5_sync")]
+[node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
 position = Vector2(640, 640)
 
-[node name="AnguloSC" type="Node2D" parent="Stations" unique_id=355257020 groups=["skillcheck_visual"]]
+[node name="AnguloSC" type="Node2D" parent="Stations" groups=["skillcheck_visual"]]
 z_index = 25
 position = Vector2(210, 135)
 
-[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=1259149520 groups=["centro_sc", "skillcheck_visual"]]
+[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" groups=["centro_sc", "skillcheck_visual"]]
 z_index = 25
 z_as_relative = false
-position = Vector2(-376, 40)
-script = ExtResource("6_m14vd")
+script = ExtResource("9_centro")
 
-[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=325126713]
+[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC"]
 visible = false
 points = PackedVector2Array(0, 0, 65, 0)
 width = 6.0
 
-[node name="FontePC" type="Label" parent="Stations/AnguloSC" unique_id=1061159550]
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_fonts/font = ExtResource("7_vapg3")
-metadata/_edit_use_anchors_ = true
-
-[node name="Player1" parent="." unique_id=150972943 instance=ExtResource("3_player")]
+[node name="Player1" parent="." instance=ExtResource("3_player")]
 position = Vector2(100, 630)
+player_id = 1
 
-[node name="Player2" parent="." unique_id=1390286342 instance=ExtResource("3_player")]
+[node name="Player2" parent="." instance=ExtResource("3_player")]
 position = Vector2(1180, 630)
 player_id = 2
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=1624441967]
+[node name="FramesLayer" type="CanvasLayer" parent="."]
+layer = 1
 
-[node name="TopBar" type="PanelContainer" parent="HUD" unique_id=55421288]
+[node name="MainFrame" type="NinePatchRect" parent="FramesLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Chamber1Frame" type="NinePatchRect" parent="FramesLayer"]
+offset_left = 28.0
+offset_top = 54.0
+offset_right = 604.0
+offset_bottom = 686.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate = Color(0.2, 0.65, 1, 1)
+
+[node name="Chamber2Frame" type="NinePatchRect" parent="FramesLayer"]
+offset_left = 676.0
+offset_top = 54.0
+offset_right = 1252.0
+offset_bottom = 686.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate = Color(1, 0.6, 0.2, 1)
+
+[node name="TopBar" type="PanelContainer" parent="FramesLayer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 54.0
 grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="MarginContainer" type="MarginContainer" parent="HUD/TopBar" unique_id=1363885112]
+[node name="MarginContainer" type="MarginContainer" parent="FramesLayer/TopBar"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer" unique_id=39863099]
+[node name="HBoxContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="TimeContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer" unique_id=904598111]
+[node name="TimeContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="TimerLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/TimeContainer" unique_id=1270962831]
+[node name="TimerLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/TimeContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "Manter por: 01:00"
+text = "⏱️ Manter por: 01:00"
 
-[node name="IntegrityContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer" unique_id=783346044]
+[node name="IntegrityContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="IntegrityLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer" unique_id=1626937464]
+[node name="IntegrityLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
 theme_override_font_sizes/font_size = 16
 text = "Integridade da Máquina: 100%"
 
-[node name="IntegrityBar" type="ProgressBar" parent="HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer" unique_id=1130788144]
+[node name="IntegrityBar" type="ProgressBar" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
 custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 size_flags_vertical = 4
 value = 100.0
 show_percentage = false
 
-[node name="FaultsContainer" type="HBoxContainer" parent="HUD/TopBar/MarginContainer/HBoxContainer" unique_id=135127914]
+[node name="FaultsContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="FaultsLabel" type="Label" parent="HUD/TopBar/MarginContainer/HBoxContainer/FaultsContainer" unique_id=1929255257]
+[node name="FaultsLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/FaultsContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
 theme_override_font_sizes/font_size = 16
 text = "⚠️ Defeitos Ativos: 0"
 
-[node name="BottomBar" type="PanelContainer" parent="HUD" unique_id=561937689]
+[node name="BottomBar" type="PanelContainer" parent="FramesLayer"]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -428,15 +481,25 @@ anchor_bottom = 1.0
 offset_top = -32.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="Label" type="Label" parent="HUD/BottomBar" unique_id=485441196]
+[node name="Label" type="Label" parent="FramesLayer/BottomBar"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 12
 text = "P1 (Azul): [A/D] Andar | [W/Espaço] Pular | [E] Consertar   |||   P2 (Laranja): [Setas] Andar | [Cima] Pular | [ENTER] Consertar   |||   [R] Reiniciar"
 horizontal_alignment = 1
 
-[node name="VictoryPanel" type="PanelContainer" parent="HUD" unique_id=159116686]
+[node name="MachineLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Máquina" parent="MachineLayer" instance=ExtResource("2_maquina")]
+position = Vector2(640, 150)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="VictoryPanel" type="PanelContainer" parent="HUD"]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -450,25 +513,26 @@ offset_right = 220.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel" unique_id=1804505116]
+[node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/VictoryPanel/VBox" unique_id=1713445093]
+[node name="Title" type="Label" parent="HUD/VictoryPanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.95, 0.45, 1)
 theme_override_font_sizes/font_size = 22
 text = "🎉 VITÓRIA! MÁQUINA SALVA! 🎉"
 horizontal_alignment = 1
 
-[node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox" unique_id=266371876]
+[node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox"]
 layout_mode = 2
 text = "Vocês mantiveram a máquina operando!"
 horizontal_alignment = 1
 
-[node name="RestartBtn" type="Button" parent="HUD/VictoryPanel/VBox" unique_id=1730830071]
+[node name="RestartBtn" type="Button" parent="HUD/VictoryPanel/VBox"]
 layout_mode = 2
 text = "Jogar Novamente (R)"
 
@@ -476,7 +540,7 @@ text = "Jogar Novamente (R)"
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
-[node name="GameOverPanel" type="PanelContainer" parent="HUD" unique_id=200245674]
+[node name="GameOverPanel" type="PanelContainer" parent="HUD"]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -490,25 +554,26 @@ offset_right = 220.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel" unique_id=362040588]
+[node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/GameOverPanel/VBox" unique_id=1677832030]
+[node name="Title" type="Label" parent="HUD/GameOverPanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
 theme_override_font_sizes/font_size = 22
 text = "💥 A MÁQUINA EXPLODIU! 💥"
 horizontal_alignment = 1
 
-[node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox" unique_id=1648522482]
+[node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox"]
 layout_mode = 2
 text = "A integridade chegou a 0%."
 horizontal_alignment = 1
 
-[node name="RestartBtn" type="Button" parent="HUD/GameOverPanel/VBox" unique_id=1257734826]
+[node name="RestartBtn" type="Button" parent="HUD/GameOverPanel/VBox"]
 layout_mode = 2
 text = "Tentar Novamente (R)"
 
@@ -516,7 +581,7 @@ text = "Tentar Novamente (R)"
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
-[node name="PausePanel" type="PanelContainer" parent="HUD" unique_id=523122336]
+[node name="PausePanel" type="PanelContainer" parent="HUD"]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -532,12 +597,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pause")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/PausePanel" unique_id=996412335]
+[node name="VBox" type="VBoxContainer" parent="HUD/PausePanel"]
 layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/PausePanel/VBox" unique_id=84324079]
+[node name="Title" type="Label" parent="HUD/PausePanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 22
@@ -611,42 +676,17 @@ value = 100.0
 [node name="HSeparator" type="HSeparator" parent="HUD/PausePanel/VBox"]
 layout_mode = 2
 
-[node name="ResumeBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=1750699162]
+[node name="ResumeBtn" type="Button" parent="HUD/PausePanel/VBox"]
 layout_mode = 2
 text = "Continuar (ESC)"
 
-[node name="RestartBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=280565442]
+[node name="RestartBtn" type="Button" parent="HUD/PausePanel/VBox"]
 layout_mode = 2
 text = "Reiniciar Fase (R)"
 
 [node name="MainMenuBtn" type="Button" parent="HUD/PausePanel/VBox"]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
-
-[node name="cima png" type="Sprite2D" parent="." unique_id=825239355]
-position = Vector2(-202, 23)
-scale = Vector2(0.02, 0.02)
-texture = ExtResource("8_vh1sb")
-
-[node name="direita png" type="Sprite2D" parent="." unique_id=1341364888]
-position = Vector2(-193, 25)
-scale = Vector2(0.02, 0.02)
-texture = ExtResource("9_vapg3")
-
-[node name="baixo png" type="Sprite2D" parent="." unique_id=661193449]
-position = Vector2(-200, 25)
-scale = Vector2(0.02, 0.02)
-texture = ExtResource("10_88uni")
-
-[node name="esquerda png" type="Sprite2D" parent="." unique_id=1038247931]
-position = Vector2(-197, 34)
-scale = Vector2(0.02, 0.02)
-texture = ExtResource("11_ec30c")
-
-[node name="Relogio" type="Sprite2D" parent="." unique_id=1293429293]
-position = Vector2(-57.99997, 18)
-scale = Vector2(0.05, 0.05)
-texture = ExtResource("13_88uni")
 
 [connection signal="pressed" from="HUD/VictoryPanel/VBox/RestartBtn" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="HUD/VictoryPanel/VBox/MainMenuBtn" to="." method="_on_main_menu_button_pressed"]
