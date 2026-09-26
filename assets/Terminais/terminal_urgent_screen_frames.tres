@@ -1,0 +1,100 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Aguardando)/sprite_0.png" id="1_g3h7q"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Aguardando)/sprite_1.png" id="2_428yw"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Aguardando)/sprite_2.png" id="3_kebxk"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Aguardando)/sprite_3.png" id="4_xj12s"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_0.png" id="5_4rx57"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_1.png" id="6_imeoa"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_2.png" id="7_7ncmg"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_3.png" id="8_vfkle"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_4.png" id="9_pdnn5"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_5.png" id="10_4fi4f"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Idle)/sprite_6.png" id="11_iqpqb"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_0.png" id="12_w6fh1"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_1.png" id="13_3tvtd"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_2.png" id="14_kvc5j"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_3.png" id="15_jlgrd"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_4.png" id="16_rvdl2"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_5.png" id="17_vm6f5"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_6.png" id="18_mg2jf"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_7.png" id="19_6vwgt"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Urgente (Tela de Aviso - Transição)/sprite_8.png" id="20_10y16"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_g3h7q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_428yw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_kebxk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_xj12s")
+}],
+"loop": 1,
+"name": &"alert",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_4rx57")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_imeoa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_7ncmg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vfkle")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_pdnn5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_4fi4f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_iqpqb")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_w6fh1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_3tvtd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_kvc5j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_jlgrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_rvdl2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_vm6f5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_mg2jf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_6vwgt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_10y16")
+}],
+"loop": 0,
+"name": &"transition",
+"speed": 10.0
+}]

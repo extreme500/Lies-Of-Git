@@ -1,0 +1,59 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_0.png" id="1_4rfs6"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_3.png" id="2_8y0dx"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_5.png" id="3_fli2i"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_1.png" id="4_2d7ak"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_4.png" id="5_paxjv"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Simon Says/sprite_2.png" id="6_nuss5"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_4rfs6")
+}],
+"loop": 0,
+"name": &"all_on",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_8y0dx")
+}],
+"loop": 0,
+"name": &"blue",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_fli2i")
+}],
+"loop": 0,
+"name": &"green",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_2d7ak")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_paxjv")
+}],
+"loop": 0,
+"name": &"red",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_nuss5")
+}],
+"loop": 0,
+"name": &"yellow",
+"speed": 1.0
+}]

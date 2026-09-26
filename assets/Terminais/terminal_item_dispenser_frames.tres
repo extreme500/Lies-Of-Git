@@ -1,0 +1,66 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_00.png" id="1_j4b3v"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_01.png" id="2_1jwrd"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_02.png" id="3_hln77"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_03.png" id="4_cxmqu"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_04.png" id="5_k58yy"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_05.png" id="6_tfihi"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_06.png" id="7_151r4"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_07.png" id="8_18f8i"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_08.png" id="9_fds5i"]
+[ext_resource type="Texture2D" path="res://assets/Terminais/Terminal Entrega (Dispenser)/sprite_09.png" id="10_f8tvx"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_j4b3v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_1jwrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hln77")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_cxmqu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_k58yy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_tfihi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_151r4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_18f8i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_fds5i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_f8tvx")
+}],
+"loop": 0,
+"name": &"dispense",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_j4b3v")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_tfihi")
+}],
+"loop": 0,
+"name": &"ready",
+"speed": 1.0
+}]
