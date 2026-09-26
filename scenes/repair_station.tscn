@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://dng2ii2tnl3ue"]
 
-[ext_resource type="Script" path="res://scripts/repair_station.gd" id="1_station"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="2_frame"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_30.png" id="3_screen"]
+[ext_resource type="Script" uid="uid://d0m6ia6yxausj" path="res://scripts/repair_station.gd" id="1_station"]
+[ext_resource type="Texture2D" uid="uid://da7pjwyowamww" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="2_frame"]
+[ext_resource type="Texture2D" uid="uid://dq6fho4is08pu" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_30.png" id="3_screen"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_zone"]
 radius = 45.0
@@ -26,12 +26,12 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="RepairStation" type="Node2D" groups=["repair_stations"]]
+[node name="RepairStation" type="Node2D" unique_id=591998388 groups=["repair_stations"]]
 script = ExtResource("1_station")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=1715103747]
 
-[node name="Base" type="NinePatchRect" parent="Visual"]
+[node name="Base" type="NinePatchRect" parent="Visual" unique_id=1608070432]
 offset_left = -25.0
 offset_top = -20.0
 offset_right = 25.0
@@ -42,7 +42,7 @@ patch_margin_top = 8
 patch_margin_right = 8
 patch_margin_bottom = 8
 
-[node name="PanelBorder" type="NinePatchRect" parent="Visual"]
+[node name="PanelBorder" type="NinePatchRect" parent="Visual" unique_id=1550679277]
 offset_left = -20.0
 offset_top = -15.0
 offset_right = 20.0
@@ -53,40 +53,40 @@ patch_margin_top = 4
 patch_margin_right = 4
 patch_margin_bottom = 4
 
-[node name="StatusLight" type="ColorRect" parent="Visual"]
+[node name="StatusLight" type="ColorRect" parent="Visual" unique_id=40706540]
 offset_left = 12.0
 offset_top = -14.0
 offset_right = 18.0
 offset_bottom = -8.0
 color = Color(0.2, 0.9, 0.3, 1)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual" unique_id=678922036]
 texture_filter = 1
 position = Vector2(0, -2)
 scale = Vector2(2, 2)
 
-[node name="InteractionZone" type="Area2D" parent="."]
+[node name="InteractionZone" type="Area2D" parent="." unique_id=334428364]
 collision_layer = 4
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone" unique_id=1664352880]
 position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_zone")
 
-[node name="WarningIcon" type="Node2D" parent="."]
+[node name="WarningIcon" type="Node2D" parent="." unique_id=54232817]
 position = Vector2(0, -56)
 
-[node name="IconLabel" type="Label" parent="WarningIcon"]
+[node name="IconLabel" type="Label" parent="WarningIcon" unique_id=305315199]
 offset_left = -30.0
 offset_top = -14.0
 offset_right = 30.0
 offset_bottom = 14.0
 theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 18
-text = "⚠️ FALHA"
+text = "⚠️ MORRA"
 horizontal_alignment = 1
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1297620393]
 offset_left = -35.0
 offset_top = -48.0
 offset_right = 35.0
@@ -94,7 +94,7 @@ offset_bottom = -40.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_progress")
 show_percentage = false
 
-[node name="SparksParticles" type="CPUParticles2D" parent="."]
+[node name="SparksParticles" type="CPUParticles2D" parent="." unique_id=291644249]
 position = Vector2(0, -2)
 emitting = false
 amount = 14
@@ -108,7 +108,7 @@ scale_amount_min = 2.0
 scale_amount_max = 4.0
 color = Color(1, 0.7, 0.2, 1)
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="." unique_id=1121135789]
 visible = false
 offset_left = -60.0
 offset_top = 22.0
@@ -119,7 +119,7 @@ theme_override_font_sizes/font_size = 11
 text = "Terminal"
 horizontal_alignment = 1
 
-[node name="MinigameUI" type="Control" parent="."]
+[node name="MinigameUI" type="Control" parent="." unique_id=1209751649]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -128,7 +128,7 @@ offset_top = -120.0
 offset_right = 90.0
 offset_bottom = -54.0
 
-[node name="Panel" type="Panel" parent="MinigameUI"]
+[node name="Panel" type="Panel" parent="MinigameUI" unique_id=985387701]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -137,7 +137,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_minigame")
 
-[node name="Label" type="Label" parent="MinigameUI"]
+[node name="Label" type="Label" parent="MinigameUI" unique_id=91611997]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -150,7 +150,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="ArrowContainer" type="HBoxContainer" parent="MinigameUI"]
+[node name="ArrowContainer" type="HBoxContainer" parent="MinigameUI" unique_id=2032072408]
 visible = false
 layout_mode = 1
 anchors_preset = 12
@@ -161,5 +161,5 @@ offset_top = -38.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
-alignment = 1
 theme_override_constants/separation = 12
+alignment = 1

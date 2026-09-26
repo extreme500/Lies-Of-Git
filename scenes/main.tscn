@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
+[ext_resource type="Texture2D" uid="uid://cro36ww32wjbf" path="res://assets/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_27.png" id="3_tt3km"]
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
@@ -182,12 +183,15 @@ position = Vector2(210, 230)
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_TopPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(120, 390)
@@ -196,12 +200,15 @@ position = Vector2(120, 390)
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(430, 470)
@@ -210,12 +217,15 @@ position = Vector2(430, 470)
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidRightPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(260, 560)
@@ -224,12 +234,15 @@ position = Vector2(260, 560)
 scale = Vector2(140, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -70.0
 offset_top = -10.0
 offset_right = 70.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(1070, 230)
@@ -238,12 +251,15 @@ position = Vector2(1070, 230)
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_TopPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(850, 350)
@@ -252,12 +268,15 @@ position = Vector2(850, 350)
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidLeftPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(1080, 460)
@@ -266,12 +285,15 @@ position = Vector2(1080, 460)
 scale = Vector2(170, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidRightPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -85.0
 offset_top = -10.0
 offset_right = 85.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms"]
 position = Vector2(880, 560)
@@ -280,12 +302,15 @@ position = Vector2(880, 560)
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat"]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_LowPlat"]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="Stations" type="Node2D" parent="."]
 

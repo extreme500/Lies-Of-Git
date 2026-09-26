@@ -1,18 +1,18 @@
-[gd_scene format=3 uid="uid://cx7jjrn3g3pqb"]
+[gd_scene format=3 uid="uid://bqphgkag05twm"]
 
 [ext_resource type="Script" uid="uid://b4io8bayc12jl" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
-[ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
+[ext_resource type="PackedScene" uid="uid://dng2ii2tnl3ue" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
 [ext_resource type="Script" uid="uid://dybnb6g8y0bfw" path="res://scripts/centro_sc.gd" id="6_m14vd"]
-[ext_resource type="FontFile" uid="uid://b8fvccynkdd65" path="res://assets/Xeriko-R9R1A.otf" id="7_vapg3"]
-[ext_resource type="Texture2D" uid="uid://33wxuhway7h" path="res://assets/cimaa.png" id="8_vh1sb"]
-[ext_resource type="Texture2D" uid="uid://buxy6x513mn5q" path="res://assets/direit ).png" id="9_vapg3"]
-[ext_resource type="Texture2D" uid="uid://d0c1v128gbhpy" path="res://assets/baixo ).png" id="10_88uni"]
-[ext_resource type="Texture2D" uid="uid://06ox1qmfynye" path="res://assets/esquerda.png" id="11_ec30c"]
-[ext_resource type="Texture2D" uid="uid://wmeo37heky1e" path="res://assets/relogio.png" id="13_88uni"]
+[ext_resource type="FontFile" path="res://assets/Xeriko-R9R1A.otf" id="7_vapg3"]
+[ext_resource type="Texture2D" path="res://assets/cimaa.png" id="8_vh1sb"]
+[ext_resource type="Texture2D" path="res://assets/direit ).png" id="9_vapg3"]
+[ext_resource type="Texture2D" path="res://assets/baixo ).png" id="10_88uni"]
+[ext_resource type="Texture2D" path="res://assets/esquerda.png" id="11_ec30c"]
+[ext_resource type="Texture2D" path="res://assets/relogio.png" id="13_88uni"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -27,6 +27,10 @@ size = Vector2(80, 560)
 size = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause"]
+content_margin_left = 20.0
+content_margin_top = 18.0
+content_margin_right = 20.0
+content_margin_bottom = 18.0
 bg_color = Color(0.08, 0.1, 0.16, 0.96)
 border_width_left = 2
 border_width_top = 2
@@ -37,12 +41,12 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-content_margin_left = 20.0
-content_margin_top = 18.0
-content_margin_right = 20.0
-content_margin_bottom = 18.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_diff"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
 bg_color = Color(0.12, 0.15, 0.22, 0.85)
 border_width_left = 1
 border_width_top = 1
@@ -53,10 +57,6 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 8.0
 
 [node name="Main" type="Node2D" unique_id=1491414026]
 script = ExtResource("1_gm")
@@ -308,8 +308,8 @@ station_type = "valvula"
 [node name="Station4_P2_Terminal" parent="Stations" unique_id=1337458876 instance=ExtResource("4_station")]
 position = Vector2(1070, 200)
 station_name = "Terminal Beta"
-chamber_id = 2
 minigame_type = "skillcheck"
+chamber_id = 2
 
 [node name="Station5_P2_Bobina" parent="Stations" unique_id=189274913 instance=ExtResource("4_station")]
 position = Vector2(880, 530)
@@ -472,7 +472,7 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Jogar Novamente (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/VictoryPanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/VictoryPanel/VBox" unique_id=1099070521]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
@@ -512,7 +512,7 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Tentar Novamente (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/GameOverPanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/GameOverPanel/VBox" unique_id=748928293]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
@@ -544,22 +544,22 @@ theme_override_font_sizes/font_size = 22
 text = "⏸️ JOGO PAUSADO"
 horizontal_alignment = 1
 
-[node name="DifficultyBox" type="PanelContainer" parent="HUD/PausePanel/VBox"]
+[node name="DifficultyBox" type="PanelContainer" parent="HUD/PausePanel/VBox" unique_id=1748283583]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_diff")
 
-[node name="DiffVBox" type="VBoxContainer" parent="HUD/PausePanel/VBox/DifficultyBox"]
+[node name="DiffVBox" type="VBoxContainer" parent="HUD/PausePanel/VBox/DifficultyBox" unique_id=761055950]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="DiffCurrentLabel" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox"]
+[node name="DiffCurrentLabel" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox" unique_id=1291192534]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "Dificuldade: [ NORMAL ]"
 horizontal_alignment = 1
 
-[node name="DiffLockedNotice" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox"]
+[node name="DiffLockedNotice" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox" unique_id=224125171]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.25, 1)
 theme_override_font_sizes/font_size = 11
@@ -567,48 +567,44 @@ text = "🔒 precisa voltar no menu para aumentar a dificuldade"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="AudioBox" type="VBoxContainer" parent="HUD/PausePanel/VBox"]
+[node name="AudioBox" type="VBoxContainer" parent="HUD/PausePanel/VBox" unique_id=551679265]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AudioSectionTitle" type="Label" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="AudioSectionTitle" type="Label" parent="HUD/PausePanel/VBox/AudioBox" unique_id=487197684]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 12
 text = "🔊 CONFIGURAÇÕES DE ÁUDIO"
 horizontal_alignment = 1
 
-[node name="MusicContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="MusicContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox" unique_id=655460709]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="MusicLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer"]
+[node name="MusicLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer" unique_id=1272185200]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Música: 80%"
 
-[node name="MusicSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer"]
+[node name="MusicSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer" unique_id=1654154086]
 layout_mode = 2
-max_value = 100.0
-step = 1.0
 value = 80.0
 
-[node name="SFXContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="SFXContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox" unique_id=931192703]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="SFXLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer"]
+[node name="SFXLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer" unique_id=1859464932]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Efeitos (SFX): 100%"
 
-[node name="SFXSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer"]
+[node name="SFXSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer" unique_id=1549892135]
 layout_mode = 2
-max_value = 100.0
-step = 1.0
 value = 100.0
 
-[node name="HSeparator" type="HSeparator" parent="HUD/PausePanel/VBox"]
+[node name="HSeparator" type="HSeparator" parent="HUD/PausePanel/VBox" unique_id=253363779]
 layout_mode = 2
 
 [node name="ResumeBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=1750699162]
@@ -619,7 +615,7 @@ text = "Continuar (ESC)"
 layout_mode = 2
 text = "Reiniciar Fase (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/PausePanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=1688417717]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 

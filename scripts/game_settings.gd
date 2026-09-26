@@ -33,9 +33,9 @@ static func get_difficulty_name() -> String:
 	
 static func get_difficulty_colour() -> Color:
 	match difficulty:
-		Difficulty.EASY: return Color(0.25, 0.95, 0.45) # Verde limão vibrante
-		Difficulty.NORMAL: return Color(1.0, 0.72, 0.2) # Âmbar/Laranja
-		Difficulty.HARD: return Color(1.0, 0.28, 0.28) # Vermelho vivo e legível
+		Difficulty.EASY: return Color(0.25, 0.95, 0.55) # Verde limão vibrante
+		Difficulty.NORMAL: return Color(1.0, 0.72, 0.3) # Âmbar/Laranja
+		Difficulty.HARD: return Color(1.0, 0.18, 0.38) # Vermelho vivo e legível
 	return Color(1.0, 0.72, 0.2)
 
 static func get_difficulty_color() -> Color:

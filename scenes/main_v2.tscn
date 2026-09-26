@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b4io8bayc12jl" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
+[ext_resource type="Texture2D" uid="uid://cro36ww32wjbf" path="res://assets/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_27.png" id="3_tt3km"]
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
@@ -180,16 +181,18 @@ position = Vector2(640, 380)
 position = Vector2(210, 230)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat" unique_id=443361105]
-position = Vector2(0, 51)
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1237646285]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1237646285]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -100.0
-offset_top = 39.0
+offset_top = -10.0
 offset_right = 100.0
-offset_bottom = 62.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1895260463]
 position = Vector2(120, 390)
@@ -198,12 +201,15 @@ position = Vector2(120, 390)
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1285588913]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1285588913]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1877699322]
 position = Vector2(430, 470)
@@ -212,12 +218,15 @@ position = Vector2(430, 470)
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat" unique_id=629610095]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidRightPlat" unique_id=629610095]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms" unique_id=448525875]
 position = Vector2(260, 560)
@@ -226,12 +235,15 @@ position = Vector2(260, 560)
 scale = Vector2(140, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep" unique_id=1700371150]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep" unique_id=1700371150]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -70.0
 offset_top = -10.0
 offset_right = 70.0
-offset_bottom = 10.0
-color = Color(0.28, 0.35, 0.45, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=551099191]
 position = Vector2(1070, 230)
@@ -240,12 +252,15 @@ position = Vector2(1070, 230)
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat" unique_id=1010813753]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_TopPlat" unique_id=1010813753]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1810224171]
 position = Vector2(850, 350)
@@ -254,12 +269,15 @@ position = Vector2(850, 350)
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=806936712]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=806936712]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=765664658]
 position = Vector2(1080, 460)
@@ -268,12 +286,15 @@ position = Vector2(1080, 460)
 scale = Vector2(170, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat" unique_id=944028547]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidRightPlat" unique_id=944028547]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -85.0
 offset_top = -10.0
 offset_right = 85.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=399898186]
 position = Vector2(880, 560)
@@ -282,12 +303,15 @@ position = Vector2(880, 560)
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1122503641]
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1122503641]
+texture_filter = 1
+texture_repeat = 2
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
-offset_bottom = 10.0
-color = Color(0.45, 0.32, 0.28, 1)
+offset_bottom = 22.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
 
 [node name="Stations" type="Node2D" parent="." unique_id=105656817]
 
