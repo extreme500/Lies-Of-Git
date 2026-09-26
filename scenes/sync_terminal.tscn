@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/sync_terminal.gd" id="1_sync"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_04.png" id="2_frame"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
 size = Vector2(50, 40)
@@ -10,12 +11,16 @@ script = ExtResource("1_sync")
 
 [node name="Visual" type="Node2D" parent="."]
 
-[node name="Base" type="ColorRect" parent="Visual"]
+[node name="Base" type="NinePatchRect" parent="Visual"]
 offset_left = -30.0
 offset_top = -20.0
 offset_right = 30.0
 offset_bottom = 20.0
-color = Color(0.2, 0.2, 0.25, 1)
+texture = ExtResource("2_frame")
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
 
 [node name="StatusLight" type="ColorRect" parent="Visual"]
 offset_left = -20.0

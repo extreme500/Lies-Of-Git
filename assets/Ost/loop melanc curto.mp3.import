@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cxsbaeh0cprr"
+path="res://.godot/imported/loop melanc curto.mp3-38dde6bae79a7227a52c9a8f89ad36c1.mp3str"
+
+[deps]
+
+source_file="res://assets/Ost/loop melanc curto.mp3"
+dest_files=["res://.godot/imported/loop melanc curto.mp3-38dde6bae79a7227a52c9a8f89ad36c1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -6,6 +6,15 @@
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
+texture = ExtResource("7_ui_frame")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -251,55 +260,55 @@ position = Vector2(640, 95)
 [node name="Stations" type="Node2D" parent="."]
 
 [node name="Station1_P1_Terminal" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(210, 195)
+position = Vector2(210, 200)
 station_name = "Terminal Alpha"
 station_type = "terminal"
 chamber_id = 1
 
 [node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(100, 355)
+position = Vector2(100, 360)
 station_name = "Fiação Elétrica"
 station_type = "cabo"
 chamber_id = 1
 
 [node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(490, 625)
+position = Vector2(490, 640)
 station_name = "Válvula de Vapor"
 station_type = "valvula"
 chamber_id = 1
 
 [node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(1070, 195)
+position = Vector2(1070, 200)
 station_name = "Terminal Beta"
 station_type = "terminal"
 chamber_id = 2
 
 [node name="Station5_P2_Bobina" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(880, 525)
+position = Vector2(880, 530)
 station_name = "Bobina de Pressão"
 station_type = "bobina"
 chamber_id = 2
 
 [node name="Station6_P2_Juncao" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(740, 625)
+position = Vector2(740, 640)
 station_name = "Painel de Fusíveis"
 station_type = "cabo"
 chamber_id = 2
 
 [node name="Station7_P1_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(100, 520)
+position = Vector2(430, 440)
 station_name = "Filtro Auxiliar"
 station_type = "terminal"
 chamber_id = 1
 
 [node name="Station8_P2_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
-position = Vector2(1150, 520)
+position = Vector2(1150, 430)
 station_name = "Compressor"
 station_type = "bobina"
 chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
-position = Vector2(640, 680)
+position = Vector2(640, 640)
 
 [node name="Player1" parent="." instance=ExtResource("3_player")]
 position = Vector2(100, 630)
@@ -311,11 +320,57 @@ player_id = 2
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
+[node name="MainFrame" type="NinePatchRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Chamber1Frame" type="NinePatchRect" parent="HUD"]
+offset_left = 28.0
+offset_top = 54.0
+offset_right = 604.0
+offset_bottom = 666.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate = Color(0.2, 0.65, 1, 1)
+
+[node name="Chamber2Frame" type="NinePatchRect" parent="HUD"]
+offset_left = 676.0
+offset_top = 54.0
+offset_right = 1252.0
+offset_bottom = 666.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate = Color(1, 0.6, 0.2, 1)
+
 [node name="TopBar" type="PanelContainer" parent="HUD"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 54.0
 grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
 [node name="MarginContainer" type="MarginContainer" parent="HUD/TopBar"]
 layout_mode = 2
@@ -372,6 +427,7 @@ anchor_bottom = 1.0
 offset_top = -32.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
 [node name="Label" type="Label" parent="HUD/BottomBar"]
 layout_mode = 2
@@ -394,6 +450,7 @@ offset_right = 220.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
 [node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel"]
 layout_mode = 2
@@ -430,6 +487,7 @@ offset_right = 220.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
 [node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel"]
 layout_mode = 2
@@ -466,6 +524,7 @@ offset_right = 160.0
 offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
 [node name="VBox" type="VBoxContainer" parent="HUD/PausePanel"]
 layout_mode = 2

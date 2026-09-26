@@ -81,9 +81,9 @@ func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 		
 		var c = colors[i % colors.size()]
 		var l_base = left_st.get_node_or_null("Visual/Base")
-		if l_base is ColorRect: l_base.color = c
+		if l_base: l_base.modulate = c
 		var r_base = right_st.get_node_or_null("Visual/Base")
-		if r_base is ColorRect: r_base.color = c
+		if r_base: r_base.modulate = c
 		
 		left_st.setup_minigame(m_type, "A", right_st)
 		right_st.setup_minigame(m_type, "B", left_st)

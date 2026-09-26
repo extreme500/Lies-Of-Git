@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dof10njcq7irp"
+path="res://.godot/imported/loop melancolico.mp3-2eec6e7c6f24f7b87a7d8a3af586ed47.mp3str"
+
+[deps]
+
+source_file="res://assets/Ost/loop melancolico.mp3"
+dest_files=["res://.godot/imported/loop melancolico.mp3-2eec6e7c6f24f7b87a7d8a3af586ed47.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
