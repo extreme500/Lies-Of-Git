@@ -254,6 +254,67 @@ offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
+[node name="Stations" type="Node2D" parent="."]
+
+[node name="Station1_P1_Terminal" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(210, 200)
+station_name = "Terminal Alpha"
+station_type = "terminal"
+chamber_id = 1
+
+[node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(100, 360)
+station_name = "Fiação Elétrica"
+station_type = "cabo"
+chamber_id = 1
+
+[node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(490, 640)
+station_name = "Válvula de Vapor"
+station_type = "valvula"
+chamber_id = 1
+
+[node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(1070, 200)
+station_name = "Terminal Beta"
+station_type = "terminal"
+chamber_id = 2
+
+[node name="Station5_P2_Bobina" parent="Stations" instance=ExtResource("4_station")]
+position = Vector2(880, 530)
+station_name = "Bobina de Pressão"
+station_type = "bobina"
+chamber_id = 2
+
+[node name="Station6_P2_Juncao" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
+position = Vector2(740, 640)
+station_name = "Painel de Fusíveis"
+station_type = "cabo"
+chamber_id = 2
+
+[node name="Station7_P1_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
+position = Vector2(430, 440)
+station_name = "Filtro Auxiliar"
+station_type = "terminal"
+chamber_id = 1
+
+[node name="Station8_P2_Extra" parent="Stations" groups=["repair_stations"] instance=ExtResource("4_station")]
+position = Vector2(1150, 430)
+station_name = "Compressor"
+station_type = "bobina"
+chamber_id = 2
+
+[node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
+position = Vector2(640, 640)
+
+[node name="Player1" parent="." instance=ExtResource("3_player")]
+position = Vector2(100, 630)
+player_id = 1
+
+[node name="Player2" parent="." instance=ExtResource("3_player")]
+position = Vector2(1180, 630)
+player_id = 2
+
 [node name="FramesLayer" type="CanvasLayer" parent="."]
 layer = 1
 
@@ -378,7 +439,7 @@ horizontal_alignment = 1
 layer = 2
 
 [node name="Máquina" parent="MachineLayer" instance=ExtResource("2_maquina")]
-position = Vector2(640, 185)
+position = Vector2(640, 150)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 10

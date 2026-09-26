@@ -5,10 +5,10 @@
 
 [sub_resource type="Environment" id="Environment_3d"]
 ambient_light_source = 2
-ambient_light_color = Color(0.25, 0.27, 0.32, 1)
-ambient_light_energy = 0.5
+ambient_light_color = Color(0.3, 0.32, 0.36, 1)
+ambient_light_energy = 0.6
 tonemap_mode = 2
-tonemap_exposure = 0.9
+tonemap_exposure = 1.0
 
 [node name="TennaSphere3D" type="Node3D"]
 
@@ -18,20 +18,23 @@ environment = SubResource("Environment_3d")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 2, 2.5)
 light_color = Color(0.95, 0.95, 0.95, 1)
-light_energy = 1.0
+light_energy = 1.2
 
 [node name="FillLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, 0.25, -0.433013, 0, 0.866025, 0.5, 0.5, 0.433013, -0.75, 0, 1, -2)
 light_color = Color(0.75, 0.8, 0.9, 1)
-light_energy = 0.35
+light_energy = 0.5
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.2)
 current = true
-fov = 40.0
+fov = 36.0
 
 [node name="SphereRoot" type="Node3D" parent="."]
 script = ExtResource("1_script")
 
-[node name="DroneModel" parent="SphereRoot" instance=ExtResource("2_drone")]
-transform = Transform3D(0.52, 0, 0, 0, 0.52, 0, 0, 0, 0.52, 0, 0, 0)
+[node name="DronePivot" type="Node3D" parent="SphereRoot"]
+transform = Transform3D(-0.85, 0, 0, 0, 0.85, 0, 0, 0, -0.85, 0, 0, 0)
+
+[node name="DroneModel" parent="SphereRoot/DronePivot" instance=ExtResource("2_drone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.09172, -1.35282, -0.756896)
