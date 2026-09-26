@@ -210,6 +210,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_6: break_terminal_by_index(5)
 			KEY_7: break_terminal_by_index(6)
 			KEY_8: break_terminal_by_index(7)
+			KEY_H: toggle_debug_ui()
+
+func toggle_debug_ui() -> void:
+	if debug_panel:
+		debug_panel.visible = not debug_panel.visible
 
 func create_debug_ui() -> void:
 	if not hud: return
@@ -285,9 +290,9 @@ func create_debug_ui() -> void:
 	debug_fail_btn.pressed.connect(func(): toggle_auto_failures())
 	vbox.add_child(debug_fail_btn)
 	
-	# Dica teclas 1 a 8
+	# Dica teclas 1 a 8 e H
 	var hint = Label.new()
-	hint.text = "Teclas [1] a [8]: Quebrar terminal"
+	hint.text = "Teclas [1] a [8]: Quebrar terminal\nTecla [H]: Ocultar/Mostrar este menu"
 	hint.add_theme_color_override("font_color", Color(0.65, 0.75, 0.85, 0.8))
 	hint.add_theme_font_size_override("font_size", 10)
 	vbox.add_child(hint)

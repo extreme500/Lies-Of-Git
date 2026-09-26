@@ -197,43 +197,39 @@ func _physics_process(delta: float) -> void:
 	# Atualiza o estado da animação dos sprites (Idle, Run, Jump, Fix, Transition)
 	update_animation_state(delta)
 	
-	# Inputs de minigame (password: só aceita um input por pressionamento)
+	# Inputs de minigame (password e simon: só aceita um input por pressionamento do jogador correto)
 	if is_repairing:
-		var current_station = get_active_broken_station()
-		var is_password = current_station != null and current_station.has_method("get_minigame_type") and current_station.get_minigame_type() == "password"
+		var up_pressed: bool = false
+		var down_pressed: bool = false
+		var left_pressed: bool = false
+		var right_pressed: bool = false
 		
-		var up_pressed    = Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
-		var down_pressed  = Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
-		var left_pressed  = Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)
-		var right_pressed = Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)
+		if player_id == 1:
+			up_pressed = Input.is_key_pressed(KEY_W)
+			down_pressed = Input.is_key_pressed(KEY_S)
+			left_pressed = Input.is_key_pressed(KEY_A)
+			right_pressed = Input.is_key_pressed(KEY_D)
+		else:
+			up_pressed = Input.is_key_pressed(KEY_UP)
+			down_pressed = Input.is_key_pressed(KEY_DOWN)
+			left_pressed = Input.is_key_pressed(KEY_LEFT)
+			right_pressed = Input.is_key_pressed(KEY_RIGHT)
+		
 		var any_dir_pressed = up_pressed or down_pressed or left_pressed or right_pressed
 		
-		if is_password:
-			# Modo senha: registra apenas UM input por pressionamento
-			if not any_dir_pressed:
-				_password_key_held = false  # Tecla solta, pronto para nova leitura
-			elif not _password_key_held:
-				_password_key_held = true
-				if up_pressed:
-					send_minigame_input("UP")
-				elif down_pressed:
-					send_minigame_input("DOWN")
-				elif left_pressed:
-					send_minigame_input("LEFT")
-				elif right_pressed:
-					send_minigame_input("RIGHT")
-		else:
-			# Outros minigames: comportamento original
-			if Input.is_action_just_pressed("p1_jump") or up_pressed:
+		# Registra apenas UM input por pressionamento (evita spam e contaminação entre jogadores)
+		if not any_dir_pressed:
+			_password_key_held = false
+		elif not _password_key_held:
+			_password_key_held = true
+			if up_pressed:
 				send_minigame_input("UP")
-			if Input.is_action_just_pressed("p1_left") or left_pressed:
-				send_minigame_input("LEFT")
-			if Input.is_action_just_pressed("p1_right") or right_pressed:
-				send_minigame_input("RIGHT")
-			if down_pressed:
+			elif down_pressed:
 				send_minigame_input("DOWN")
-			if Input.is_action_just_pressed("p1_interact") or Input.is_action_just_pressed("p2_interact") or Input.is_key_pressed(KEY_E) or Input.is_key_pressed(KEY_COMMA):
-				send_minigame_input("INTERACT") # interagir com "E" caso seja o A e "," caso seja o B
+			elif left_pressed:
+				send_minigame_input("LEFT")
+			elif right_pressed:
+				send_minigame_input("RIGHT")
 
 	# isso é para se algué,m for out of bounds
 	if global_position.y > 900.0:

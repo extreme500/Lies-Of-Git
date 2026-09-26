@@ -304,7 +304,7 @@ minigame_type = "password"
 chamber_id = 1
 
 [node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(490, 640)
+position = Vector2(370, 640)
 station_name = "Dispensador de Peças"
 station_type = "valvula"
 minigame_type = "item"
@@ -325,7 +325,7 @@ minigame_type = "item"
 chamber_id = 2
 
 [node name="Station6_P2_Juncao" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(740, 640)
+position = Vector2(1000, 640)
 station_name = "Terminal de Inserção"
 station_type = "cabo"
 minigame_type = "password"

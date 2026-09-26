@@ -218,12 +218,12 @@ func update_terminal_frames() -> void:
 				anim_sprite.sprite_frames = FRAMES_ITEM_DELIV
 				sprite_y_offset = 3.0
 		"skillcheck":
-			if role == "A":
-				anim_sprite.sprite_frames = FRAMES_GEN
-				sprite_y_offset = -5.0
+			anim_sprite.sprite_frames = FRAMES_GEN
+			sprite_y_offset = -5.0
+			if role == "B":
+				anim_sprite.scale.x = -abs(anim_sprite.scale.x)
 			else:
-				anim_sprite.sprite_frames = FRAMES_BTN
-				sprite_y_offset = 2.0
+				anim_sprite.scale.x = abs(anim_sprite.scale.x)
 		"simon":
 			anim_sprite.sprite_frames = FRAMES_SIMON
 			sprite_y_offset = 4.0
@@ -280,20 +280,12 @@ func update_terminal_animation() -> void:
 						anim_sprite.play("success")
 		
 		"skillcheck":
-			if role == "A":
-				if status == "BROKEN" or is_interacting:
-					if anim_sprite.sprite_frames.has_animation("running"):
-						anim_sprite.play("running")
-				else:
-					if anim_sprite.sprite_frames.has_animation("idle"):
-						anim_sprite.play("idle")
+			if status == "BROKEN" or is_interacting:
+				if anim_sprite.sprite_frames.has_animation("running"):
+					anim_sprite.play("running")
 			else:
-				if mg_state.get("button_active", false):
-					if anim_sprite.sprite_frames.has_animation("active"):
-						anim_sprite.play("active")
-				else:
-					if anim_sprite.sprite_frames.has_animation("idle"):
-						anim_sprite.play("idle")
+				if anim_sprite.sprite_frames.has_animation("idle"):
+					anim_sprite.play("idle")
 		
 		"simon":
 			if status == "BROKEN":
@@ -515,8 +507,8 @@ func repair_tick(delta: float, player: Node = null) -> void:
 	elif minigame_type == "skillcheck":
 		if role == "B":
 			# Tenta clicar no botão
-			if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("pressing"):
-				anim_sprite.play("pressing")
+			if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
+				anim_sprite.play("running")
 			if mg_state.get("button_active", false):
 				var hit = false
 				var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
