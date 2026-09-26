@@ -8,9 +8,9 @@ class_name GameManager
 var time_remaining: float = 60.0
 var game_finished: bool = false
 var failure_timer: float = 3.0 # Primeiro defeito surge aos 3s
-var stations: Array[RepairStation] = []
+var stations: Array = []
 
-@onready var maquina: CentralMaquina = $"Máquina"
+var maquina: CentralMaquina = null
 @onready var hud: CanvasLayer = $HUD
 @onready var timer_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/TimeContainer/TimerLabel
 @onready var integrity_label: Label = $HUD/TopBar/MarginContainer/HBoxContainer/IntegrityContainer/IntegrityLabel
@@ -26,6 +26,16 @@ func _ready() -> void:
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
 	
+	# Localizar máquina principal de forma segura
+	maquina = get_node_or_null("Máquina") as CentralMaquina
+	if not maquina:
+		maquina = get_node_or_null("Maquina") as CentralMaquina
+	if not maquina:
+		for child in get_children():
+			if child is CentralMaquina:
+				maquina = child
+				break
+	
 	if victory_panel:
 		victory_panel.visible = false
 	if game_over_panel:
@@ -34,8 +44,8 @@ func _ready() -> void:
 		pause_panel.visible = false
 
 	# Localizar todas as estações de reparo na cena
-	var left_stations: Array[RepairStation] = []
-	var right_stations: Array[RepairStation] = []
+	var left_stations: Array = []
+	var right_stations: Array = []
 	for child in get_tree().get_nodes_in_group("repair_stations"):
 		if child is RepairStation:
 			register_station(child)
@@ -50,7 +60,7 @@ func _ready() -> void:
 	for sync in sync_terminals:
 		sync.sync_exploded.connect(game_over)
 
-func setup_minigames(left_arr: Array[RepairStation], right_arr: Array[RepairStation]) -> void:
+func setup_minigames(left_arr: Array, right_arr: Array) -> void:
 	var mg_types = ["password", "item", "skillcheck", "simon"]
 	var assigned_types = []
 	var count = min(left_arr.size(), right_arr.size())
@@ -84,7 +94,7 @@ func setup_minigames(left_arr: Array[RepairStation], right_arr: Array[RepairStat
 
 	update_hud()
 
-func register_station(station: RepairStation) -> void:
+func register_station(station) -> void:
 	stations.append(station)
 	station.station_broken.connect(_on_station_broken)
 	station.station_fixed.connect(_on_station_fixed)
@@ -115,7 +125,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			toggle_pause()
 
 func trigger_random_failure() -> void:
-	var available: Array[RepairStation] = []
+	var available: Array = []
 	for s in stations:
 		if not s.is_broken():
 			available.append(s)
@@ -124,12 +134,12 @@ func trigger_random_failure() -> void:
 		var chosen = available.pick_random()
 		chosen.break_down()
 
-func _on_station_broken(_station: RepairStation) -> void:
+func _on_station_broken(_station) -> void:
 	if maquina:
 		maquina.register_broken_station()
 	update_hud()
 
-func _on_station_fixed(_station: RepairStation) -> void:
+func _on_station_fixed(_station) -> void:
 	if maquina:
 		maquina.register_fixed_station()
 	update_hud()
@@ -144,7 +154,7 @@ func update_hud() -> void:
 	var minutes: int = int(time_remaining / 60.0)
 	var seconds: int = int(time_remaining) % 60
 	if timer_label:
-		timer_label.text = "⏱️ Manter por: %02d:%02d" % [minutes, seconds]
+		timer_label.text = "FUDEU!  Manter por: %02d:%02d" % [minutes, seconds]
 
 	if maquina:
 		var cur = maquina.current_integrity

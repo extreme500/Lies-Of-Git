@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
 	rotation += delta * 2.0
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is Player2D or body.name == "Player":
+	if body is CoopPlayer2D or body.name.begins_with("Player"):
 		SoundManager.play(get_tree(), "coin", 0.15)
 		var gm = get_tree().get_first_node_in_group("game_manager")
 		if gm and gm.has_method("add_coin"):

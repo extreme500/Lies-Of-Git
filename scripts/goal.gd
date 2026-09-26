@@ -9,7 +9,7 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if triggered:
 		return
-	if body is Player2D or body.name == "Player":
+	if body is CoopPlayer2D or body.name.begins_with("Player"):
 		triggered = true
 		SoundManager.play(get_tree(), "win", 0.05)
 		var gm = get_tree().get_first_node_in_group("game_manager")

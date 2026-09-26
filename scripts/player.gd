@@ -19,6 +19,7 @@ var spawn_position: Vector2
 var facing_direction: float = 1.0
 var is_repairing: bool = false
 var carried_item: bool = false
+var _password_key_held: bool = false  # Evita múltiplos inputs enquanto tecla está pressionada
 
 var nearby_stations: Array[Node] = []
 var nearby_sync_terminal: Node = null
@@ -67,11 +68,31 @@ func _physics_process(delta: float) -> void:
 	was_on_floor = is_on_floor()
 	jump_buffer_timer -= delta
 
+	# Input para entrar/sair do modo de interação
+	var can_interact = (get_active_broken_station() != null) or (nearby_sync_terminal != null) or (nearby_conveyor != null)
+	if player_id == 1:
+		if Input.is_key_pressed(KEY_E) and can_interact and not is_repairing:
+			is_repairing = true
+		elif Input.is_key_pressed(KEY_Q) and is_repairing:
+			is_repairing = false
+	else:
+		if Input.is_key_pressed(KEY_COMMA) and can_interact and not is_repairing:
+			is_repairing = true
+		elif Input.is_key_pressed(KEY_PERIOD) and is_repairing:
+			is_repairing = false
+			
+	if not can_interact:
+		is_repairing = false
+
 	# Inputs específicos de cada jogador
-	var wants_jump = check_jump_pressed()
-	var jump_released = check_jump_released()
-	var input_x = get_horizontal_input()
-	var wants_interact = check_interact_pressed()
+	var wants_jump = false
+	var jump_released = false
+	var input_x = 0.0
+	
+	if not is_repairing:
+		wants_jump = check_jump_pressed()
+		jump_released = check_jump_released()
+		input_x = get_horizontal_input()
 
 	if wants_jump:
 		jump_buffer_timer = jump_buffer_time
@@ -107,21 +128,47 @@ func _physics_process(delta: float) -> void:
 		carried_item_rect.visible = carried_item
 
 	# Interação com estação de reparo
-	process_interaction(wants_interact, delta)
+	process_interaction(is_repairing, delta)
 	
-	# Inputs de minigame
-	if Input.is_action_just_pressed("p1_jump") or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
-		send_minigame_input("UP")
-	if Input.is_action_just_pressed("p1_left") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
-		send_minigame_input("LEFT")
-	if Input.is_action_just_pressed("p1_right") or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
-		send_minigame_input("RIGHT")
-	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
-		send_minigame_input("DOWN")
-	if Input.is_action_just_pressed("p1_interact") or Input.is_action_just_pressed("p2_interact"):
-		send_minigame_input("INTERACT")
+	# Inputs de minigame (password: só aceita um input por pressionamento)
+	if is_repairing:
+		var current_station = get_active_broken_station()
+		var is_password = current_station != null and current_station.has_method("get_minigame_type") and current_station.get_minigame_type() == "password"
+		
+		var up_pressed    = Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
+		var down_pressed  = Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
+		var left_pressed  = Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT)
+		var right_pressed = Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)
+		var any_dir_pressed = up_pressed or down_pressed or left_pressed or right_pressed
+		
+		if is_password:
+			# Modo senha: registra apenas UM input por pressionamento
+			if not any_dir_pressed:
+				_password_key_held = false  # Tecla solta, pronto para nova leitura
+			elif not _password_key_held:
+				_password_key_held = true
+				if up_pressed:
+					send_minigame_input("UP")
+				elif down_pressed:
+					send_minigame_input("DOWN")
+				elif left_pressed:
+					send_minigame_input("LEFT")
+				elif right_pressed:
+					send_minigame_input("RIGHT")
+		else:
+			# Outros minigames: comportamento original
+			if Input.is_action_just_pressed("p1_jump") or up_pressed:
+				send_minigame_input("UP")
+			if Input.is_action_just_pressed("p1_left") or left_pressed:
+				send_minigame_input("LEFT")
+			if Input.is_action_just_pressed("p1_right") or right_pressed:
+				send_minigame_input("RIGHT")
+			if down_pressed:
+				send_minigame_input("DOWN")
+			if Input.is_action_just_pressed("p1_interact") or Input.is_action_just_pressed("p2_interact") or Input.is_key_pressed(KEY_E) or Input.is_key_pressed(KEY_COMMA):
+				send_minigame_input("INTERACT") # interagir com "E" caso seja o A e "," caso seja o B
 
-	# Queda do mapa
+	# isso é para se algué,m for out of bounds
 	if global_position.y > 900.0:
 		respawn()
 
@@ -152,10 +199,7 @@ func get_horizontal_input() -> float:
 	return x
 
 func check_interact_pressed() -> bool:
-	if player_id == 1:
-		return Input.is_action_pressed("p1_interact") or Input.is_key_pressed(KEY_E) or Input.is_key_pressed(KEY_F)
-	else:
-		return Input.is_action_pressed("p2_interact") or Input.is_key_pressed(KEY_ENTER) or Input.is_key_pressed(KEY_KP_ENTER) or Input.is_key_pressed(KEY_L)
+	return is_repairing
 
 func get_active_broken_station() -> Node:
 	for station in nearby_stations:
@@ -186,7 +230,8 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 				nearby_sync_terminal.set_p2_pressing(false)
 
 	# Lógica do Conveyor
-	if nearby_conveyor and Input.is_action_just_pressed("p1_interact" if player_id == 1 else "p2_interact"):
+	var conveyor_interact = Input.is_key_pressed(KEY_E) if player_id == 1 else Input.is_key_pressed(KEY_COMMA)
+	if nearby_conveyor and conveyor_interact:
 		if player_id == 1 and carried_item:
 			if nearby_conveyor.try_insert_item(player_id):
 				carried_item = false
@@ -198,8 +243,12 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 	if current_station:
 		if prompt_label:
 			prompt_label.visible = true
-			var key_name = "E" if player_id == 1 else "ENTER"
-			prompt_label.text = "[%s] Consertar" % key_name
+			if holding_interact:
+				var exit_key = "Q" if player_id == 1 else "."
+				prompt_label.text = "[%s] Sair" % exit_key
+			else:
+				var enter_key = "E" if player_id == 1 else ","
+				prompt_label.text = "[%s] Consertar" % enter_key
 		
 		if holding_interact:
 			is_repairing = true
