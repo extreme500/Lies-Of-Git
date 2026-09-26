@@ -62,7 +62,7 @@ color = Color(0.2, 0.9, 0.3, 1)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual"]
 texture_filter = 1
-position = Vector2(0, -12)
+position = Vector2(0, -2)
 scale = Vector2(2, 2)
 
 [node name="InteractionZone" type="Area2D" parent="."]
@@ -70,6 +70,7 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone"]
+position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_zone")
 
 [node name="WarningIcon" type="Node2D" parent="."]
@@ -94,7 +95,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_progress")
 show_percentage = false
 
 [node name="SparksParticles" type="CPUParticles2D" parent="."]
-position = Vector2(0, -10)
+position = Vector2(0, -2)
 emitting = false
 amount = 14
 lifetime = 0.35

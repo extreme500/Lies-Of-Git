@@ -173,33 +173,47 @@ func update_terminal_frames() -> void:
 	if not anim_sprite:
 		return
 	
+	var sprite_y_offset: float = -2.0
+	
 	match minigame_type:
 		"password":
 			if role == "A":
 				anim_sprite.sprite_frames = FRAMES_PWD_REC
 			else:
 				anim_sprite.sprite_frames = FRAMES_PWD_INS
+			sprite_y_offset = -4.0
 		"item":
 			if role == "A":
 				anim_sprite.sprite_frames = FRAMES_ITEM_DISP
+				sprite_y_offset = 2.0
 			else:
 				anim_sprite.sprite_frames = FRAMES_ITEM_DELIV
+				sprite_y_offset = 0.0
 		"skillcheck":
 			if role == "A":
 				anim_sprite.sprite_frames = FRAMES_GEN
+				sprite_y_offset = -8.0
 			else:
 				anim_sprite.sprite_frames = FRAMES_BTN
+				sprite_y_offset = 2.0
 		"simon":
 			anim_sprite.sprite_frames = FRAMES_SIMON
+			sprite_y_offset = 4.0
 		_:
 			if station_type == "cabo":
 				anim_sprite.sprite_frames = FRAMES_SCR
+				sprite_y_offset = -8.0
 			elif station_type == "valvula":
 				anim_sprite.sprite_frames = FRAMES_GEN
+				sprite_y_offset = -8.0
 			elif station_type == "bobina":
 				anim_sprite.sprite_frames = FRAMES_BTN
+				sprite_y_offset = 2.0
 			else:
 				anim_sprite.sprite_frames = FRAMES_PWD_REC
+				sprite_y_offset = -4.0
+
+	anim_sprite.position = Vector2(0, sprite_y_offset)
 
 	if anim_sprite.sprite_frames:
 		if base_rect: base_rect.visible = false
