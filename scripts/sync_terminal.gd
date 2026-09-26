@@ -13,7 +13,9 @@ var explosion_timer: float = 0.0
 var p1_pressing: bool = false
 var p2_pressing: bool = false
 
-@onready var light: ColorRect = $Visual/StatusLight
+@onready var p1_button: AnimatedSprite2D = $P1_Button
+@onready var p2_button: AnimatedSprite2D = $P2_Button
+@onready var screen_anim: AnimatedSprite2D = $Screen
 @onready var alert_label: Label = $AlertLabel
 
 func _ready() -> void:
@@ -44,11 +46,7 @@ func _process(delta: float) -> void:
 	elif status == "ALERT":
 		explosion_timer -= delta
 		if alert_label:
-			alert_label.text = "SYNC NECESSÁRIO!\nTempo: %.1f" % explosion_timer
-		
-		# Flash light
-		var flash = 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.01)
-		light.color = Color(1.0, 0.2, 0.2, flash)
+			alert_label.text = "SYNC NECESSÁRIO!\nTempo: %.1f" % max(0.0, explosion_timer)
 
 		if explosion_timer <= 0.0:
 			explode()
@@ -60,27 +58,40 @@ func trigger_sync_event() -> void:
 	explosion_timer = time_to_press
 	if alert_label: alert_label.show()
 	SoundManager.play(get_tree(), "hit", 0.1)
+	update_visual()
 
 func resolve_sync() -> void:
 	status = "OK"
 	timer = randf_range(cooldown_min, cooldown_max)
 	if alert_label: alert_label.hide()
 	SoundManager.play(get_tree(), "powerup", 0.5)
-	update_visual()
 	p1_pressing = false
 	p2_pressing = false
+	update_visual()
 
 func explode() -> void:
 	status = "EXPLODED"
 	sync_exploded.emit()
 
 func update_visual() -> void:
-	if light:
-		light.color = Color(0.2, 0.8, 0.2) if status == "OK" else Color(1.0, 0.0, 0.0)
+	if status == "OK":
+		if p1_button: p1_button.play("idle")
+		if p2_button: p2_button.play("idle")
+		if screen_anim: screen_anim.play("idle")
+	elif status == "ALERT":
+		if screen_anim: screen_anim.play("alert")
+		if p1_button:
+			p1_button.play("pressed" if p1_pressing else "active")
+		if p2_button:
+			p2_button.play("pressed" if p2_pressing else "active")
 
 # Chamado pelas áreas de interação separadas de P1 e P2
 func set_p1_pressing(val: bool) -> void:
 	p1_pressing = val
+	if status == "ALERT" and p1_button:
+		p1_button.play("pressed" if val else "active")
 
 func set_p2_pressing(val: bool) -> void:
 	p2_pressing = val
+	if status == "ALERT" and p2_button:
+		p2_button.play("pressed" if val else "active")

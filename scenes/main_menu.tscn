@@ -1,0 +1,299 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu_script"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="2_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_30.png" id="3_screen"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+bg_color = Color(0.08, 0.1, 0.16, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.65, 0.95, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(0.12, 0.16, 0.24, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.55, 0.85, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.12, 1)
+
+[node name="GridDecorTop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 4.0
+grow_horizontal = 2
+color = Color(0.2, 0.7, 0.95, 0.6)
+
+[node name="GridDecorBottom" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.95, 0.75, 0.2, 0.6)
+
+[node name="CompJamContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -110.0
+offset_right = 300.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CompJamLabel" type="Label" parent="CompJamContainer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 38
+text = "★ COMPJAM 2026 ★"
+horizontal_alignment = 1
+
+[node name="ApresentaLabel" type="Label" parent="CompJamContainer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.65, 0.75, 0.9, 0.9)
+theme_override_font_sizes/font_size = 14
+text = "APRESENTA"
+horizontal_alignment = 1
+
+[node name="TitleContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 70.0
+offset_right = 400.0
+offset_bottom = 210.0
+grow_horizontal = 2
+
+[node name="TitleLabel" type="Label" parent="TitleContainer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.2, 0.88, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.05, 0.25, 0.45, 0.9)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 46
+text = "KEEP IT TOGETHER!!"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="TitleContainer"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -55.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 0.95)
+theme_override_font_sizes/font_size = 15
+text = "⚙ PROTOCOLO COOPERATIVO DE MANUTENÇÃO ⚙"
+horizontal_alignment = 1
+
+[node name="MenuButtonsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -80.0
+offset_right = 170.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PlayBtn" type="Button" parent="MenuButtonsContainer"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "▶ INICIAR MISSÃO"
+
+[node name="DifficultyBtn" type="Button" parent="MenuButtonsContainer"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "⚔ DIFICULDADE: [ NORMAL ]"
+
+[node name="DifficultyDesc" type="Label" parent="MenuButtonsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.78, 0.9, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "• Simon: 3 rodadas | Senha: 4 setas | Alvo: 40° | Esteira: 75 px/s"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SettingsBtn" type="Button" parent="MenuButtonsContainer"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.98, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "⚙ CONFIGURAÇÕES"
+
+[node name="QuitBtn" type="Button" parent="MenuButtonsContainer"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "✕ SAIR DO JOGO"
+
+[node name="SettingsModal" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -140.0
+offset_right = 210.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="SettingsModal"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="SettingsModal/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚙ CONFIGURAÇÕES DE ÁUDIO"
+horizontal_alignment = 1
+
+[node name="MusicContainer" type="VBoxContainer" parent="SettingsModal/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HBox" type="HBoxContainer" parent="SettingsModal/VBox/MusicContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsModal/VBox/MusicContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Volume da Música:"
+
+[node name="MusicValLabel" type="Label" parent="SettingsModal/VBox/MusicContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "80%"
+horizontal_alignment = 2
+
+[node name="MusicSlider" type="HSlider" parent="SettingsModal/VBox/MusicContainer"]
+layout_mode = 2
+value = 80.0
+
+[node name="SFXContainer" type="VBoxContainer" parent="SettingsModal/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HBox" type="HBoxContainer" parent="SettingsModal/VBox/SFXContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsModal/VBox/SFXContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Volume dos Efeitos (SFX):"
+
+[node name="SFXValLabel" type="Label" parent="SettingsModal/VBox/SFXContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "90%"
+horizontal_alignment = 2
+
+[node name="SFXSlider" type="HSlider" parent="SettingsModal/VBox/SFXContainer"]
+layout_mode = 2
+value = 90.0
+
+[node name="CloseSettingsBtn" type="Button" parent="SettingsModal/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "← VOLTAR"
+
+[connection signal="pressed" from="MenuButtonsContainer/PlayBtn" to="." method="_on_play_btn_pressed"]
+[connection signal="pressed" from="MenuButtonsContainer/DifficultyBtn" to="." method="_on_difficulty_btn_pressed"]
+[connection signal="pressed" from="MenuButtonsContainer/SettingsBtn" to="." method="_on_settings_btn_pressed"]
+[connection signal="pressed" from="MenuButtonsContainer/QuitBtn" to="." method="_on_quit_btn_pressed"]
+[connection signal="pressed" from="SettingsModal/VBox/CloseSettingsBtn" to="." method="_on_close_settings_btn_pressed"]

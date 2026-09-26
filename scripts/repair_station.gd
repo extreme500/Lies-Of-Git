@@ -6,10 +6,10 @@ signal station_fixed(station: RepairStation)
 
 @export var station_name: String = "Terminal"
 @export var station_type: String = "terminal"
+@export var minigame_type: String = ""
 @export var chamber_id: int = 1
 
 var status: String = "OK" # "OK" ou "BROKEN"
-var minigame_type: String = ""
 var role: String = "" # "A" ou "B"
 var paired_station: RepairStation = null
 var sfx_cooldown: float = 0.0
@@ -68,6 +68,8 @@ func _ready() -> void:
 	update_terminal_frames()
 	update_status_visual()
 	call_deferred("snap_to_surface")
+	if minigame_type == "skillcheck" and role == "A":
+		_set_skillcheck_visual_visible(false)
 
 func snap_to_surface() -> void:
 	if not is_inside_tree() or not get_world_2d():
@@ -90,6 +92,9 @@ func set_interacting(val: bool) -> void:
 	else:
 		_interact_timer = 0.3
 	update_ui_visibility()
+	if minigame_type == "skillcheck" and role == "A":
+		if val:
+			_position_skillcheck_visual_over_station()
 
 func update_ui_visibility() -> void:
 	if minigame_type == "skillcheck" and role == "A":
@@ -109,12 +114,35 @@ func _exit_tree() -> void:
 	if minigame_type == "skillcheck" and role == "A":
 		_set_skillcheck_visual_visible(false)
 
+func _position_skillcheck_visual_over_station() -> void:
+	if not is_inside_tree(): return
+	var nodes = get_tree().get_nodes_in_group("skillcheck_visual")
+	if nodes.is_empty() and get_tree().current_scene:
+		var angulo = get_tree().current_scene.find_child("AnguloSC", true, false)
+		if angulo: nodes.append(angulo)
+		var centro = get_tree().current_scene.find_child("CentroSC", true, false)
+		if centro and not nodes.has(centro): nodes.append(centro)
+	for n in nodes:
+		if is_instance_valid(n):
+			if n.name == "AnguloSC":
+				n.global_position = global_position + Vector2(0, -60)
+			elif n.name == "CentroSC":
+				var p = n.get_parent()
+				if p and p.name == "AnguloSC":
+					p.global_position = global_position + Vector2(0, -60)
+					n.position = Vector2.ZERO
+				else:
+					n.global_position = global_position + Vector2(0, -60)
+
 func _set_skillcheck_visual_visible(val: bool) -> void:
 	if _skillcheck_visual_active == val:
 		return
 	_skillcheck_visual_active = val
 	if not is_inside_tree():
 		return
+	
+	if val:
+		_position_skillcheck_visual_over_station()
 	
 	var nodes = get_tree().get_nodes_in_group("skillcheck_visual")
 	if nodes.is_empty() and get_tree().current_scene:
@@ -141,7 +169,8 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation) ->
 	mg_state.clear()
 	if minigame_type == "password":
 		if role == "A":
-			mg_state["password"] = generate_password(4)
+			var pwd_len = GameSettings.get_password_length()
+			mg_state["password"] = generate_password(pwd_len)
 		else:
 			mg_state["input_idx"] = 0
 			mg_state["user_inputs"] = []
@@ -156,15 +185,12 @@ func setup_minigame(type: String, assigned_role: String, pair: RepairStation) ->
 			mg_state["needle"] = 0.0
 			mg_state["target_start"] = randf_range(0.2, 0.6)
 			mg_state["target_end"] = mg_state["target_start"] + 0.2
+			call_deferred("_position_skillcheck_visual_over_station")
 		else:
 			mg_state["button_active"] = false
 			mg_state["toggle_timer"] = 0.0
 	elif minigame_type == "simon":
-		mg_state["sequence"] = []
-		mg_state["turn"] = "A" # A começa
-		mg_state["input_idx"] = 0
-		mg_state["round"] = 1
-		if role == "A": generate_simon_step()
+		init_simon(GameSettings.get_simon_iterations())
 
 	update_terminal_frames()
 	update_minigame_ui()
@@ -271,19 +297,76 @@ func update_terminal_animation() -> void:
 		
 		"simon":
 			if status == "BROKEN":
-				var lit = mg_state.get("lit_color", "")
-				if lit != "" and anim_sprite.sprite_frames.has_animation(lit.to_lower()):
-					anim_sprite.play(lit.to_lower())
+				if mg_state.get("flash_timer", 0.0) > 0.0:
+					return
+				
+				if mg_state.get("turn") == role:
+					var seq: Array = mg_state.get("full_sequence", [])
+					var round_idx = mg_state.get("current_round", 1) - 1
+					var target_color = ""
+					if round_idx >= 0 and round_idx < seq.size():
+						target_color = seq[round_idx].to_lower()
+					
+					if mg_state.get("blink_state", true) and target_color != "":
+						if anim_sprite.animation != target_color:
+							anim_sprite.play(target_color)
+					else:
+						if anim_sprite.animation != "idle":
+							anim_sprite.play("idle")
 				else:
-					if anim_sprite.sprite_frames.has_animation("idle"):
+					if anim_sprite.animation != "idle":
 						anim_sprite.play("idle")
 			else:
-				if anim_sprite.sprite_frames.has_animation("all_on"):
-					anim_sprite.play("all_on")
+				if anim_sprite.sprite_frames.has_animation("idle"):
+					anim_sprite.play("idle")
 		
 		_:
 			if anim_sprite.sprite_frames.has_animation("idle"):
 				anim_sprite.play("idle")
+
+func init_simon(n_iterations: int = 3) -> void:
+	mg_state["max_rounds"] = n_iterations
+	mg_state["current_round"] = 1
+	mg_state["turn"] = "A"
+	mg_state["input_idx"] = 0
+	mg_state["blink_timer"] = 0.55
+	mg_state["blink_state"] = true
+	mg_state["flash_queue"] = []
+	mg_state["flash_timer"] = 0.0
+	
+	var colors = ["RED", "BLUE", "GREEN", "YELLOW"]
+	if role == "A" or not mg_state.has("full_sequence") or mg_state.get("full_sequence", []).is_empty():
+		mg_state["full_sequence"] = [colors.pick_random()]
+	
+	_sync_simon_state()
+
+func _sync_simon_state() -> void:
+	if paired_station and is_instance_valid(paired_station):
+		paired_station.mg_state["max_rounds"] = mg_state.get("max_rounds", 3)
+		paired_station.mg_state["current_round"] = mg_state.get("current_round", 1)
+		paired_station.mg_state["turn"] = mg_state.get("turn", "A")
+		paired_station.mg_state["full_sequence"] = mg_state.get("full_sequence", []).duplicate()
+		paired_station.update_terminal_animation()
+		paired_station.update_minigame_ui()
+
+func _play_simon_flash_sequence(seq_steps: Array) -> void:
+	if not anim_sprite: return
+	mg_state["flash_queue"] = seq_steps.duplicate()
+	_advance_simon_flash()
+
+func _advance_simon_flash() -> void:
+	var q: Array = mg_state.get("flash_queue", [])
+	if q.is_empty():
+		mg_state["flash_timer"] = 0.0
+		update_terminal_animation()
+		return
+	var item = q.pop_front()
+	mg_state["flash_queue"] = q
+	var anim_name = item.get("anim", "idle")
+	var dur = item.get("time", 0.2)
+	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation(anim_name):
+		anim_sprite.play(anim_name)
+	mg_state["flash_timer"] = dur
 
 func generate_password(length: int) -> Array:
 	var pwd = []
@@ -299,10 +382,11 @@ func generate_new_password() -> void:
 	
 	if station_a:
 		var old_pwd = station_a.mg_state.get("password", [])
-		var new_pwd = station_a.generate_password(4)
+		var pwd_len = GameSettings.get_password_length()
+		var new_pwd = station_a.generate_password(pwd_len)
 		var attempts = 0
 		while new_pwd == old_pwd and attempts < 10:
-			new_pwd = station_a.generate_password(4)
+			new_pwd = station_a.generate_password(pwd_len)
 			attempts += 1
 		station_a.mg_state["password"] = new_pwd
 		station_a.update_minigame_ui()
@@ -312,10 +396,6 @@ func generate_new_password() -> void:
 		station_b.mg_state["input_idx"] = 0
 		station_b.mg_state["attempts"] = 0
 		station_b.update_minigame_ui()
-
-func generate_simon_step() -> void:
-	var colors = ["RED", "BLUE", "GREEN", "YELLOW"]
-	mg_state["sequence"].append(colors.pick_random())
 
 func _process(delta: float) -> void:
 	if status == "BROKEN":
@@ -335,12 +415,14 @@ func is_broken() -> bool:
 func get_minigame_type() -> String:
 	return minigame_type
 
-func break_down() -> void:
+func break_down(n_iterations: int = -1) -> void:
 	if status == "BROKEN": return
 	status = "BROKEN"
 	if warning_icon: warning_icon.show()
 	if sparks_particles: sparks_particles.emitting = true
 	update_ui_visibility()
+	
+	var iters = n_iterations if n_iterations > 0 else GameSettings.get_simon_iterations()
 	
 	# Reseta estado do minigame ao quebrar
 	if minigame_type == "password" and role == "B":
@@ -352,11 +434,7 @@ func break_down() -> void:
 			if is_instance_valid(c) and c.has_method("sortear_novo_alvo"):
 				c.sortear_novo_alvo()
 	elif minigame_type == "simon":
-		mg_state["sequence"] = []
-		mg_state["turn"] = "A"
-		mg_state["input_idx"] = 0
-		mg_state["round"] = 1
-		if role == "A": generate_simon_step()
+		init_simon(iters)
 
 	update_status_visual()
 	update_terminal_animation()
@@ -366,7 +444,7 @@ func break_down() -> void:
 	
 	# Quebra o par também, se for sincronizado
 	if paired_station and not paired_station.is_broken():
-		paired_station.break_down()
+		paired_station.break_down(iters)
 
 func process_minigame(delta: float) -> void:
 	if minigame_type == "skillcheck":
@@ -380,6 +458,28 @@ func process_minigame(delta: float) -> void:
 				mg_state["toggle_timer"] = randf_range(1.0, 3.0)
 				update_terminal_animation()
 				update_minigame_ui()
+	elif minigame_type == "simon":
+		var ft = mg_state.get("flash_timer", 0.0)
+		if ft > 0.0:
+			ft -= delta
+			mg_state["flash_timer"] = ft
+			if ft <= 0.0:
+				_advance_simon_flash()
+		elif mg_state.get("turn") == role:
+			var bt = mg_state.get("blink_timer", 0.0) - delta
+			var b_on = mg_state.get("blink_state", true)
+			if bt <= 0.0:
+				b_on = not b_on
+				bt = 0.55 if b_on else 0.40
+				mg_state["blink_state"] = b_on
+				mg_state["blink_timer"] = bt
+				update_terminal_animation()
+			else:
+				mg_state["blink_timer"] = bt
+		else:
+			# Not this player's turn, ensure idle
+			if anim_sprite and anim_sprite.animation != "idle":
+				anim_sprite.play("idle")
 
 func repair_tick(delta: float, player: Node = null) -> void:
 	if status != "BROKEN": return
@@ -392,11 +492,8 @@ func repair_tick(delta: float, player: Node = null) -> void:
 	
 	if minigame_type == "password":
 		if role == "A":
-			# Apenas lê a senha
 			pass 
 		elif role == "B":
-			# No caso B, a senha é inserida pelas setas/WASD pelo jogador B
-			# Isso requer detecção de input específica no B, que o player script fará
 			pass
 			
 	elif minigame_type == "item":
@@ -438,7 +535,6 @@ func repair_tick(delta: float, player: Node = null) -> void:
 				SoundManager.play(get_tree(), "lose", 0.5) # Clicou desligado
 
 	elif minigame_type == "simon":
-		# Simon says: O input real será tratado pelo script do player chamando um método específico
 		pass
 
 	if fixed_now:
@@ -476,55 +572,74 @@ func receive_minigame_input(input_val: String) -> void:
 		return
 
 	elif minigame_type == "simon":
-		if mg_state.get("turn") == role:
-			var seq = mg_state.get("sequence", [])
-			var idx = mg_state.get("input_idx", 0)
-			if idx < seq.size():
-				# Aciona luz na animação do terminal
-				var color_lit = input_val.to_lower()
-				mg_state["lit_color"] = color_lit
-				update_terminal_animation()
-				get_tree().create_timer(0.35).timeout.connect(func():
-					if is_instance_valid(self) and mg_state.get("lit_color") == color_lit:
-						mg_state["lit_color"] = ""
-						update_terminal_animation()
-				)
-				if seq[idx] == input_val:
-					mg_state["input_idx"] = idx + 1
-					SoundManager.play(get_tree(), "click", 0.2)
-					if mg_state["input_idx"] >= seq.size():
-						# Terminou o turno!
-						if mg_state["round"] >= 3 and role == "B":
-							fix_station()
-						else:
-							# Passa pro outro
-							var next_role = "B" if role == "A" else "A"
-							paired_station.mg_state["sequence"] = seq.duplicate()
-							paired_station.generate_simon_step()
-							paired_station.mg_state["turn"] = next_role
-							paired_station.mg_state["input_idx"] = 0
-							paired_station.mg_state["round"] = mg_state["round"] + (1 if role == "B" else 0)
-							paired_station.update_minigame_ui()
-							
-							mg_state["turn"] = next_role
-							update_minigame_ui()
-				else:
-					# Errou o simon! Reseta para o A
-					mg_state["sequence"] = []
-					mg_state["turn"] = "A"
-					mg_state["input_idx"] = 0
-					mg_state["round"] = 1
-					if role == "A": generate_simon_step()
+		var color_input = input_val.to_upper()
+		match color_input:
+			"UP": color_input = "RED"
+			"DOWN": color_input = "YELLOW"
+			"LEFT": color_input = "GREEN"
+			"RIGHT": color_input = "BLUE"
+		
+		if not color_input in ["RED", "BLUE", "GREEN", "YELLOW"]:
+			return
+		
+		if mg_state.get("turn") != role:
+			return
+		
+		var seq: Array = mg_state.get("full_sequence", [])
+		var idx: int = mg_state.get("input_idx", 0)
+		var current_round: int = mg_state.get("current_round", 1)
+		var max_rounds: int = mg_state.get("max_rounds", 3)
+		
+		if idx < current_round and idx < seq.size():
+			var expected = seq[idx]
+			if color_input == expected:
+				idx += 1
+				mg_state["input_idx"] = idx
+				SoundManager.play(get_tree(), "click", 0.2)
+				
+				if idx >= current_round:
+					# Completou a sequência da rodada!
+					_play_simon_flash_sequence([
+						{"anim": color_input.to_lower(), "time": 0.2},
+						{"anim": "all_on", "time": 0.35}
+					])
+					
+					if current_round >= max_rounds:
+						SoundManager.play(get_tree(), "powerup", 0.3)
+						get_tree().create_timer(0.45).timeout.connect(func():
+							if is_instance_valid(self) and status == "BROKEN":
+								fix_station()
+						)
 					else:
-						paired_station.mg_state["sequence"] = []
-						paired_station.mg_state["turn"] = "A"
-						paired_station.mg_state["input_idx"] = 0
-						paired_station.mg_state["round"] = 1
-						paired_station.generate_simon_step()
-						paired_station.update_minigame_ui()
-					SoundManager.play(get_tree(), "lose", 0.2)
+						var next_round = current_round + 1
+						var next_turn = "B" if role == "A" else "A"
+						
+						var colors = ["RED", "BLUE", "GREEN", "YELLOW"]
+						seq.append(colors.pick_random())
+						mg_state["full_sequence"] = seq
+						
+						mg_state["current_round"] = next_round
+						mg_state["turn"] = next_turn
+						mg_state["input_idx"] = 0
+						mg_state["blink_timer"] = 0.55
+						mg_state["blink_state"] = true
+						
+						_sync_simon_state()
+						SoundManager.play(get_tree(), "powerup", 0.2)
+				else:
+					# Passo intermediário correto
+					_play_simon_flash_sequence([
+						{"anim": color_input.to_lower(), "time": 0.22}
+					])
+			else:
+				# Errou a cor!
+				SoundManager.play(get_tree(), "lose", 0.35)
+				_play_simon_flash_sequence([
+					{"anim": "idle", "time": 0.3}
+				])
+				mg_state["input_idx"] = 0
+		
 		update_minigame_ui()
-
 
 func fix_station() -> void:
 	status = "OK"
@@ -534,6 +649,9 @@ func fix_station() -> void:
 	if sparks_particles: sparks_particles.emitting = false
 	if minigame_type == "skillcheck" and role == "A":
 		_set_skillcheck_visual_visible(false)
+	if minigame_type == "simon":
+		mg_state["flash_queue"] = []
+		mg_state["flash_timer"] = 0.0
 	update_ui_visibility()
 	update_status_visual()
 	update_terminal_animation()
@@ -667,10 +785,13 @@ func update_minigame_ui() -> void:
 			else:
 				txt = "[BOTAO ATIVO]" if mg_state.get("button_active", false) else "[OFF]"
 		elif minigame_type == "simon":
+			var cur_rnd = mg_state.get("current_round", 1)
+			var max_rnd = mg_state.get("max_rounds", 3)
+			var in_idx = mg_state.get("input_idx", 0)
 			if mg_state.get("turn") == role:
-				txt = "SUA VEZ!\nSeq: " + str(mg_state.get("sequence", [])) + "\n" + str(mg_state.get("input_idx", 0)) + " ok"
+				txt = "SUA VEZ! (Rodada %d/%d)\nInserido: %d/%d" % [cur_rnd, max_rnd, in_idx, cur_rnd]
 			else:
-				txt = "Aguarde o parceiro..."
+				txt = "Aguarde o parceiro...\n(Rodada %d/%d)" % [cur_rnd, max_rnd]
 
 	minigame_label.text = txt
 	update_ui_visibility()
