@@ -233,10 +233,10 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 	var conveyor_interact = Input.is_key_pressed(KEY_E) if player_id == 1 else Input.is_key_pressed(KEY_COMMA)
 	if nearby_conveyor and conveyor_interact:
 		if player_id == 1 and carried_item:
-			if nearby_conveyor.try_insert_item(player_id):
+			if nearby_conveyor.try_insert_item(player_id, global_position.y):
 				carried_item = false
 		elif player_id == 2 and not carried_item:
-			if nearby_conveyor.try_take_item(player_id):
+			if nearby_conveyor.try_take_item(player_id, global_position.y):
 				carried_item = true
 
 	var current_station = get_active_broken_station()
@@ -254,12 +254,33 @@ func process_interaction(holding_interact: bool, delta: float) -> void:
 			is_repairing = true
 			if repair_sparks:
 				repair_sparks.emitting = true
+			if current_station.has_method("set_interacting"):
+				current_station.set_interacting(true)
 			current_station.repair_tick(delta, self)
 			apply_squash_stretch(Vector2(1.05, 0.95))
 		else:
 			is_repairing = false
 			if repair_sparks:
 				repair_sparks.emitting = false
+			if current_station.has_method("set_interacting"):
+				current_station.set_interacting(false)
+	elif nearby_conveyor:
+		is_repairing = false
+		if repair_sparks:
+			repair_sparks.emitting = false
+		if prompt_label:
+			if player_id == 1:
+				if carried_item:
+					prompt_label.visible = true
+					prompt_label.text = "[E] Colocar Peça"
+				else:
+					prompt_label.visible = false
+			elif player_id == 2:
+				if not carried_item and nearby_conveyor.has_method("has_piece_on_belt") and nearby_conveyor.has_piece_on_belt():
+					prompt_label.visible = true
+					prompt_label.text = "[,] Pegar Peça"
+				else:
+					prompt_label.visible = false
 	else:
 		is_repairing = false
 		if prompt_label:
@@ -299,4 +320,6 @@ func _on_interaction_area_exited(area: Area2D) -> void:
 	elif station == nearby_conveyor:
 		nearby_conveyor = null
 	elif station and nearby_stations.has(station):
+		if station.has_method("set_interacting"):
+			station.set_interacting(false)
 		nearby_stations.erase(station)

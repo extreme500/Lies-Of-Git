@@ -4,7 +4,7 @@ class_name CentralMaquina
 signal integrity_changed(current_integrity: float)
 signal machine_exploded
 
-@export var max_integrity: float = 100.0
+@export var max_integrity: float = 67000.0
 @export var drain_per_broken_station: float = 2.5 # % perdido por segundo por estação quebrada
 @export var passive_stability_drain: float = 0.5 # Leve perda constante para manter a tensão
 

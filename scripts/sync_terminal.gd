@@ -20,6 +20,21 @@ func _ready() -> void:
 	timer = randf_range(cooldown_min, cooldown_max)
 	if alert_label: alert_label.hide()
 	update_visual()
+	call_deferred("snap_to_surface")
+
+func snap_to_surface() -> void:
+	if not is_inside_tree() or not get_world_2d():
+		return
+	var space_state = get_world_2d().direct_space_state
+	if not space_state:
+		return
+	var from_pos = global_position - Vector2(0, 30)
+	var to_pos = global_position + Vector2(0, 500)
+	var query = PhysicsRayQueryParameters2D.create(from_pos, to_pos)
+	query.collision_mask = 1 # Chão e plataformas
+	var result = space_state.intersect_ray(query)
+	if result and not result.is_empty():
+		global_position.y = result.position.y - 20.0
 
 func _process(delta: float) -> void:
 	if status == "OK":

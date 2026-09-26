@@ -3,29 +3,139 @@
 [ext_resource type="Script" path="res://scripts/conveyor.gd" id="1_conv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
-size = Vector2(60, 60)
+size = Vector2(70, 520)
 
-[node name="Conveyor" type="Node2D"]
+[node name="Conveyor" type="Node2D" groups=["conveyors"]]
+z_index = 1
 script = ExtResource("1_conv")
 
-[node name="Visual" type="ColorRect" parent="."]
-offset_left = -40.0
-offset_top = -20.0
-offset_right = 40.0
-offset_bottom = 20.0
-color = Color(0.3, 0.3, 0.4, 1)
+[node name="Visual" type="Node2D" parent="."]
 
-[node name="Label" type="Label" parent="."]
-offset_left = -50.0
-offset_top = -45.0
-offset_right = 50.0
-offset_bottom = -25.0
-theme_override_font_sizes/font_size = 12
-text = "Vazio"
+[node name="BeltTrack" type="ColorRect" parent="Visual"]
+offset_left = -18.0
+offset_top = -250.0
+offset_right = 18.0
+offset_bottom = 250.0
+color = Color(0.1, 0.12, 0.16, 0.95)
+
+[node name="RailLeft" type="ColorRect" parent="Visual"]
+offset_left = -22.0
+offset_top = -250.0
+offset_right = -18.0
+offset_bottom = 250.0
+color = Color(0.28, 0.34, 0.44, 1)
+
+[node name="RailRight" type="ColorRect" parent="Visual"]
+offset_left = 18.0
+offset_top = -250.0
+offset_right = 22.0
+offset_bottom = 250.0
+color = Color(0.28, 0.34, 0.44, 1)
+
+[node name="TopCap" type="ColorRect" parent="Visual"]
+offset_left = -24.0
+offset_top = -256.0
+offset_right = 24.0
+offset_bottom = -246.0
+color = Color(0.38, 0.44, 0.54, 1)
+
+[node name="BottomMachine" type="Node2D" parent="Visual"]
+position = Vector2(0, 240)
+
+[node name="Chassis" type="ColorRect" parent="Visual/BottomMachine"]
+offset_left = -28.0
+offset_top = -15.0
+offset_right = 28.0
+offset_bottom = 15.0
+color = Color(0.16, 0.18, 0.24, 1)
+
+[node name="HazardBorder" type="ColorRect" parent="Visual/BottomMachine"]
+offset_left = -26.0
+offset_top = -13.0
+offset_right = 26.0
+offset_bottom = -7.0
+color = Color(0.85, 0.65, 0.1, 1)
+
+[node name="WarningLight" type="ColorRect" parent="Visual/BottomMachine"]
+offset_left = -18.0
+offset_top = -4.0
+offset_right = 18.0
+offset_bottom = 4.0
+color = Color(1, 0.2, 0.2, 0.9)
+
+[node name="CrusherLabel" type="Label" parent="Visual/BottomMachine"]
+offset_left = -55.0
+offset_top = 8.0
+offset_right = 55.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
+theme_override_font_sizes/font_size = 9
+text = "⚠️ TRITURADOR"
+horizontal_alignment = 1
+
+[node name="SparksParticles" type="CPUParticles2D" parent="Visual/BottomMachine"]
+emitting = false
+amount = 25
+lifetime = 0.45
+one_shot = true
+explosiveness = 0.95
+direction = Vector2(0, -1)
+spread = 70.0
+gravity = Vector2(0, 220)
+initial_velocity_min = 70.0
+initial_velocity_max = 150.0
+scale_amount_min = 2.0
+scale_amount_max = 4.5
+color = Color(1, 0.8, 0.2, 1)
+
+[node name="PieceVisual" type="Node2D" parent="."]
+visible = false
+z_index = 2
+
+[node name="Shadow" type="ColorRect" parent="PieceVisual"]
+offset_left = -11.0
+offset_top = -9.0
+offset_right = 11.0
+offset_bottom = 11.0
+color = Color(0, 0, 0, 0.5)
+
+[node name="Body" type="ColorRect" parent="PieceVisual"]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.95, 0.85, 0.2, 1)
+
+[node name="Core" type="ColorRect" parent="PieceVisual/Body"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 17.0
+offset_bottom = 17.0
+color = Color(0.2, 0.22, 0.3, 1)
+
+[node name="Glow" type="ColorRect" parent="PieceVisual/Body/Core"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 0.9, 0.4, 1)
+
+[node name="AlertLabel" type="Label" parent="."]
+visible = false
+z_index = 5
+offset_left = -80.0
+offset_top = 190.0
+offset_right = 80.0
+offset_bottom = 215.0
+theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 11
+text = "⚠️ Peça destruída!"
 horizontal_alignment = 1
 
 [node name="P1_Area" type="Area2D" parent="."]
-position = Vector2(-40, 0)
+position = Vector2(-45, 0)
 collision_layer = 4
 collision_mask = 0
 
@@ -33,7 +143,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_zone")
 
 [node name="P2_Area" type="Area2D" parent="."]
-position = Vector2(40, 0)
+position = Vector2(45, 0)
 collision_layer = 4
 collision_mask = 0
 
