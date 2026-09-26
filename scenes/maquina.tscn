@@ -1,8 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/maquina.gd" id="1_maquina"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_01.png" id="2_frame"]
+[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="2_frame"]
 [ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_30.png" id="3_screen"]
+[ext_resource type="PackedScene" path="res://scenes/tenna_sphere_3d.tscn" id="4_tenna_3d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_core"]
 bg_color = Color(0.2, 0.85, 0.4, 1)
@@ -17,20 +18,36 @@ script = ExtResource("1_maquina")
 [node name="Visual" type="Node2D" parent="."]
 
 [node name="CablesLeft" type="Line2D" parent="Visual"]
-points = PackedVector2Array(-90, 15, -160, 25, -240, 50, -320, 100)
+points = PackedVector2Array(-70, 32, -150, 40, -230, 60, -320, 100)
 width = 6.0
 default_color = Color(0.18, 0.2, 0.25, 1)
 
 [node name="CablesRight" type="Line2D" parent="Visual"]
-points = PackedVector2Array(90, 15, 160, 25, 240, 50, 320, 100)
+points = PackedVector2Array(70, 32, 150, 40, 230, 60, 320, 100)
 width = 6.0
 default_color = Color(0.18, 0.2, 0.25, 1)
 
+[node name="TennaContainer" type="SubViewportContainer" parent="Visual"]
+offset_left = -60.0
+offset_top = -80.0
+offset_right = 60.0
+offset_bottom = 40.0
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Visual/TennaContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(120, 120)
+render_target_update_mode = 3
+
+[node name="TennaSphere3D" parent="Visual/TennaContainer/SubViewport" instance=ExtResource("4_tenna_3d")]
+
 [node name="MainChassis" type="NinePatchRect" parent="Visual"]
-offset_left = -100.0
-offset_top = -30.0
-offset_right = 100.0
-offset_bottom = 35.0
+offset_left = -80.0
+offset_top = 18.0
+offset_right = 80.0
+offset_bottom = 54.0
 texture = ExtResource("2_frame")
 patch_margin_left = 8
 patch_margin_top = 8
@@ -38,10 +55,10 @@ patch_margin_right = 8
 patch_margin_bottom = 8
 
 [node name="ChassisBorder" type="NinePatchRect" parent="Visual"]
-offset_left = -92.0
-offset_top = -24.0
-offset_right = 92.0
-offset_bottom = 28.0
+offset_left = -74.0
+offset_top = 22.0
+offset_right = 74.0
+offset_bottom = 50.0
 texture = ExtResource("3_screen")
 patch_margin_left = 4
 patch_margin_top = 4
@@ -49,42 +66,42 @@ patch_margin_right = 4
 patch_margin_bottom = 4
 
 [node name="Core" type="ColorRect" parent="Visual"]
-offset_left = -45.0
-offset_top = -15.0
-offset_right = 45.0
-offset_bottom = 15.0
+offset_left = -38.0
+offset_top = 27.0
+offset_right = 38.0
+offset_bottom = 45.0
 color = Color(0.25, 0.7, 0.95, 1)
 
 [node name="IntegrityBar" type="ProgressBar" parent="Visual/Core"]
-offset_left = 5.0
-offset_top = 8.0
-offset_right = 85.0
-offset_bottom = 22.0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 72.0
+offset_bottom = 16.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_core")
 value = 100.0
 show_percentage = false
 
 [node name="AlarmLeft" type="ColorRect" parent="Visual"]
-offset_left = -85.0
-offset_top = -14.0
-offset_right = -60.0
-offset_bottom = 14.0
+offset_left = -68.0
+offset_top = 27.0
+offset_right = -48.0
+offset_bottom = 45.0
 color = Color(0.2, 0.8, 0.3, 0.8)
 
 [node name="AlarmRight" type="ColorRect" parent="Visual"]
-offset_left = 60.0
-offset_top = -14.0
-offset_right = 85.0
-offset_bottom = 14.0
+offset_left = 48.0
+offset_top = 27.0
+offset_right = 68.0
+offset_bottom = 45.0
 color = Color(0.2, 0.8, 0.3, 0.8)
 
 [node name="SmokeParticles" type="CPUParticles2D" parent="Visual"]
-position = Vector2(0, -25)
+position = Vector2(0, -35)
 emitting = false
 amount = 20
 lifetime = 1.0
 direction = Vector2(0, -1)
-spread = 30.0
+spread = 35.0
 gravity = Vector2(0, -30)
 initial_velocity_min = 20.0
 initial_velocity_max = 50.0
@@ -93,7 +110,7 @@ scale_amount_max = 9.0
 color = Color(0.5, 0.5, 0.5, 0.6)
 
 [node name="SparkParticles" type="CPUParticles2D" parent="Visual"]
-position = Vector2(0, 5)
+position = Vector2(0, 20)
 emitting = false
 amount = 16
 lifetime = 0.4
@@ -108,9 +125,9 @@ color = Color(1, 0.8, 0.2, 1)
 
 [node name="TitleLabel" type="Label" parent="."]
 offset_left = -90.0
-offset_top = -54.0
+offset_top = -98.0
 offset_right = 90.0
-offset_bottom = -31.0
+offset_bottom = -75.0
 theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "⚙️ MÁQUINA PRINCIPAL"

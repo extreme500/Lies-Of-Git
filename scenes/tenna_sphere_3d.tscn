@@ -1,0 +1,111 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/tenna_sphere.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/maquina/tenna_face_normal.png" id="2_face_tex"]
+
+[sub_resource type="Environment" id="Environment_3d"]
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.25, 0.35, 1)
+ambient_light_energy = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_head"]
+albedo_color = Color(0.12, 0.14, 0.2, 1)
+metallic = 0.4
+roughness = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.5
+height = 1.0
+radial_segments = 32
+rings = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_face"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("2_face_tex")
+emission_enabled = true
+emission = Color(0.1, 1, 0.75, 1)
+emission_energy_multiplier = 1.6
+emission_texture = ExtResource("2_face_tex")
+
+[sub_resource type="QuadMesh" id="QuadMesh_face"]
+size = Vector2(0.68, 0.68)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_chrome"]
+albedo_color = Color(0.5, 0.55, 0.65, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_antenna"]
+top_radius = 0.02
+bottom_radius = 0.03
+height = 0.28
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tip"]
+shading_mode = 0
+albedo_color = Color(0.1, 1, 0.75, 1)
+emission_enabled = true
+emission = Color(0.1, 1, 0.75, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_tip"]
+radius = 0.075
+height = 0.15
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_dial"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.08
+
+[node name="TennaSphere3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3d")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 1.8, 2.2)
+light_color = Color(0.85, 0.92, 1, 1)
+light_energy = 1.3
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 0.2, 2.2)
+current = true
+fov = 38.0
+
+[node name="SphereRoot" type="Node3D" parent="."]
+script = ExtResource("1_script")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="SphereRoot"]
+material_override = SubResource("StandardMaterial3D_head")
+mesh = SubResource("SphereMesh_head")
+
+[node name="FaceMesh" type="MeshInstance3D" parent="SphereRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0.495)
+material_override = SubResource("StandardMaterial3D_face")
+mesh = SubResource("QuadMesh_face")
+
+[node name="AntennaStem" type="MeshInstance3D" parent="SphereRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+material_override = SubResource("StandardMaterial3D_chrome")
+mesh = SubResource("CylinderMesh_antenna")
+
+[node name="AntennaTip" type="MeshInstance3D" parent="SphereRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_tip")
+mesh = SubResource("SphereMesh_tip")
+
+[node name="LeftEarDial" type="MeshInstance3D" parent="SphereRoot"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.51, 0, 0)
+material_override = SubResource("StandardMaterial3D_chrome")
+mesh = SubResource("CylinderMesh_dial")
+
+[node name="RightEarDial" type="MeshInstance3D" parent="SphereRoot"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.51, 0, 0)
+material_override = SubResource("StandardMaterial3D_chrome")
+mesh = SubResource("CylinderMesh_dial")
+
+[node name="FaceLight" type="OmniLight3D" parent="SphereRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.7)
+light_color = Color(0.1, 1, 0.75, 1)
+light_energy = 1.2
+omni_range = 1.5

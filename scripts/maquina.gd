@@ -19,6 +19,7 @@ var is_destroyed: bool = false
 @onready var spark_particles: CPUParticles2D = $Visual/SparkParticles
 @onready var alarm_left: ColorRect = $Visual/AlarmLeft
 @onready var alarm_right: ColorRect = $Visual/AlarmRight
+@onready var tenna_sphere: TennaSphere = get_node_or_null("Visual/TennaContainer/SubViewport/TennaSphere3D/SphereRoot")
 
 func _ready() -> void:
 	current_integrity = max_integrity
@@ -81,9 +82,12 @@ func update_visuals() -> void:
 	if status_bar:
 		status_bar.value = current_integrity
 	
+	var pct = current_integrity / max_integrity
+	if tenna_sphere:
+		tenna_sphere.set_integrity_pct(pct)
+
 	# Cor do núcleo de acordo com a saúde da máquina
 	if core_light:
-		var pct = current_integrity / max_integrity
 		if pct > 0.6:
 			core_light.color = Color(0.2, 0.7, 0.95, 1.0) # Azul/Ciano estável
 		elif pct > 0.3:
@@ -94,6 +98,8 @@ func update_visuals() -> void:
 func explode() -> void:
 	is_destroyed = true
 	SoundManager.play(get_tree(), "lose")
+	if tenna_sphere:
+		tenna_sphere.on_explode()
 	if smoke_particles:
 		smoke_particles.amount = 40
 		smoke_particles.emitting = true
