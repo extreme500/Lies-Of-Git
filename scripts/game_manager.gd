@@ -239,7 +239,7 @@ func create_debug_ui() -> void:
 	debug_panel.add_child(vbox)
 	
 	var title = Label.new()
-	title.text = "🛠️ DEBUG CONTROLS"
+	title.text = "DEBUG CONTROLS"
 	title.add_theme_color_override("font_color", Color(0.3, 0.85, 1.0))
 	title.add_theme_font_size_override("font_size", 12)
 	vbox.add_child(title)
@@ -405,7 +405,7 @@ func update_hud() -> void:
 	var minutes: int = int(time_remaining / 60.0)
 	var seconds: int = int(time_remaining) % 60
 	if timer_label:
-		timer_label.text = "⏱️ Manter por: %02d:%02d" % [minutes, seconds]
+		timer_label.text = "Manter por: %02d:%02d" % [minutes, seconds]
 
 	if maquina:
 		var cur = maquina.current_integrity
@@ -422,7 +422,9 @@ func update_hud() -> void:
 				integrity_bar.modulate = Color(1.0, 0.25, 0.25, 1.0)
 		
 		if faults_label:
-			faults_label.text = "⚠️ Defeitos Ativos: %d" % maquina.broken_stations_count
+			var diff_col = GameSettings.get_difficulty_colour()
+			faults_label.text = "Dificuldade: %s" % GameSettings.get_difficulty_name().to_upper()
+			faults_label.add_theme_color_override("font_color", diff_col)
 
 func win_game() -> void:
 	if game_finished: return
@@ -456,7 +458,18 @@ func _setup_pause_menu() -> void:
 	pause_sfx_label = pause_panel.find_child("SFXLabel", true, false)
 	
 	if pause_diff_label:
+		var diff_col = GameSettings.get_difficulty_colour()
 		pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
+		pause_diff_label.add_theme_color_override("font_color", diff_col)
+	
+	var diff_box = pause_panel.find_child("DifficultyBox", true, false)
+	if diff_box and diff_box is PanelContainer:
+		var diff_style = diff_box.get_theme_stylebox("panel")
+		if diff_style is StyleBoxFlat:
+			var new_diff_style = diff_style.duplicate() as StyleBoxFlat
+			new_diff_style.border_color = GameSettings.get_difficulty_colour()
+			diff_box.add_theme_stylebox_override("panel", new_diff_style)
+			
 	if pause_music_slider:
 		pause_music_slider.value = SoundManager.get_music_volume() * 100.0
 		if not pause_music_slider.value_changed.is_connected(_on_pause_music_slider_changed):
@@ -491,7 +504,9 @@ func toggle_pause() -> void:
 		pause_panel.visible = new_pause_state
 		if new_pause_state:
 			if pause_diff_label:
+				var diff_col = GameSettings.get_difficulty_colour()
 				pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
+				pause_diff_label.add_theme_color_override("font_color", diff_col)
 			if pause_music_slider:
 				pause_music_slider.value = SoundManager.get_music_volume() * 100.0
 				_update_pause_music_label(pause_music_slider.value)

@@ -1,7 +1,7 @@
 extends Node2D
 
-@export var belt_speed: float = 65.0
-@export var top_y: float = -245.0
+@export var belt_speed: float = 45.0 #muda velocidade conveyour
+@export var top_y: float = -245.0 #erm
 @export var bottom_y: float = 245.0
 @export var hazard_y: float = 225.0
 

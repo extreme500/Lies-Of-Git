@@ -78,10 +78,24 @@ func _unhandled_input(event: InputEvent) -> void:
 			skip_intro()
 
 func update_difficulty_display() -> void:
+	var diff_col = GameSettings.get_difficulty_colour()
 	if diff_btn:
-		diff_btn.text = "⚔ DIFICULDADE: [ " + GameSettings.get_difficulty_name().to_upper() + " ]"
+		diff_btn.text = "Dificuldade: %s " % GameSettings.get_difficulty_name().to_upper()
+		diff_btn.add_theme_color_override("font_color", diff_col)
+		diff_btn.add_theme_color_override("font_hover_color", diff_col.lightened(0.2))
+		diff_btn.add_theme_color_override("font_focus_color", diff_col)
+		diff_btn.add_theme_color_override("font_pressed_color", diff_col.darkened(0.2))
+		
+		var style = diff_btn.get_theme_stylebox("normal")
+		if style is StyleBoxFlat:
+			var new_style = style.duplicate() as StyleBoxFlat
+			new_style.border_color = diff_col
+			diff_btn.add_theme_stylebox_override("normal", new_style)
+			diff_btn.add_theme_stylebox_override("hover", new_style)
+			diff_btn.add_theme_stylebox_override("focus", new_style)
 	if diff_desc:
 		diff_desc.text = GameSettings.get_difficulty_description()
+		diff_desc.add_theme_color_override("font_color", diff_col.lerp(Color.WHITE, 0.25))
 
 func init_settings_sliders() -> void:
 	if music_slider:
@@ -105,7 +119,8 @@ func _on_sfx_slider_changed(val: float) -> void:
 	SoundManager.set_sfx_volume(norm)
 	if sfx_val_label:
 		sfx_val_label.text = "%d%%" % int(val)
-
+		
+# toca a melhor ost de todos os tempos
 func _on_play_btn_pressed() -> void:
 	SoundManager.play(get_tree(), "powerup", 0.1)
 	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)

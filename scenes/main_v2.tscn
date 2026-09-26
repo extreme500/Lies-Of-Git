@@ -1,53 +1,14 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene format=3 uid="uid://d2e0q8osao1wg"]
 
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
+[ext_resource type="Script" uid="uid://b4io8bayc12jl" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
-[ext_resource type="Texture2D" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
-[ext_resource type="Script" path="res://scripts/centro_sc.gd" id="9_centro"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
-texture = ExtResource("7_ui_frame")
-texture_margin_left = 14.0
-texture_margin_top = 14.0
-texture_margin_right = 14.0
-texture_margin_bottom = 14.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause"]
-bg_color = Color(0.08, 0.1, 0.16, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.25, 0.55, 0.85, 0.9)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-content_margin_left = 20.0
-content_margin_top = 18.0
-content_margin_right = 20.0
-content_margin_bottom = 18.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_diff"]
-bg_color = Color(0.12, 0.15, 0.22, 0.85)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.9, 0.65, 0.2, 0.7)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 8.0
+[ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
+[ext_resource type="Texture2D" uid="uid://cxg70bvxtinmb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
+[ext_resource type="Script" uid="uid://dybnb6g8y0bfw" path="res://scripts/centro_sc.gd" id="9_centro"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -59,15 +20,54 @@ size = Vector2(30, 720)
 size = Vector2(80, 560)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
-size = Vector2(1, 1)
+size = Vector2(1, 1.0000002)
 
-[node name="Main" type="Node2D"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
+texture = ExtResource("7_ui_frame")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause"]
+content_margin_left = 20.0
+content_margin_top = 18.0
+content_margin_right = 20.0
+content_margin_bottom = 18.0
+bg_color = Color(0.08, 0.1, 0.16, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.55, 0.85, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_diff"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.12, 0.15, 0.22, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9, 0.65, 0.2, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Main" type="Node2D" unique_id=454418642]
 script = ExtResource("1_gm")
 
-[node name="Background" type="CanvasLayer" parent="."]
+[node name="Background" type="CanvasLayer" parent="." unique_id=1931634815]
 layer = -1
 
-[node name="Backdrop" type="ColorRect" parent="Background"]
+[node name="Backdrop" type="ColorRect" parent="Background" unique_id=135777187]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -75,309 +75,306 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.12, 0.16, 1)
 
-[node name="Chamber1Tint" type="ColorRect" parent="Background"]
+[node name="Chamber1Tint" type="ColorRect" parent="Background" unique_id=1389887054]
 offset_left = 30.0
 offset_top = 30.0
 offset_right = 625.0
 offset_bottom = 660.0
 color = Color(0.12, 0.15, 0.22, 0.6)
 
-[node name="Chamber2Tint" type="ColorRect" parent="Background"]
+[node name="Chamber2Tint" type="ColorRect" parent="Background" unique_id=616531147]
 offset_left = 655.0
 offset_top = 30.0
 offset_right = 1250.0
 offset_bottom = 660.0
 color = Color(0.2, 0.16, 0.14, 0.6)
 
-[node name="DividerWindow" type="ColorRect" parent="Background"]
+[node name="DividerWindow" type="ColorRect" parent="Background" unique_id=931223161]
 offset_left = 600.0
 offset_top = 320.0
 offset_right = 680.0
 offset_bottom = 460.0
 color = Color(0.35, 0.6, 0.8, 0.4)
 
-[node name="DividerWindowGlow" type="ColorRect" parent="Background/DividerWindow"]
+[node name="DividerWindowGlow" type="ColorRect" parent="Background/DividerWindow" unique_id=605983008]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 76.0
 offset_bottom = 138.0
 color = Color(0.6, 0.85, 1, 0.2)
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="Environment" type="Node2D" parent="." unique_id=1672808235]
 
-[node name="Floor" type="StaticBody2D" parent="Environment"]
+[node name="Floor" type="StaticBody2D" parent="Environment" unique_id=1993887407]
 position = Vector2(640, 690)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor" unique_id=540433542]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Visual" type="ColorRect" parent="Environment/Floor"]
+[node name="Visual" type="ColorRect" parent="Environment/Floor" unique_id=1837315344]
 offset_left = -640.0
 offset_top = -30.0
 offset_right = 640.0
 offset_bottom = 30.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="Ceiling" type="StaticBody2D" parent="Environment"]
+[node name="Ceiling" type="StaticBody2D" parent="Environment" unique_id=862841452]
 position = Vector2(640, 10)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling" unique_id=1211912999]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Visual" type="ColorRect" parent="Environment/Ceiling"]
+[node name="Visual" type="ColorRect" parent="Environment/Ceiling" unique_id=2008903501]
 offset_left = -640.0
 offset_top = -30.0
 offset_right = 640.0
 offset_bottom = 30.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+[node name="LeftWall" type="StaticBody2D" parent="Environment" unique_id=618222129]
 position = Vector2(15, 360)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall" unique_id=1222385069]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="Visual" type="ColorRect" parent="Environment/LeftWall"]
+[node name="Visual" type="ColorRect" parent="Environment/LeftWall" unique_id=1183761895]
 offset_left = -15.0
 offset_top = -360.0
 offset_right = 15.0
 offset_bottom = 360.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="RightWall" type="StaticBody2D" parent="Environment"]
+[node name="RightWall" type="StaticBody2D" parent="Environment" unique_id=1969716676]
 position = Vector2(1265, 360)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall" unique_id=2131482874]
 shape = SubResource("RectangleShape2D_wall")
 
-[node name="Visual" type="ColorRect" parent="Environment/RightWall"]
+[node name="Visual" type="ColorRect" parent="Environment/RightWall" unique_id=1941525670]
 offset_left = -15.0
 offset_top = -360.0
 offset_right = 15.0
 offset_bottom = 360.0
 color = Color(0.16, 0.18, 0.24, 1)
 
-[node name="CenterDivider" type="StaticBody2D" parent="Environment"]
+[node name="CenterDivider" type="StaticBody2D" parent="Environment" unique_id=699499087]
 position = Vector2(640, 410)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/CenterDivider"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/CenterDivider" unique_id=1909486024]
 shape = SubResource("RectangleShape2D_divider")
 
-[node name="Visual" type="ColorRect" parent="Environment/CenterDivider"]
+[node name="Visual" type="ColorRect" parent="Environment/CenterDivider" unique_id=1292267444]
 offset_left = -40.0
 offset_top = -280.0
 offset_right = 40.0
 offset_bottom = 280.0
 color = Color(0.2, 0.23, 0.3, 1)
 
-[node name="Conveyor" parent="Environment" instance=ExtResource("6_conv")]
+[node name="Conveyor" parent="Environment" unique_id=1403215695 instance=ExtResource("6_conv")]
 position = Vector2(640, 380)
 
-[node name="Platforms" type="Node2D" parent="Environment"]
+[node name="Platforms" type="Node2D" parent="Environment" unique_id=989389225]
 
-[node name="P1_TopPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P1_TopPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1083358020]
 position = Vector2(210, 230)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat" unique_id=443361105]
+position = Vector2(0, 51)
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1237646285]
 offset_left = -100.0
-offset_top = -10.0
+offset_top = 39.0
 offset_right = 100.0
-offset_bottom = 10.0
+offset_bottom = 62.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P1_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1895260463]
 position = Vector2(120, 390)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1308427647]
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1285588913]
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P1_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1877699322]
 position = Vector2(430, 470)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat" unique_id=1986516840]
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_MidRightPlat" unique_id=629610095]
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P1_LowStep" type="StaticBody2D" parent="Environment/Platforms" unique_id=448525875]
 position = Vector2(260, 560)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep" unique_id=375209280]
 scale = Vector2(140, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P1_LowStep" unique_id=1700371150]
 offset_left = -70.0
 offset_top = -10.0
 offset_right = 70.0
 offset_bottom = 10.0
 color = Color(0.28, 0.35, 0.45, 1)
 
-[node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P2_TopPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=551099191]
 position = Vector2(1070, 230)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat" unique_id=2113394175]
 scale = Vector2(200, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_TopPlat" unique_id=1010813753]
 offset_left = -100.0
 offset_top = -10.0
 offset_right = 100.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P2_MidLeftPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=1810224171]
 position = Vector2(850, 350)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=2107049821]
 scale = Vector2(180, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=806936712]
 offset_left = -90.0
 offset_top = -10.0
 offset_right = 90.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P2_MidRightPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=765664658]
 position = Vector2(1080, 460)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidRightPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidRightPlat" unique_id=1758159257]
 scale = Vector2(170, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_MidRightPlat" unique_id=944028547]
 offset_left = -85.0
 offset_top = -10.0
 offset_right = 85.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms"]
+[node name="P2_LowPlat" type="StaticBody2D" parent="Environment/Platforms" unique_id=399898186]
 position = Vector2(880, 560)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat" unique_id=1699920669]
 scale = Vector2(160, 20)
 shape = SubResource("RectangleShape2D_plat")
 
-[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat"]
+[node name="Visual" type="ColorRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1122503641]
 offset_left = -80.0
 offset_top = -10.0
 offset_right = 80.0
 offset_bottom = 10.0
 color = Color(0.45, 0.32, 0.28, 1)
 
-[node name="Stations" type="Node2D" parent="."]
+[node name="Stations" type="Node2D" parent="." unique_id=105656817]
 
-[node name="Station1_P1_Terminal" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station1_P1_Terminal" parent="Stations" unique_id=1278575401 instance=ExtResource("4_station")]
 position = Vector2(210, 200)
 station_name = "Gerador de Força"
 station_type = "gerador"
 minigame_type = "skillcheck"
-chamber_id = 1
 
-[node name="Station2_P1_Fiacao" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station2_P1_Fiacao" parent="Stations" unique_id=1600103575 instance=ExtResource("4_station")]
 position = Vector2(100, 360)
 station_name = "Receptor de Código"
 station_type = "cabo"
 minigame_type = "password"
-chamber_id = 1
 
-[node name="Station3_P1_Valvula" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(490, 640)
+[node name="Station3_P1_Valvula" parent="Stations" unique_id=1380433766 instance=ExtResource("4_station")]
+position = Vector2(400, 640)
 station_name = "Dispensador de Peças"
 station_type = "valvula"
 minigame_type = "item"
-chamber_id = 1
 
-[node name="Station4_P2_Terminal" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station4_P2_Terminal" parent="Stations" unique_id=406144251 instance=ExtResource("4_station")]
 position = Vector2(1070, 200)
 station_name = "Botão de Calibragem"
-station_type = "terminal"
 minigame_type = "skillcheck"
 chamber_id = 2
 
-[node name="Station5_P2_Bobina" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station5_P2_Bobina" parent="Stations" unique_id=902652738 instance=ExtResource("4_station")]
 position = Vector2(880, 530)
 station_name = "Entrada de Peças"
 station_type = "bobina"
 minigame_type = "item"
 chamber_id = 2
 
-[node name="Station6_P2_Juncao" parent="Stations" instance=ExtResource("4_station")]
-position = Vector2(740, 640)
+[node name="Station6_P2_Juncao" parent="Stations" unique_id=1518560855 instance=ExtResource("4_station")]
+position = Vector2(850, 640)
 station_name = "Terminal de Inserção"
 station_type = "cabo"
 minigame_type = "password"
 chamber_id = 2
 
-[node name="Station7_P1_Extra" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station7_P1_Extra" parent="Stations" unique_id=1372348221 instance=ExtResource("4_station")]
 position = Vector2(430, 440)
 station_name = "Sequência Alfa"
-station_type = "terminal"
 minigame_type = "simon"
-chamber_id = 1
 
-[node name="Station8_P2_Extra" parent="Stations" instance=ExtResource("4_station")]
+[node name="Station8_P2_Extra" parent="Stations" unique_id=335650437 instance=ExtResource("4_station")]
 position = Vector2(1080, 430)
 station_name = "Sequência Beta"
 station_type = "bobina"
 minigame_type = "simon"
 chamber_id = 2
 
-[node name="SyncTerminal" parent="Stations" groups=["sync_terminals"] instance=ExtResource("5_sync")]
+[node name="SyncTerminal" parent="Stations" unique_id=533804066 groups=["sync_terminals"] instance=ExtResource("5_sync")]
 position = Vector2(640, 640)
 
-[node name="AnguloSC" type="Node2D" parent="Stations" groups=["skillcheck_visual"]]
+[node name="AnguloSC" type="Node2D" parent="Stations" unique_id=1040518518 groups=["skillcheck_visual"]]
 z_index = 25
 position = Vector2(210, 135)
 
-[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" groups=["centro_sc", "skillcheck_visual"]]
+[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=734709025 groups=["centro_sc", "skillcheck_visual"]]
 z_index = 25
 z_as_relative = false
 script = ExtResource("9_centro")
 
-[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC"]
+[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=12892669]
 visible = false
 points = PackedVector2Array(0, 0, 65, 0)
 width = 6.0
 
-[node name="Player1" parent="." instance=ExtResource("3_player")]
+[node name="Player1" parent="." unique_id=1096043855 instance=ExtResource("3_player")]
 position = Vector2(100, 630)
-player_id = 1
 
-[node name="Player2" parent="." instance=ExtResource("3_player")]
+[node name="Player2" parent="." unique_id=1370638752 instance=ExtResource("3_player")]
 position = Vector2(1180, 630)
 player_id = 2
 
-[node name="FramesLayer" type="CanvasLayer" parent="."]
-layer = 1
+[node name="FramesLayer" type="CanvasLayer" parent="." unique_id=1715896583]
 
-[node name="MainFrame" type="NinePatchRect" parent="FramesLayer"]
+[node name="MainFrame" type="NinePatchRect" parent="FramesLayer" unique_id=2073286254]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = 12.0
+offset_left = -1457.0
+offset_top = 823.0
+offset_right = -1457.0
+offset_bottom = 835.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("8_outer_frame")
@@ -389,26 +386,12 @@ patch_margin_bottom = 32
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Chamber1Frame" type="NinePatchRect" parent="FramesLayer"]
-offset_left = 28.0
-offset_top = 54.0
-offset_right = 604.0
-offset_bottom = 686.0
-texture = ExtResource("8_outer_frame")
-draw_center = false
-patch_margin_left = 32
-patch_margin_top = 32
-patch_margin_right = 32
-patch_margin_bottom = 32
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+[node name="Chamber1Frame" type="NinePatchRect" parent="FramesLayer" unique_id=711345996]
 modulate = Color(0.2, 0.65, 1, 1)
-
-[node name="Chamber2Frame" type="NinePatchRect" parent="FramesLayer"]
-offset_left = 676.0
-offset_top = 54.0
-offset_right = 1252.0
-offset_bottom = 686.0
+offset_left = -601.0
+offset_top = 41.0
+offset_right = -7.0
+offset_bottom = 665.0
 texture = ExtResource("8_outer_frame")
 draw_center = false
 patch_margin_left = 32
@@ -417,63 +400,77 @@ patch_margin_right = 32
 patch_margin_bottom = 32
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-modulate = Color(1, 0.6, 0.2, 1)
 
-[node name="TopBar" type="PanelContainer" parent="FramesLayer"]
+[node name="Chamber2Frame" type="NinePatchRect" parent="FramesLayer" unique_id=1443031287]
+modulate = Color(1, 0.6, 0.2, 1)
+offset_left = -586.0
+offset_top = 45.0
+offset_right = -10.0
+offset_bottom = 665.0
+texture = ExtResource("8_outer_frame")
+draw_center = false
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="TopBar" type="PanelContainer" parent="FramesLayer" unique_id=1928232878]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 54.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="MarginContainer" type="MarginContainer" parent="FramesLayer/TopBar"]
+[node name="MarginContainer" type="MarginContainer" parent="FramesLayer/TopBar" unique_id=1945846279]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer" unique_id=1984454164]
 layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="TimeContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
+[node name="TimeContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer" unique_id=797657175]
 layout_mode = 2
 
-[node name="TimerLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/TimeContainer"]
+[node name="TimerLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/TimeContainer" unique_id=1139221717]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "⏱️ Manter por: 01:00"
+text = "Manter por: 01:00"
 
-[node name="IntegrityContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
+[node name="IntegrityContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer" unique_id=853368393]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="IntegrityLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
+[node name="IntegrityLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer" unique_id=1496021784]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
 theme_override_font_sizes/font_size = 16
 text = "Integridade da Máquina: 100%"
 
-[node name="IntegrityBar" type="ProgressBar" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer"]
+[node name="IntegrityBar" type="ProgressBar" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer" unique_id=550863170]
 custom_minimum_size = Vector2(200, 20)
 layout_mode = 2
 size_flags_vertical = 4
 value = 100.0
 show_percentage = false
 
-[node name="FaultsContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer"]
+[node name="FaultsContainer" type="HBoxContainer" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer" unique_id=1335707621]
 layout_mode = 2
 
-[node name="FaultsLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/FaultsContainer"]
+[node name="FaultsLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/FaultsContainer" unique_id=1684251392]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
 theme_override_font_sizes/font_size = 16
-text = "⚠️ Defeitos Ativos: 0"
+text = "Dificuldade: [VALOR]"
 
-[node name="BottomBar" type="PanelContainer" parent="FramesLayer"]
+[node name="BottomBar" type="PanelContainer" parent="FramesLayer" unique_id=1914361096]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -483,23 +480,22 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="Label" type="Label" parent="FramesLayer/BottomBar"]
+[node name="Label" type="Label" parent="FramesLayer/BottomBar" unique_id=1649577922]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 12
-text = "P1 (Azul): [A/D] Andar | [W/Espaço] Pular | [E] Consertar   |||   P2 (Laranja): [Setas] Andar | [Cima] Pular | [ENTER] Consertar   |||   [R] Reiniciar"
 horizontal_alignment = 1
 
-[node name="MachineLayer" type="CanvasLayer" parent="."]
+[node name="MachineLayer" type="CanvasLayer" parent="." unique_id=870202895]
 layer = 2
 
-[node name="Máquina" parent="MachineLayer" instance=ExtResource("2_maquina")]
+[node name="Máquina" parent="MachineLayer" unique_id=1333002078 instance=ExtResource("2_maquina")]
 position = Vector2(640, 150)
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1207031968]
 layer = 10
 
-[node name="VictoryPanel" type="PanelContainer" parent="HUD"]
+[node name="VictoryPanel" type="PanelContainer" parent="HUD" unique_id=191115697]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -515,32 +511,32 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel"]
+[node name="VBox" type="VBoxContainer" parent="HUD/VictoryPanel" unique_id=1810022766]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/VictoryPanel/VBox"]
+[node name="Title" type="Label" parent="HUD/VictoryPanel/VBox" unique_id=1495137970]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.95, 0.45, 1)
 theme_override_font_sizes/font_size = 22
 text = "🎉 VITÓRIA! MÁQUINA SALVA! 🎉"
 horizontal_alignment = 1
 
-[node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox"]
+[node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox" unique_id=2091277583]
 layout_mode = 2
 text = "Vocês mantiveram a máquina operando!"
 horizontal_alignment = 1
 
-[node name="RestartBtn" type="Button" parent="HUD/VictoryPanel/VBox"]
+[node name="RestartBtn" type="Button" parent="HUD/VictoryPanel/VBox" unique_id=1485484485]
 layout_mode = 2
 text = "Jogar Novamente (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/VictoryPanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/VictoryPanel/VBox" unique_id=168420382]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
-[node name="GameOverPanel" type="PanelContainer" parent="HUD"]
+[node name="GameOverPanel" type="PanelContainer" parent="HUD" unique_id=357671141]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -556,32 +552,32 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hud")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel"]
+[node name="VBox" type="VBoxContainer" parent="HUD/GameOverPanel" unique_id=1919497795]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/GameOverPanel/VBox"]
+[node name="Title" type="Label" parent="HUD/GameOverPanel/VBox" unique_id=1757430507]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
 theme_override_font_sizes/font_size = 22
 text = "💥 A MÁQUINA EXPLODIU! 💥"
 horizontal_alignment = 1
 
-[node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox"]
+[node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox" unique_id=1858636968]
 layout_mode = 2
 text = "A integridade chegou a 0%."
 horizontal_alignment = 1
 
-[node name="RestartBtn" type="Button" parent="HUD/GameOverPanel/VBox"]
+[node name="RestartBtn" type="Button" parent="HUD/GameOverPanel/VBox" unique_id=1985461026]
 layout_mode = 2
 text = "Tentar Novamente (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/GameOverPanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/GameOverPanel/VBox" unique_id=1570426018]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 
-[node name="PausePanel" type="PanelContainer" parent="HUD"]
+[node name="PausePanel" type="PanelContainer" parent="HUD" unique_id=1882379530]
 process_mode = 3
 visible = false
 anchors_preset = 8
@@ -597,34 +593,34 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pause")
 
-[node name="VBox" type="VBoxContainer" parent="HUD/PausePanel"]
+[node name="VBox" type="VBoxContainer" parent="HUD/PausePanel" unique_id=136745080]
 layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="Title" type="Label" parent="HUD/PausePanel/VBox"]
+[node name="Title" type="Label" parent="HUD/PausePanel/VBox" unique_id=1300900869]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "⏸️ JOGO PAUSADO"
 horizontal_alignment = 1
 
-[node name="DifficultyBox" type="PanelContainer" parent="HUD/PausePanel/VBox"]
+[node name="DifficultyBox" type="PanelContainer" parent="HUD/PausePanel/VBox" unique_id=1969383879]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_diff")
 
-[node name="DiffVBox" type="VBoxContainer" parent="HUD/PausePanel/VBox/DifficultyBox"]
+[node name="DiffVBox" type="VBoxContainer" parent="HUD/PausePanel/VBox/DifficultyBox" unique_id=376080131]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="DiffCurrentLabel" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox"]
+[node name="DiffCurrentLabel" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox" unique_id=985172266]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "Dificuldade: [ NORMAL ]"
 horizontal_alignment = 1
 
-[node name="DiffLockedNotice" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox"]
+[node name="DiffLockedNotice" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox" unique_id=1707214091]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.25, 1)
 theme_override_font_sizes/font_size = 11
@@ -632,59 +628,55 @@ text = "🔒 precisa voltar no menu para aumentar a dificuldade"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="AudioBox" type="VBoxContainer" parent="HUD/PausePanel/VBox"]
+[node name="AudioBox" type="VBoxContainer" parent="HUD/PausePanel/VBox" unique_id=2093039851]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AudioSectionTitle" type="Label" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="AudioSectionTitle" type="Label" parent="HUD/PausePanel/VBox/AudioBox" unique_id=480015107]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 12
 text = "🔊 CONFIGURAÇÕES DE ÁUDIO"
 horizontal_alignment = 1
 
-[node name="MusicContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="MusicContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox" unique_id=46567001]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="MusicLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer"]
+[node name="MusicLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer" unique_id=1650985427]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Música: 80%"
 
-[node name="MusicSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer"]
+[node name="MusicSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/MusicContainer" unique_id=1321845165]
 layout_mode = 2
-max_value = 100.0
-step = 1.0
 value = 80.0
 
-[node name="SFXContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox"]
+[node name="SFXContainer" type="VBoxContainer" parent="HUD/PausePanel/VBox/AudioBox" unique_id=1406899120]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="SFXLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer"]
+[node name="SFXLabel" type="Label" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer" unique_id=901611580]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Efeitos (SFX): 100%"
 
-[node name="SFXSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer"]
+[node name="SFXSlider" type="HSlider" parent="HUD/PausePanel/VBox/AudioBox/SFXContainer" unique_id=194261745]
 layout_mode = 2
-max_value = 100.0
-step = 1.0
 value = 100.0
 
-[node name="HSeparator" type="HSeparator" parent="HUD/PausePanel/VBox"]
+[node name="HSeparator" type="HSeparator" parent="HUD/PausePanel/VBox" unique_id=1896517688]
 layout_mode = 2
 
-[node name="ResumeBtn" type="Button" parent="HUD/PausePanel/VBox"]
+[node name="ResumeBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=1834848948]
 layout_mode = 2
 text = "Continuar (ESC)"
 
-[node name="RestartBtn" type="Button" parent="HUD/PausePanel/VBox"]
+[node name="RestartBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=86032361]
 layout_mode = 2
 text = "Reiniciar Fase (R)"
 
-[node name="MainMenuBtn" type="Button" parent="HUD/PausePanel/VBox"]
+[node name="MainMenuBtn" type="Button" parent="HUD/PausePanel/VBox" unique_id=7524432]
 layout_mode = 2
 text = "🏠 Voltar ao Menu Principal"
 

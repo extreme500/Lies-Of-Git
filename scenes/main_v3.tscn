@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bqev7clf2ujmv"]
+[gd_scene format=3 uid="uid://dp27x3xp6by2m"]
 
 [ext_resource type="Script" uid="uid://b4io8bayc12jl" path="res://scripts/game_manager.gd" id="1_gm"]
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
