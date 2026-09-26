@@ -44,6 +44,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
 	
 	_load_background_textures()
+	play_start_run_intro()
 	
 	# Trilha sonora em loop suave durante a gameplay
 	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
@@ -214,8 +215,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_3: break_pair(3)
 			KEY_4: break_pair(4)
 			KEY_5: break_pair(5)
-			KEY_8, KEY_KP_8: cycle_background(-1)
-			KEY_0, KEY_KP_0: cycle_background(1)
+			KEY_8, KEY_KP_8:
+				if debug_panel and debug_panel.visible:
+					cycle_background(-1)
+			KEY_0, KEY_KP_0:
+				if debug_panel and debug_panel.visible:
+					cycle_background(1)
 			KEY_H: toggle_debug_ui()
 
 func toggle_debug_ui() -> void:
@@ -387,14 +392,23 @@ func _load_background_textures() -> void:
 				background_textures.append(tex)
 	
 	if background_textures.is_empty():
-		var fallbacks = ["res://assets/background/1.png", "res://assets/background/2.jpg", "res://assets/background/3.png"]
+		var fallbacks = ["res://assets/background/2.jpg", "res://assets/background/1.png", "res://assets/background/3.png"]
 		for p in fallbacks:
 			if ResourceLoader.exists(p):
 				var tex = load(p)
 				if tex is Texture2D:
 					background_textures.append(tex)
 
+	# Fundo 2.jpg como oficial padrão fixo
+	for i in range(background_textures.size()):
+		if "2.jpg" in background_textures[i].resource_path:
+			current_bg_index = i
+			break
+
 func cycle_background(dir_step: int) -> void:
+	# Função estritamente acoplada ao debug menu
+	if not (debug_panel and debug_panel.visible):
+		return
 	if background_textures.is_empty():
 		_load_background_textures()
 	if background_textures.is_empty():
@@ -414,6 +428,99 @@ func cycle_background(dir_step: int) -> void:
 	
 	var file_name = chosen_tex.resource_path.get_file()
 	_show_debug_msg("🖼️ Fundo: %s (%d/%d)" % [file_name, current_bg_index + 1, background_textures.size()])
+
+func play_start_run_intro() -> void:
+	# 1. Toca aleatoriamente um dos 4 áudios de voz (volume moderado/agradável)
+	var voice_clips: Array[String] = [
+		"res://assets/voice/Keep it 1.mp3",
+		"res://assets/voice/Keep it 2.mp3",
+		"res://assets/voice/Keep it 3.mp3",
+		"res://assets/voice/Keep it 4.mp3"
+	]
+	var valid_clips: Array[String] = []
+	for clip_path in voice_clips:
+		if ResourceLoader.exists(clip_path):
+			valid_clips.append(clip_path)
+	
+	if not valid_clips.is_empty():
+		var chosen_clip = valid_clips.pick_random()
+		var stream = load(chosen_clip)
+		if stream is AudioStream:
+			var voice_player = AudioStreamPlayer.new()
+			voice_player.stream = stream
+			voice_player.volume_db = -8.0 # Não muito alto
+			voice_player.bus = "Master"
+			add_child(voice_player)
+			voice_player.play()
+			voice_player.finished.connect(func(): voice_player.queue_free())
+	
+	# 2. Animação de texto em CAPS com fonte estilizada: KEEP IT TOGETHER!!!
+	_show_keep_it_together_banner()
+
+func _show_keep_it_together_banner() -> void:
+	var font_res = load("res://assets/Xeriko-R9R1A.otf") if ResourceLoader.exists("res://assets/Xeriko-R9R1A.otf") else null
+	
+	var banner_layer = CanvasLayer.new()
+	banner_layer.layer = 15
+	add_child(banner_layer)
+	
+	var center_ctrl = Control.new()
+	center_ctrl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center_ctrl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner_layer.add_child(center_ctrl)
+	
+	var center_container = CenterContainer.new()
+	center_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	center_ctrl.add_child(center_container)
+	
+	var panel = PanelContainer.new()
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.04, 0.07, 0.12, 0.92)
+	style.border_color = Color(1.0, 0.82, 0.2, 0.95)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 36
+	style.content_margin_right = 36
+	style.content_margin_top = 14
+	style.content_margin_bottom = 14
+	panel.add_theme_stylebox_override("panel", style)
+	center_container.add_child(panel)
+	
+	var label = Label.new()
+	label.text = "KEEP IT TOGETHER!!!"
+	if font_res:
+		label.add_theme_font_override("font", font_res)
+	label.add_theme_font_size_override("font_size", 42)
+	label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
+	label.add_theme_color_override("font_shadow_color", Color(0.95, 0.35, 0.1, 0.8))
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 3)
+	label.add_theme_color_override("font_outline_color", Color(0.06, 0.06, 0.12, 0.95))
+	label.add_theme_constant_override("outline_size", 8)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	panel.add_child(label)
+	
+	panel.resized.connect(func(): panel.pivot_offset = panel.size * 0.5)
+	panel.scale = Vector2(0.2, 0.2)
+	panel.modulate.a = 0.0
+	
+	# Animação cinematográfica: Surge com impacto -> para por 1.4s -> sai com fade e zoom
+	var intro_tween = create_tween().set_parallel(true)
+	intro_tween.tween_property(panel, "scale", Vector2(1.1, 1.1), 0.26).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	intro_tween.tween_property(panel, "modulate:a", 1.0, 0.18)
+	
+	var seq_tween = create_tween()
+	seq_tween.tween_interval(0.26)
+	seq_tween.tween_property(panel, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_SINE)
+	seq_tween.tween_interval(1.4)
+	
+	var out_tween = seq_tween.parallel()
+	out_tween.tween_property(panel, "scale", Vector2(1.25, 1.25), 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	out_tween.tween_property(panel, "modulate:a", 0.0, 0.35)
+	
+	seq_tween.tween_callback(func(): banner_layer.queue_free())
 
 func break_pair(pair_num: int) -> void:
 	match pair_num:

@@ -140,12 +140,12 @@ func update_ui_visibility() -> void:
 			_set_skillcheck_b_visual_visible(status == "BROKEN" and is_interacting)
 
 	if not minigame_ui: return
-	if status != "BROKEN":
+	if status != "BROKEN" or minigame_type == "skillcheck":
 		minigame_ui.visible = false
 		return
 	
-	if minigame_type in ["password", "simon", "skillcheck"]:
-		# SÓ aparece na tela se o jogador interagir com o terminal/gerador!
+	if minigame_type in ["password", "simon"]:
+		# SÓ aparece na tela se o jogador interagir com o terminal!
 		minigame_ui.visible = is_interacting
 	else:
 		minigame_ui.visible = true
@@ -944,10 +944,9 @@ func update_minigame_ui() -> void:
 			else:
 				txt = "Precisa de Peça!\n[,] Inserir"
 		elif minigame_type == "skillcheck":
-			if role == "A":
-				txt = "Calibrando..."
-			else:
-				txt = "Gerador Alinhado?\n[,] Sincronizar"
+			txt = ""
+			if minigame_ui:
+				minigame_ui.visible = false
 		elif minigame_type == "simon":
 			var cur_rnd = mg_state.get("current_round", 1)
 			var max_rnd = mg_state.get("max_rounds", 3)

@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
 [ext_resource type="Texture2D" uid="uid://cxg70bvxtinmb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
 [ext_resource type="Script" uid="uid://be7up8f7cndwd" path="res://scripts/centro_sc.gd" id="9_centro"]
-[ext_resource type="Texture2D" uid="uid://cjdyjlpbo4wwj" path="res://assets/background/1.png" id="10_bg_factory"]
+[ext_resource type="Texture2D" uid="uid://bj5pj72um8577" path="res://assets/background/2.jpg" id="10_bg_factory"]
 [ext_resource type="Script" path="res://scripts/barra_sc.gd" id="11_barra"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]

@@ -56,6 +56,7 @@ var carried_item: bool = false
 var _password_key_held: bool = false  # Evita múltiplos inputs enquanto tecla está pressionada
 var is_transitioning_to_fix: bool = false
 var _interact_key_was_pressed: bool = false
+var _generator_jump_held: bool = false
 
 var nearby_stations: Array[Node] = []
 var nearby_sync_terminal: Node = null
@@ -143,6 +144,7 @@ func _physics_process(delta: float) -> void:
 	var active_station = get_active_broken_station()
 	if is_repairing and (active_station == null or not active_station.is_broken() or exit_down):
 		is_repairing = false
+		_generator_jump_held = false
 		if active_station and active_station.has_method("set_interacting"):
 			active_station.set_interacting(false)
 
@@ -154,13 +156,18 @@ func _physics_process(delta: float) -> void:
 	var input_x = 0.0
 	
 	if not is_repairing:
+		_generator_jump_held = false
 		wants_jump = check_jump_pressed()
 		jump_released = check_jump_released()
 		input_x = get_horizontal_input()
 	else:
 		velocity = Vector2.ZERO
-		# Só quando o jogador interagir com o gerador do jogador 2 (ficar travado), o pulo impulsiona a barra azul
-		if operating_generator_b and check_jump_pressed():
+		var jump_key_down = Input.is_action_pressed("p2_jump") or Input.is_key_pressed(KEY_UP)
+		var jump_just_clicked = jump_key_down and not _generator_jump_held
+		_generator_jump_held = jump_key_down
+		
+		# Só quando o jogador interagir com o gerador do jogador 2 (ficar travado), o pulo impulsiona a barra azul (com release obrigatório antes do próximo clique)
+		if operating_generator_b and jump_just_clicked:
 			var barra_nodes = get_tree().get_nodes_in_group("barra_sc")
 			for b in barra_nodes:
 				if is_instance_valid(b) and b.has_method("impulse_blue_bar"):
@@ -337,34 +344,34 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 				is_repairing = false
 		elif mg_type == "skillcheck":
 			if role == "B":
-				# Gerador de Calibragem (Player 2) - Mantém a barra azul na zona verde com pulo (Up)
+				# Gerador de Calibragem (Player 2) - Mantém a barra na zona verde e clica no momento certo para sincronizar ambos
 				if prompt_label:
 					prompt_label.visible = true
 					if not is_repairing:
 						prompt_label.text = "[,] Operar Gerador"
 					else:
-						prompt_label.text = "[Seta Cima] Manter Barra | [.] Sair"
-				if interact_just_pressed:
-					is_repairing = not is_repairing
-				if current_station.has_method("set_interacting"):
-					current_station.set_interacting(is_repairing)
-			elif role == "A":
-				# Gerador de Força (Player 1) - Calibra ao apertar interagir em intervalos regulares
-				if prompt_label:
-					prompt_label.visible = true
-					if not is_repairing:
-						prompt_label.text = "[E] Operar Gerador"
-					else:
 						var time_left = current_station.get_skillcheck_interval_left() if current_station.has_method("get_skillcheck_interval_left") else 0.0
 						if time_left > 0.0:
-							prompt_label.text = "Aguarde (%.1fs)... | [Q] Sair" % time_left
+							prompt_label.text = "Aguarde (%.1fs)... | [.] Sair" % time_left
 						else:
-							prompt_label.text = "[E] Sincronizar | [Q] Sair"
+							prompt_label.text = "[Seta Cima] Barra | [,] Sincronizar | [.] Sair"
 				if interact_just_pressed:
 					if not is_repairing:
 						is_repairing = true
 					else:
 						current_station.try_skillcheck_calibrate()
+				if current_station.has_method("set_interacting"):
+					current_station.set_interacting(is_repairing)
+			elif role == "A":
+				# Gerador de Força (Player 1) - Apenas abre/mantém o skillcheck visual ativo para o parceiro
+				if prompt_label:
+					prompt_label.visible = true
+					if not is_repairing:
+						prompt_label.text = "[E] Operar Gerador"
+					else:
+						prompt_label.text = "Operando Gerador | [Q] Sair"
+				if interact_just_pressed:
+					is_repairing = not is_repairing
 				if current_station.has_method("set_interacting"):
 					current_station.set_interacting(is_repairing)
 		elif mg_type == "password" and role == "A":
