@@ -29,6 +29,23 @@ size = Vector2(1, 1)
 [node name="Main" type="Node2D" unique_id=1491414026]
 script = ExtResource("1_gm")
 
+[node name="AnguloSC" type="Node2D" parent="." unique_id=355257020 groups=["skillcheck_visual"]]
+visible = false
+position = Vector2(-198, 35)
+
+[node name="CentroSC" type="Node2D" parent="AnguloSC" unique_id=1259149520 groups=["centro_sc", "skillcheck_visual"]]
+visible = false
+script = ExtResource("6_m14vd")
+
+[node name="RetaSC" type="Line2D" parent="AnguloSC/CentroSC" unique_id=325126713]
+points = PackedVector2Array(20, 20, 0, 0)
+width = 25.0
+
+[node name="FontePC" type="Label" parent="AnguloSC" unique_id=1061159550]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("7_vapg3")
+
 [node name="Background" type="CanvasLayer" parent="." unique_id=353987022]
 layer = -1
 
@@ -301,25 +318,6 @@ chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" unique_id=763704838 groups=["sync_terminals"] instance=ExtResource("5_sync")]
 position = Vector2(640, 640)
-
-[node name="AnguloSC" type="Node2D" parent="Stations" unique_id=355257020 groups=["skillcheck_visual"]]
-visible = false
-position = Vector2(-198, 35)
-
-[node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=1259149520 groups=["centro_sc", "skillcheck_visual"]]
-visible = false
-position = Vector2(895, 272)
-script = ExtResource("6_m14vd")
-
-[node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=325126713]
-position = Vector2(709, -198)
-points = PackedVector2Array(-2, -3, 170, 43)
-width = 25.0
-
-[node name="FontePC" type="Label" parent="Stations/AnguloSC" unique_id=1061159550]
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_fonts/font = ExtResource("7_vapg3")
 
 [node name="Player1" parent="." unique_id=150972943 instance=ExtResource("3_player")]
 position = Vector2(100, 630)
