@@ -21,6 +21,8 @@ var p2_pressing: bool = false
 @onready var screen_p2: AnimatedSprite2D = $Screen_P2 if has_node("Screen_P2") else null
 @onready var screen_anim: AnimatedSprite2D = $Screen if has_node("Screen") else null
 @onready var alert_label: Label = $AlertLabel
+@onready var p1_prompt: Label = get_node_or_null("P1_Prompt")
+@onready var p2_prompt: Label = get_node_or_null("P2_Prompt")
 
 func _ready() -> void:
 	timer = randf_range(cooldown_min, cooldown_max)
@@ -121,11 +123,15 @@ func start_alert_phase() -> void:
 	if screen_p1: screen_p1.play("alert")
 	if screen_p2: screen_p2.play("alert")
 	if screen_anim: screen_anim.play("alert")
+	if p1_prompt: p1_prompt.show()
+	if p2_prompt: p2_prompt.show()
 
 func resolve_sync() -> void:
 	status = "OK"
 	timer = randf_range(cooldown_min, cooldown_max)
 	if alert_label: alert_label.hide()
+	if p1_prompt: p1_prompt.hide()
+	if p2_prompt: p2_prompt.hide()
 	SoundManager.play(get_tree(), "powerup", 0.5)
 	p1_pressing = false
 	p2_pressing = false
@@ -139,6 +145,8 @@ func resolve_sync() -> void:
 
 func explode() -> void:
 	status = "EXPLODED"
+	if p1_prompt: p1_prompt.hide()
+	if p2_prompt: p2_prompt.hide()
 	sync_exploded.emit()
 
 func update_visual() -> void:
@@ -148,6 +156,8 @@ func update_visual() -> void:
 		if screen_p1: screen_p1.play("idle")
 		if screen_p2: screen_p2.play("idle")
 		if screen_anim: screen_anim.play("idle")
+		if p1_prompt: p1_prompt.hide()
+		if p2_prompt: p2_prompt.hide()
 	elif status == "ALERT":
 		if screen_p1: screen_p1.play("alert")
 		if screen_p2: screen_p2.play("alert")
@@ -156,6 +166,11 @@ func update_visual() -> void:
 			p1_button.play("pressed" if p1_pressing else "open_idle")
 		if p2_button:
 			p2_button.play("pressed" if p2_pressing else "open_idle")
+		if p1_prompt: p1_prompt.show()
+		if p2_prompt: p2_prompt.show()
+	else:
+		if p1_prompt: p1_prompt.hide()
+		if p2_prompt: p2_prompt.hide()
 
 # Chamado pelas áreas de interação separadas de P1 e P2
 func set_p1_pressing(val: bool) -> void:

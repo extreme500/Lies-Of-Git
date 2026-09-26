@@ -46,6 +46,28 @@ theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 text = "SYNC NECESSÁRIO"
 horizontal_alignment = 1
 
+[node name="P1_Prompt" type="Label" parent="."]
+visible = false
+offset_left = -160.0
+offset_top = -28.0
+offset_right = -80.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "[E] Segurar"
+horizontal_alignment = 1
+
+[node name="P2_Prompt" type="Label" parent="."]
+visible = false
+offset_left = 80.0
+offset_top = -28.0
+offset_right = 160.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "[,] Segurar"
+horizontal_alignment = 1
+
 [node name="P1_Area" type="Area2D" parent="."]
 position = Vector2(-120, 4)
 collision_layer = 4

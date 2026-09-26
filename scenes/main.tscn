@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
 [ext_resource type="Texture2D" uid="uid://cxg70bvxtinmb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
 [ext_resource type="Script" uid="uid://be7up8f7cndwd" path="res://scripts/centro_sc.gd" id="9_centro"]
+[ext_resource type="Texture2D" uid="uid://bermoyj6sf6nn" path="res://assets/background/Robot-Factory-Pixel-Game-Backgrounds2.png" id="10_bg_factory"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -73,21 +74,65 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.12, 0.16, 1)
+color = Color(0.08, 0.09, 0.13, 1)
 
-[node name="Chamber1Tint" type="ColorRect" parent="Background" unique_id=807276572]
+[node name="Chamber1View" type="Control" parent="Background"]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
 offset_left = 30.0
-offset_top = 30.0
-offset_right = 625.0
-offset_bottom = 660.0
-color = Color(0.12, 0.15, 0.22, 0.6)
+offset_top = 56.0
+offset_right = 602.0
+offset_bottom = 684.0
 
-[node name="Chamber2Tint" type="ColorRect" parent="Background" unique_id=609318611]
-offset_left = 655.0
-offset_top = 30.0
+[node name="BG_P1" type="TextureRect" parent="Background/Chamber1View"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -30.0
+offset_top = -56.0
 offset_right = 1250.0
-offset_bottom = 660.0
-color = Color(0.2, 0.16, 0.14, 0.6)
+offset_bottom = 664.0
+texture = ExtResource("10_bg_factory")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Chamber1Tint" type="ColorRect" parent="Background/Chamber1View" unique_id=807276572]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.1, 0.18, 0.45)
+
+[node name="Chamber2View" type="Control" parent="Background"]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 678.0
+offset_top = 56.0
+offset_right = 1250.0
+offset_bottom = 684.0
+
+[node name="BG_P2" type="TextureRect" parent="Background/Chamber2View"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -678.0
+offset_top = -56.0
+offset_right = 602.0
+offset_bottom = 664.0
+texture = ExtResource("10_bg_factory")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Chamber2Tint" type="ColorRect" parent="Background/Chamber2View" unique_id=609318611]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.18, 0.12, 0.08, 0.45)
 
 [node name="DividerWindow" type="ColorRect" parent="Background" unique_id=269224343]
 offset_left = 600.0

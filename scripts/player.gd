@@ -144,6 +144,8 @@ func _physics_process(delta: float) -> void:
 	if is_repairing and (active_station == null or not active_station.is_broken() or exit_down):
 		is_repairing = false
 
+	var operating_generator = (active_station and active_station.minigame_type == "skillcheck" and active_station.role == "A")
+
 	# Inputs específicos de cada jogador
 	var wants_jump = false
 	var jump_released = false
@@ -153,6 +155,22 @@ func _physics_process(delta: float) -> void:
 		wants_jump = check_jump_pressed()
 		jump_released = check_jump_released()
 		input_x = get_horizontal_input()
+	elif operating_generator:
+		velocity = Vector2.ZERO
+		if check_jump_pressed():
+			var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
+			for c in centro_nodes:
+				if is_instance_valid(c) and c.has_method("impulse_blue_bar"):
+					c.impulse_blue_bar()
+					SoundManager.play(get_tree(), "step", 0.15)
+
+	# Se for o gerador role A e pulou (mesmo sem estar travado em is_repairing), impulsiona a barra azul
+	if not is_repairing and operating_generator and wants_jump:
+		var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
+		for c in centro_nodes:
+			if is_instance_valid(c) and c.has_method("impulse_blue_bar"):
+				c.impulse_blue_bar()
+				SoundManager.play(get_tree(), "step", 0.15)
 
 	if wants_jump:
 		jump_buffer_timer = jump_buffer_time
@@ -277,10 +295,12 @@ func send_minigame_input(val: String) -> void:
 func process_interaction(interact_down: bool, interact_just_pressed: bool, delta: float) -> void:
 	# Lógica do Sync Terminal
 	if nearby_sync_terminal:
-		if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
-			nearby_sync_terminal.set_p1_pressing(interact_down)
-		elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
-			nearby_sync_terminal.set_p2_pressing(interact_down)
+		var is_urgent_open = nearby_sync_terminal.get("status") == "ALERT"
+		if is_urgent_open:
+			if player_id == 1 and nearby_sync_terminal.has_method("set_p1_pressing"):
+				nearby_sync_terminal.set_p1_pressing(interact_down)
+			elif player_id == 2 and nearby_sync_terminal.has_method("set_p2_pressing"):
+				nearby_sync_terminal.set_p2_pressing(interact_down)
 
 	# Lógica do Conveyor
 	if nearby_conveyor and interact_just_pressed:
@@ -322,19 +342,27 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 				is_repairing = false
 		elif mg_type == "skillcheck":
 			if role == "B":
-				# Gerador de Calibragem (Player 2) - Calibra ao apertar interagir
+				# Gerador de Calibragem (Player 2) - Calibra ao apertar interagir em intervalos regulares
 				if prompt_label:
 					prompt_label.visible = true
-					prompt_label.text = "[,] Sincronizar"
+					var time_left = current_station.get_skillcheck_interval_left() if current_station.has_method("get_skillcheck_interval_left") else 0.0
+					if time_left > 0.0:
+						prompt_label.text = "Aguarde (%.1fs)..." % time_left
+					else:
+						prompt_label.text = "[,] Sincronizar"
 				if interact_just_pressed:
 					current_station.try_skillcheck_calibrate()
 				is_repairing = false
 			elif role == "A":
-				# Gerador (Player 1) - Apenas indicador visual
+				# Gerador (Player 1) - Controla a barra azul com o botão de pulo (Espaço / W)
 				if prompt_label:
 					prompt_label.visible = true
-					prompt_label.text = "Calibrador Ativo"
-				is_repairing = false
+					if not is_repairing:
+						prompt_label.text = "[E] Operar Gerador"
+					else:
+						prompt_label.text = "[Espaço] Subir Barra | [Q] Sair"
+				if interact_just_pressed:
+					is_repairing = not is_repairing
 		elif mg_type == "password" and role == "A":
 			# Receptor de Senha (Player 1) - apenas exibe o código para o Player 2
 			if prompt_label:
@@ -371,6 +399,16 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 					fixing_audio.stop()
 				if current_station.has_method("set_interacting"):
 					current_station.set_interacting(false)
+	elif nearby_sync_terminal:
+		is_repairing = false
+		if repair_sparks: repair_sparks.emitting = false
+		if fixing_audio and fixing_audio.playing: fixing_audio.stop()
+		if prompt_label:
+			if nearby_sync_terminal.get("status") == "ALERT":
+				prompt_label.visible = true
+				prompt_label.text = "[E] Segurar" if player_id == 1 else "[,] Segurar"
+			else:
+				prompt_label.visible = false
 	elif nearby_conveyor:
 		is_repairing = false
 		if repair_sparks:

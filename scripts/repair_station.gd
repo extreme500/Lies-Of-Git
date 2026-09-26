@@ -17,6 +17,8 @@ var is_interacting: bool = false
 var _interact_timer: float = 0.0
 var _skillcheck_visual_active: bool = false
 var _skillcheck_cooldown: float = 0.0
+var skillcheck_click_interval: float = 1.0 # Intervalo regular entre cliques (em segundos)
+var skillcheck_fails: int = 0
 
 const FRAMES_PWD_REC = preload("res://assets/Terminais/terminal_password_receive_frames.tres")
 const FRAMES_PWD_INS = preload("res://assets/Terminais/terminal_password_insert_frames.tres")
@@ -602,36 +604,56 @@ func try_deliver_item(player: Node) -> bool:
 		return true
 	return false
 
+func get_skillcheck_interval_left() -> float:
+	return max(0.0, _skillcheck_cooldown)
+
 func try_skillcheck_calibrate() -> bool:
 	if status != "BROKEN" or minigame_type != "skillcheck" or role != "B":
 		return false
 	if _skillcheck_cooldown > 0.0:
 		return false
 	
+	# Só pode clicar em intervalos regulares (inicia o cooldown do intervalo)
+	_skillcheck_cooldown = skillcheck_click_interval
+	
 	# O Jogador A PRECISA estar no gerador dele também!
 	if paired_station and not paired_station.is_player_present():
-		_skillcheck_cooldown = 0.5
+		skillcheck_fails += 1
 		SoundManager.play(get_tree(), "lose", 0.4)
 		return false
 	
 	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
 		anim_sprite.play("running")
 	
-	var hit = false
 	var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
-	if not centro_nodes.is_empty() and centro_nodes[0].has_method("is_alvo_atingido"):
-		hit = centro_nodes[0].is_alvo_atingido()
-	elif paired_station:
-		var n = paired_station.mg_state.get("needle", 0.0)
-		var s = paired_station.mg_state.get("target_start", 0.0)
-		var e = paired_station.mg_state.get("target_end", 0.0)
-		hit = (n >= s and n <= e)
+	var centro = centro_nodes[0] if not centro_nodes.is_empty() else null
 	
-	if hit:
+	var barra_na_zona = false
+	var dial_atingido = false
+	
+	if is_instance_valid(centro):
+		if centro.has_method("is_barra_na_zona_verde"):
+			barra_na_zona = centro.is_barra_na_zona_verde()
+		if centro.has_method("is_dial_alvo_atingido"):
+			dial_atingido = centro.is_dial_alvo_atingido()
+		elif centro.has_method("is_alvo_atingido"):
+			dial_atingido = centro.is_alvo_atingido()
+	else:
+		barra_na_zona = true
+		dial_atingido = true
+	
+	# Condição obrigatória: SÓ pode dar ok se estiver dentro dessa barra verde, caso contrário conta como fail!
+	if not barra_na_zona:
+		skillcheck_fails += 1
+		SoundManager.play(get_tree(), "lose", 0.4)
+		return false
+	
+	# Se a barra está na zona verde e o dial giratório acertou a área alvo:
+	if dial_atingido:
 		fix_station()
 		return true
 	else:
-		_skillcheck_cooldown = 0.5
+		skillcheck_fails += 1
 		SoundManager.play(get_tree(), "lose", 0.4)
 		return false
 
