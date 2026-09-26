@@ -55,11 +55,11 @@ animation = &"idle"
 
 [node name="CarriedItem" type="ColorRect" parent="Visual"]
 visible = false
-offset_left = -8.0
-offset_top = -35.0
-offset_right = 8.0
-offset_bottom = -25.0
-color = Color(0.8, 0.8, 0.2, 1)
+offset_left = -7.0
+offset_top = -37.0
+offset_right = 7.0
+offset_bottom = -23.0
+color = Color(0.15, 0.95, 0.25, 1)
 
 [node name="InteractionDetector" type="Area2D" parent="."]
 collision_layer = 0

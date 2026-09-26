@@ -10,20 +10,28 @@ size = Vector2(50, 40)
 [node name="SyncTerminal" type="Node2D"]
 script = ExtResource("1_sync")
 
-[node name="Screen" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -25)
-scale = Vector2(2, 2)
+[node name="Screen_P1" type="AnimatedSprite2D" parent="."]
+top_level = true
+position = Vector2(100, 140)
+scale = Vector2(3.5, 3.5)
+sprite_frames = ExtResource("3_scr_frames")
+animation = &"idle"
+
+[node name="Screen_P2" type="AnimatedSprite2D" parent="."]
+top_level = true
+position = Vector2(1180, 140)
+scale = Vector2(3.5, 3.5)
 sprite_frames = ExtResource("3_scr_frames")
 animation = &"idle"
 
 [node name="P1_Button" type="AnimatedSprite2D" parent="."]
-position = Vector2(-64, 4)
+position = Vector2(-120, 4)
 scale = Vector2(2, 2)
 sprite_frames = ExtResource("2_btn_frames")
 animation = &"idle"
 
 [node name="P2_Button" type="AnimatedSprite2D" parent="."]
-position = Vector2(64, 4)
+position = Vector2(120, 4)
 scale = Vector2(-2, 2)
 sprite_frames = ExtResource("2_btn_frames")
 animation = &"idle"
@@ -39,7 +47,7 @@ text = "SYNC NECESSÁRIO"
 horizontal_alignment = 1
 
 [node name="P1_Area" type="Area2D" parent="."]
-position = Vector2(-64, 4)
+position = Vector2(-120, 4)
 collision_layer = 4
 collision_mask = 0
 
@@ -47,7 +55,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_zone")
 
 [node name="P2_Area" type="Area2D" parent="."]
-position = Vector2(64, 4)
+position = Vector2(120, 4)
 collision_layer = 4
 collision_mask = 0
 
