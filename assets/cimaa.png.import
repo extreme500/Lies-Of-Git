@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf2xh7yo8lu3"
-path="res://.godot/imported/cima.png-46af98399cebfcfbb9b763e469d10239.ctex"
+uid="uid://33wxuhway7h"
+path="res://.godot/imported/cimaa.png-cb389e6d5149f0f4ef0946bc1c6c9d07.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Random (setas)/cima.png"
-dest_files=["res://.godot/imported/cima.png-46af98399cebfcfbb9b763e469d10239.ctex"]
+source_file="res://assets/cimaa.png"
+dest_files=["res://.godot/imported/cimaa.png-cb389e6d5149f0f4ef0946bc1c6c9d07.ctex"]
 
 [params]
 

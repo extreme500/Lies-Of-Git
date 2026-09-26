@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://buxy6x513mn5q"
-path="res://.godot/imported/direit ).png-050bb1288263a04fa544fb219f9bd4aa.ctex"
+uid="uid://06ox1qmfynye"
+path="res://.godot/imported/esquerda.png-c08c29b7818da30f02ea5997e8b68952.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Random (setas)/direit ).png"
-dest_files=["res://.godot/imported/direit ).png-050bb1288263a04fa544fb219f9bd4aa.ctex"]
+source_file="res://assets/esquerda.png"
+dest_files=["res://.godot/imported/esquerda.png-c08c29b7818da30f02ea5997e8b68952.ctex"]
 
 [params]
 

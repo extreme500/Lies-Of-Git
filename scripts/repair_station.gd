@@ -41,7 +41,7 @@ var mg_state: Dictionary = {}
 @onready var name_label: Label = $NameLabel
 @onready var minigame_ui: Control = $MinigameUI
 @onready var minigame_label: Label = $MinigameUI/Label
-@onready var arrow_container: HBoxContainer = $MinigameUI/ArrowContainer if has_node("MinigameUI/ArrowContainer") else null
+@onready var arrow_container: Container = $MinigameUI/ArrowContainer if has_node("MinigameUI/ArrowContainer") else null
 
 var _arrow_textures_cache: Dictionary = {}
 
@@ -67,15 +67,18 @@ func _ready() -> void:
 	if not arrow_container and minigame_ui:
 		arrow_container = minigame_ui.get_node_or_null("ArrowContainer")
 		if not arrow_container:
-			arrow_container = HBoxContainer.new()
+			arrow_container = VBoxContainer.new()
 			arrow_container.name = "ArrowContainer"
-			arrow_container.alignment = BoxContainer.ALIGNMENT_CENTER
-			arrow_container.add_theme_constant_override("separation", 12)
-			arrow_container.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-			arrow_container.offset_top = -38.0
-			arrow_container.offset_bottom = -8.0
 			minigame_ui.add_child(arrow_container)
 	if arrow_container:
+		arrow_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+		arrow_container.offset_left = 6.0
+		arrow_container.offset_right = -6.0
+		arrow_container.offset_top = 24.0
+		arrow_container.offset_bottom = -6.0
+		if arrow_container is BoxContainer:
+			arrow_container.alignment = BoxContainer.ALIGNMENT_CENTER
+			arrow_container.add_theme_constant_override("separation", 6)
 		arrow_container.hide()
 	if not anim_sprite:
 		anim_sprite = get_node_or_null("Visual/AnimatedSprite2D") as AnimatedSprite2D
@@ -110,7 +113,10 @@ func on_player_entered(p: Node) -> void:
 
 func on_player_exited(p: Node) -> void:
 	present_players.erase(p)
-	update_ui_visibility()
+	if present_players.is_empty():
+		set_interacting(false)
+	else:
+		update_ui_visibility()
 
 func is_player_present() -> bool:
 	return present_players.size() > 0
@@ -134,14 +140,17 @@ func update_ui_visibility() -> void:
 	if not minigame_ui: return
 	if status != "BROKEN":
 		minigame_ui.visible = false
+		if warning_icon:
+			warning_icon.visible = false
 		return
 	
-	if minigame_type == "password" and role == "A":
-		minigame_ui.visible = true
-	elif minigame_type in ["password", "simon"]:
+	if minigame_type in ["password", "simon"]:
 		minigame_ui.visible = is_interacting
 	else:
 		minigame_ui.visible = true
+		
+	if warning_icon:
+		warning_icon.visible = not minigame_ui.visible
 
 func _exit_tree() -> void:
 	if minigame_type == "skillcheck" and role == "A":
@@ -850,31 +859,54 @@ func update_minigame_ui() -> void:
 	
 	var txt = ""
 	if minigame_type == "password":
-		if arrow_container:
-			arrow_container.show()
-			minigame_label.anchor_bottom = 0.0
-			minigame_label.offset_top = 4.0
-			minigame_label.offset_bottom = 26.0
+		var slots: Array[Control] = []
 		
 		if role == "A":
 			txt = "Senha:"
 			var pwd = mg_state.get("password", [])
-			if arrow_container:
-				for dir in pwd:
-					arrow_container.add_child(_create_arrow_slot(dir, false))
+			for dir in pwd:
+				slots.append(_create_arrow_slot(dir, false))
 		else:
 			var attempts = mg_state.get("user_inputs", []).size()
 			var total = 4
 			if paired_station and paired_station.mg_state.has("password"):
 				total = paired_station.mg_state["password"].size()
 			txt = "Insira a Senha (%d/%d):" % [attempts, total]
-			if arrow_container:
-				var inputs = mg_state.get("user_inputs", [])
-				for dir in inputs:
-					arrow_container.add_child(_create_arrow_slot(dir, false))
-				for i in range(inputs.size(), total):
-					arrow_container.add_child(_create_arrow_slot("", true))
+			var inputs = mg_state.get("user_inputs", [])
+			for dir in inputs:
+				slots.append(_create_arrow_slot(dir, false))
+			for i in range(inputs.size(), total):
+				slots.append(_create_arrow_slot("", true))
+		
+		var count = slots.size()
+		var row_count = int(ceil(float(count) / 4.0))
+		row_count = max(row_count, 1)
+		
+		# Ajusta o tamanho da caixa onde as setas aparecem (expande para baixo para > 4 setas)
+		var extra_rows = row_count - 1
+		if minigame_ui:
+			minigame_ui.offset_top = -120.0
+			minigame_ui.offset_bottom = -120.0 + (66.0 + extra_rows * 36.0)
+		
+		if arrow_container:
+			arrow_container.show()
+			minigame_label.anchor_bottom = 0.0
+			minigame_label.offset_top = 4.0
+			minigame_label.offset_bottom = 24.0
+			
+			var current_row: HBoxContainer = null
+			for i in range(slots.size()):
+				if i % 4 == 0:
+					current_row = HBoxContainer.new()
+					current_row.alignment = BoxContainer.ALIGNMENT_CENTER
+					current_row.add_theme_constant_override("separation", 10)
+					arrow_container.add_child(current_row)
+				current_row.add_child(slots[i])
 	else:
+		if minigame_ui:
+			minigame_ui.offset_top = -120.0
+			minigame_ui.offset_bottom = -54.0
+			
 		if arrow_container:
 			arrow_container.hide()
 			minigame_label.anchor_bottom = 1.0

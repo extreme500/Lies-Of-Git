@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wmeo37heky1e"
-path="res://.godot/imported/relogio.png-5ef0aefcd8dc56e85b1c0a065c1cec2e.ctex"
+uid="uid://cxtm6p2eluq5k"
+path="res://.godot/imported/direita.png-0ac88211cad03e107fb96eb44e7fcf8a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Random (setas)/relogio.png"
-dest_files=["res://.godot/imported/relogio.png-5ef0aefcd8dc56e85b1c0a065c1cec2e.ctex"]
+source_file="res://assets/direita.png"
+dest_files=["res://.godot/imported/direita.png-0ac88211cad03e107fb96eb44e7fcf8a.ctex"]
 
 [params]
 

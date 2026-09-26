@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://06ox1qmfynye"
-path="res://.godot/imported/esquerda.png-f34f073cc2ce9af3ffe95a8fa011e9e9.ctex"
+uid="uid://dymmu6ntopaj4"
+path="res://.godot/imported/baixo.png-5aeee4de10d85f1da133d2151eded8a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Random (setas)/esquerda.png"
-dest_files=["res://.godot/imported/esquerda.png-f34f073cc2ce9af3ffe95a8fa011e9e9.ctex"]
+source_file="res://assets/baixo.png"
+dest_files=["res://.godot/imported/baixo.png-5aeee4de10d85f1da133d2151eded8a8.ctex"]
 
 [params]
 

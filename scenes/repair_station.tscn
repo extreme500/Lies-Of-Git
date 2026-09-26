@@ -150,16 +150,17 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="ArrowContainer" type="HBoxContainer" parent="MinigameUI" unique_id=2032072408]
+[node name="ArrowContainer" type="VBoxContainer" parent="MinigameUI" unique_id=2032072408]
 visible = false
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -38.0
-offset_bottom = -8.0
+offset_left = 6.0
+offset_top = 24.0
+offset_right = -6.0
+offset_bottom = -6.0
 grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 12
+grow_vertical = 2
+theme_override_constants/separation = 6
 alignment = 1

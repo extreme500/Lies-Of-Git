@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/maquina.tscn" id="2_maquina"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="Texture2D" uid="uid://cro36ww32wjbf" path="res://assets/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_27.png" id="3_tt3km"]
-[ext_resource type="PackedScene" path="res://scenes/repair_station.tscn" id="4_station"]
+[ext_resource type="PackedScene" uid="uid://dng2ii2tnl3ue" path="res://scenes/repair_station.tscn" id="4_station"]
 [ext_resource type="PackedScene" path="res://scenes/sync_terminal.tscn" id="5_sync"]
 [ext_resource type="PackedScene" path="res://scenes/conveyor.tscn" id="6_conv"]
 [ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
@@ -21,7 +21,7 @@ size = Vector2(30, 720)
 size = Vector2(80, 560)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
-size = Vector2(1, 1.0000002)
+size = Vector2(1.0033002, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hud"]
 texture = ExtResource("7_ui_frame")
@@ -181,16 +181,17 @@ position = Vector2(640, 380)
 position = Vector2(210, 230)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_TopPlat" unique_id=443361105]
-scale = Vector2(200, 20)
+position = Vector2(-110.5, -53)
+scale = Vector2(139, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_TopPlat" unique_id=1237646285]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -100.0
-offset_top = -10.0
-offset_right = 100.0
-offset_bottom = 22.0
+offset_left = -180.0
+offset_top = -61.0
+offset_right = -41.0
+offset_bottom = -29.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -198,16 +199,71 @@ stretch_mode = 1
 position = Vector2(120, 390)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1308427647]
-scale = Vector2(160, 20)
+position = Vector2(117, -118.5)
+scale = Vector2(160, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat" unique_id=1285588913]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -80.0
-offset_top = -10.0
-offset_right = 80.0
-offset_bottom = 22.0
+offset_left = 37.0
+offset_top = -127.0
+offset_right = 197.0
+offset_bottom = -95.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_MidLeftPlat3" type="StaticBody2D" parent="Environment/Platforms" unique_id=1475801945]
+position = Vector2(120, 390)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat3" unique_id=1646311797]
+position = Vector2(368.5, -47.5)
+scale = Vector2(143, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat3" unique_id=2007447042]
+texture_filter = 1
+texture_repeat = 2
+offset_left = 297.0
+offset_top = -56.0
+offset_right = 440.0
+offset_bottom = -24.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_MidLeftPlat4" type="StaticBody2D" parent="Environment/Platforms" unique_id=1739242435]
+position = Vector2(120, 390)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat4" unique_id=339140595]
+position = Vector2(145, 10)
+scale = Vector2(114, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat4" unique_id=334402922]
+texture_filter = 1
+texture_repeat = 2
+offset_left = 88.0
+offset_top = 2.0
+offset_right = 202.0
+offset_bottom = 34.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_MidLeftPlat2" type="StaticBody2D" parent="Environment/Platforms" unique_id=1681605059]
+position = Vector2(145, 481)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidLeftPlat2" unique_id=1588690389]
+position = Vector2(-70, -125.5)
+scale = Vector2(90, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidLeftPlat2" unique_id=1613527755]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -115.0
+offset_top = -134.0
+offset_right = -25.0
+offset_bottom = -102.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -215,16 +271,23 @@ stretch_mode = 1
 position = Vector2(430, 470)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat" unique_id=1986516840]
-scale = Vector2(180, 20)
+position = Vector2(79, -292)
+scale = Vector2(181, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="CollisionSeparador" type="CollisionShape2D" parent="Environment/Platforms/P1_MidRightPlat" unique_id=237708547]
+position = Vector2(212, -379)
+rotation = 1.5707964
+scale = Vector2(181, 150)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_MidRightPlat" unique_id=629610095]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -90.0
-offset_top = -10.0
-offset_right = 90.0
-offset_bottom = 22.0
+offset_left = -11.0
+offset_top = -300.0
+offset_right = 170.0
+offset_bottom = -268.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -232,16 +295,70 @@ stretch_mode = 1
 position = Vector2(260, 560)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep" unique_id=375209280]
-scale = Vector2(140, 20)
+position = Vector2(13.5, -85)
+scale = Vector2(279, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep" unique_id=1700371150]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -70.0
-offset_top = -10.0
-offset_right = 70.0
-offset_bottom = 22.0
+offset_left = -126.0
+offset_top = -93.0
+offset_right = 153.0
+offset_bottom = -61.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_LowStep2" type="StaticBody2D" parent="Environment/Platforms" unique_id=1767136075]
+position = Vector2(260, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep2" unique_id=270719972]
+position = Vector2(258, -24.5)
+scale = Vector2(84, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep2" unique_id=1236340756]
+texture_filter = 1
+texture_repeat = 2
+offset_left = 216.0
+offset_top = -32.0
+offset_right = 300.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_LowStep3" type="StaticBody2D" parent="Environment/Platforms" unique_id=2098148658]
+position = Vector2(260, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep3" unique_id=1369533195]
+position = Vector2(35, 26)
+scale = Vector2(96, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep3" unique_id=1824883951]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -13.0
+offset_top = 18.0
+offset_right = 83.0
+offset_bottom = 50.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P1_LowStep4" type="StaticBody2D" parent="Environment/Platforms" unique_id=1211527553]
+position = Vector2(260, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P1_LowStep4" unique_id=1593018591]
+position = Vector2(-172.5, 4.5)
+scale = Vector2(115, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P1_LowStep4" unique_id=341689084]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -230.0
+offset_top = -3.0
+offset_right = -115.0
+offset_bottom = 29.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -249,16 +366,35 @@ stretch_mode = 1
 position = Vector2(1070, 230)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat" unique_id=2113394175]
-scale = Vector2(200, 20)
+position = Vector2(124, -59)
+scale = Vector2(112, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_TopPlat" unique_id=1010813753]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -100.0
-offset_top = -10.0
-offset_right = 100.0
-offset_bottom = 22.0
+offset_left = 68.0
+offset_top = -67.0
+offset_right = 180.0
+offset_bottom = -35.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P2_TopPlat2" type="StaticBody2D" parent="Environment/Platforms" unique_id=1216209113]
+position = Vector2(1070, 230)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_TopPlat2" unique_id=1185175001]
+position = Vector2(-189, -56)
+scale = Vector2(322, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_TopPlat2" unique_id=1579921690]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -350.0
+offset_top = -64.0
+offset_right = -28.0
+offset_bottom = -32.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -266,16 +402,35 @@ stretch_mode = 1
 position = Vector2(850, 350)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=2107049821]
-scale = Vector2(180, 20)
+position = Vector2(-43, -64)
+scale = Vector2(63, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidLeftPlat" unique_id=806936712]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -90.0
-offset_top = -10.0
-offset_right = 90.0
-offset_bottom = 22.0
+offset_left = -75.0
+offset_top = -72.0
+offset_right = -12.0
+offset_bottom = -40.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P2_MidLeftPlat2" type="StaticBody2D" parent="Environment/Platforms" unique_id=1380560877]
+position = Vector2(850, 350)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidLeftPlat2" unique_id=1146161191]
+position = Vector2(237.5, -62.5)
+scale = Vector2(325, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidLeftPlat2" unique_id=819747596]
+texture_filter = 1
+texture_repeat = 2
+offset_left = 75.0
+offset_top = -71.0
+offset_right = 400.0
+offset_bottom = -39.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -283,16 +438,17 @@ stretch_mode = 1
 position = Vector2(1080, 460)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_MidRightPlat" unique_id=1758159257]
-scale = Vector2(170, 20)
+position = Vector2(-228, 145)
+scale = Vector2(341, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_MidRightPlat" unique_id=944028547]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -85.0
-offset_top = -10.0
-offset_right = 85.0
-offset_bottom = 22.0
+offset_left = -400.0
+offset_top = 137.0
+offset_right = -57.0
+offset_bottom = 169.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
@@ -300,81 +456,119 @@ stretch_mode = 1
 position = Vector2(880, 560)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat" unique_id=1699920669]
-scale = Vector2(160, 20)
+position = Vector2(242.5, -68)
+scale = Vector2(255, 32)
 shape = SubResource("RectangleShape2D_plat")
 
 [node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_LowPlat" unique_id=1122503641]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -80.0
-offset_top = -10.0
-offset_right = 80.0
-offset_bottom = 22.0
+offset_left = 115.0
+offset_top = -76.0
+offset_right = 370.0
+offset_bottom = -44.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P2_LowPlat2" type="StaticBody2D" parent="Environment/Platforms" unique_id=881124761]
+position = Vector2(880, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat2" unique_id=658009364]
+position = Vector2(-12.5, -63.5)
+scale = Vector2(83, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_LowPlat2" unique_id=1918004999]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -54.0
+offset_top = -72.0
+offset_right = 29.0
+offset_bottom = -40.0
+texture = ExtResource("3_tt3km")
+stretch_mode = 1
+
+[node name="P2_LowPlat3" type="StaticBody2D" parent="Environment/Platforms" unique_id=1327045485]
+position = Vector2(880, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platforms/P2_LowPlat3" unique_id=1936051413]
+position = Vector2(0.5, -158)
+scale = Vector2(321, 32)
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="TextureRect" parent="Environment/Platforms/P2_LowPlat3" unique_id=980052237]
+texture_filter = 1
+texture_repeat = 2
+offset_left = -160.0
+offset_top = -166.0
+offset_right = 161.0
+offset_bottom = -134.0
 texture = ExtResource("3_tt3km")
 stretch_mode = 1
 
 [node name="Stations" type="Node2D" parent="." unique_id=105656817]
 
 [node name="Station1_P1_Terminal" parent="Stations" unique_id=1278575401 instance=ExtResource("4_station")]
-position = Vector2(210, 200)
+position = Vector2(81, 328)
 station_name = "Gerador de Força"
 station_type = "gerador"
 minigame_type = "skillcheck"
 
 [node name="Station2_P1_Fiacao" parent="Stations" unique_id=1600103575 instance=ExtResource("4_station")]
-position = Vector2(100, 360)
+position = Vector2(266, 372)
 station_name = "Receptor de Código"
 station_type = "cabo"
 minigame_type = "password"
 
 [node name="Station3_P1_Valvula" parent="Stations" unique_id=1380433766 instance=ExtResource("4_station")]
-position = Vector2(400, 640)
+position = Vector2(62, 639)
 station_name = "Dispensador de Peças"
 station_type = "valvula"
 minigame_type = "item"
 
 [node name="Station4_P2_Terminal" parent="Stations" unique_id=406144251 instance=ExtResource("4_station")]
-position = Vector2(1070, 200)
+position = Vector2(1213, 639)
 station_name = "Botão de Calibragem"
 minigame_type = "skillcheck"
 chamber_id = 2
 
 [node name="Station5_P2_Bobina" parent="Stations" unique_id=902652738 instance=ExtResource("4_station")]
-position = Vector2(880, 530)
+position = Vector2(772, 146)
 station_name = "Entrada de Peças"
 station_type = "bobina"
 minigame_type = "item"
 chamber_id = 2
 
 [node name="Station6_P2_Juncao" parent="Stations" unique_id=1518560855 instance=ExtResource("4_station")]
-position = Vector2(850, 640)
+position = Vector2(806, 259)
 station_name = "Terminal de Inserção"
 station_type = "cabo"
 minigame_type = "password"
 chamber_id = 2
 
 [node name="Station7_P1_Extra" parent="Stations" unique_id=1372348221 instance=ExtResource("4_station")]
-position = Vector2(430, 440)
+position = Vector2(518, 150)
 station_name = "Sequência Alfa"
 minigame_type = "simon"
 
 [node name="Station8_P2_Extra" parent="Stations" unique_id=335650437 instance=ExtResource("4_station")]
-position = Vector2(1080, 430)
+position = Vector2(1215, 463)
 station_name = "Sequência Beta"
 station_type = "bobina"
 minigame_type = "simon"
 chamber_id = 2
 
 [node name="SyncTerminal" parent="Stations" unique_id=533804066 groups=["sync_terminals"] instance=ExtResource("5_sync")]
-position = Vector2(640, 640)
+position = Vector2(641, 635)
 
 [node name="AnguloSC" type="Node2D" parent="Stations" unique_id=1040518518 groups=["skillcheck_visual"]]
 z_index = 25
-position = Vector2(210, 135)
+position = Vector2(-192, -67)
 
 [node name="CentroSC" type="Node2D" parent="Stations/AnguloSC" unique_id=734709025 groups=["centro_sc", "skillcheck_visual"]]
 z_index = 25
 z_as_relative = false
+position = Vector2(30, -51)
 script = ExtResource("9_centro")
 
 [node name="RetaSC" type="Line2D" parent="Stations/AnguloSC/CentroSC" unique_id=12892669]
@@ -383,10 +577,10 @@ points = PackedVector2Array(0, 0, 65, 0)
 width = 6.0
 
 [node name="Player1" parent="." unique_id=1096043855 instance=ExtResource("3_player")]
-position = Vector2(100, 630)
+position = Vector2(172, 613)
 
 [node name="Player2" parent="." unique_id=1370638752 instance=ExtResource("3_player")]
-position = Vector2(1180, 630)
+position = Vector2(1113, 613)
 player_id = 2
 
 [node name="FramesLayer" type="CanvasLayer" parent="." unique_id=1715896583]
@@ -412,10 +606,10 @@ axis_stretch_vertical = 1
 
 [node name="Chamber1Frame" type="NinePatchRect" parent="FramesLayer" unique_id=711345996]
 modulate = Color(0.2, 0.65, 1, 1)
-offset_left = -601.0
-offset_top = 41.0
-offset_right = -7.0
-offset_bottom = 665.0
+offset_left = -1077.0
+offset_top = 81.0
+offset_right = -483.0
+offset_bottom = 705.0
 texture = ExtResource("8_outer_frame")
 draw_center = false
 patch_margin_left = 32
@@ -427,10 +621,10 @@ axis_stretch_vertical = 1
 
 [node name="Chamber2Frame" type="NinePatchRect" parent="FramesLayer" unique_id=1443031287]
 modulate = Color(1, 0.6, 0.2, 1)
-offset_left = -586.0
-offset_top = 45.0
-offset_right = -10.0
-offset_bottom = 665.0
+offset_left = -1009.0
+offset_top = 37.0
+offset_right = -433.0
+offset_bottom = 657.0
 texture = ExtResource("8_outer_frame")
 draw_center = false
 patch_margin_left = 32

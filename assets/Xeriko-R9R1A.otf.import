@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://b8fvccynkdd65"
-path="res://.godot/imported/Xeriko-R9R1A.otf-ea62039b13dd6ad908b456445886dd4a.fontdata"
+path="res://.godot/imported/Xeriko-R9R1A.otf-8e7e961cad4dae7cc7b361441285ddcf.fontdata"
 
 [deps]
 
-source_file="res://assets/Random (setas)/Xeriko-R9R1A.otf"
-dest_files=["res://.godot/imported/Xeriko-R9R1A.otf-ea62039b13dd6ad908b456445886dd4a.fontdata"]
+source_file="res://assets/Xeriko-R9R1A.otf"
+dest_files=["res://.godot/imported/Xeriko-R9R1A.otf-8e7e961cad4dae7cc7b361441285ddcf.fontdata"]
 
 [params]
 

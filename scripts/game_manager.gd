@@ -279,47 +279,6 @@ func create_debug_ui() -> void:
 	btn_p5.pressed.connect(func(): break_pair(5))
 	vbox.add_child(btn_p5)
 
-	# Botão F1: Quebrar Simon (3 iter)
-	var btn_simon3 = Button.new()
-	btn_simon3.text = "[F1] Estragar Simon (3 iter)"
-	btn_simon3.add_theme_font_size_override("font_size", 11)
-	btn_simon3.pressed.connect(func(): break_simon_terminal(3))
-	vbox.add_child(btn_simon3)
-	
-	# Botão F2: Quebrar Simon (5 iter)
-	var btn_simon5 = Button.new()
-	btn_simon5.text = "[F2] Estragar Simon (5 iter)"
-	btn_simon5.add_theme_font_size_override("font_size", 11)
-	btn_simon5.pressed.connect(func(): break_simon_terminal(5))
-	vbox.add_child(btn_simon5)
-	
-	# Botão F3: Quebrar Skillcheck
-	var btn_sc = Button.new()
-	btn_sc.text = "[F3] Estragar Skillcheck"
-	btn_sc.add_theme_font_size_override("font_size", 11)
-	btn_sc.pressed.connect(func(): break_skillcheck_terminal())
-	vbox.add_child(btn_sc)
-	
-	# Botão F4: Quebrar Aleatório
-	var btn_rand = Button.new()
-	btn_rand.text = "[F4] Estragar Aleatório"
-	btn_rand.add_theme_font_size_override("font_size", 11)
-	btn_rand.pressed.connect(func(): trigger_random_failure())
-	vbox.add_child(btn_rand)
-	
-	# Botão P: Pausar Máquina
-	debug_pause_btn = Button.new()
-	debug_pause_btn.text = "[P] Pausar Máquina"
-	debug_pause_btn.add_theme_font_size_override("font_size", 11)
-	debug_pause_btn.pressed.connect(func(): toggle_machine_pause())
-	vbox.add_child(debug_pause_btn)
-	
-	# Botão O: Parar Falhas Auto
-	debug_fail_btn = Button.new()
-	debug_fail_btn.text = "[O] Parar Falhas Auto"
-	debug_fail_btn.add_theme_font_size_override("font_size", 11)
-	debug_fail_btn.pressed.connect(func(): toggle_auto_failures())
-	vbox.add_child(debug_fail_btn)
 	
 	# Dica teclas 1 a 5 e H
 	var hint = Label.new()
@@ -537,7 +496,7 @@ func _setup_pause_menu() -> void:
 	
 	if pause_diff_label:
 		var diff_col = GameSettings.get_difficulty_colour()
-		pause_diff_label.text = "Dificuldade: [ %s ]" % GameSettings.get_difficulty_name().to_upper()
+		pause_diff_label.text = "Dificuldade: %s " % GameSettings.get_difficulty_name().to_upper()
 		pause_diff_label.add_theme_color_override("font_color", diff_col)
 	
 	var diff_box = pause_panel.find_child("DifficultyBox", true, false)

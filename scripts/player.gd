@@ -344,14 +344,8 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 					prompt_label.visible = true
 					prompt_label.text = "Calibrador Ativo"
 				is_repairing = false
-		elif mg_type == "password" and role == "A":
-			# Receptor de Senha (Player 1) - apenas exibe o código para o Player 2
-			if prompt_label:
-				prompt_label.visible = true
-				prompt_label.text = "Código de Acesso"
-			is_repairing = false
 		else:
-			# Minigames com sequência de setas (Password B e Simon A/B)
+			# Minigames interativos (Password A/B e Simon A/B)
 			var enter_key = "E" if player_id == 1 else ","
 			var exit_key = "Q" if player_id == 1 else "."
 			if prompt_label:
@@ -359,17 +353,20 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 				if is_repairing:
 					prompt_label.text = "[%s] Sair" % exit_key
 				else:
-					prompt_label.text = "[%s] Interagir" % enter_key
+					var action_desc = "Ver Código" if (mg_type == "password" and role == "A") else "Interagir"
+					prompt_label.text = "[%s] %s" % [enter_key, action_desc]
 			
 			if interact_just_pressed and not is_repairing:
 				is_repairing = true
 			
 			if is_repairing:
-				if repair_sparks:
-					repair_sparks.emitting = true
-				if fixing_audio and not fixing_audio.playing:
-					fixing_audio.pitch_scale = randf_range(0.95, 1.05)
-					fixing_audio.play()
+				var is_viewing_code = (mg_type == "password" and role == "A")
+				if not is_viewing_code:
+					if repair_sparks:
+						repair_sparks.emitting = true
+					if fixing_audio and not fixing_audio.playing:
+						fixing_audio.pitch_scale = randf_range(0.95, 1.05)
+						fixing_audio.play()
 				if current_station.has_method("set_interacting"):
 					current_station.set_interacting(true)
 				current_station.repair_tick(delta, self)
