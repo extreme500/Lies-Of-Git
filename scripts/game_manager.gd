@@ -1,7 +1,7 @@
 extends Node2D
 class_name GameManager
 
-@export var survival_time: float = 60.0 # Segundos necessários para vencer a Fase 1
+@export var survival_time: float = 6000.0 # Segundos necessários para vencer a Fase 1
 @export var min_failure_interval: float = 4.0
 @export var max_failure_interval: float = 6.5
 
