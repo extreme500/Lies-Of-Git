@@ -77,7 +77,7 @@ func _process(delta: float) -> void:
 	if status == "ALERT" and p1_pressing and p2_pressing:
 		resolve_sync()
 		return
-
+#dark souls 2 esteve aqui
 	if is_paused:
 		return
 		
@@ -91,8 +91,6 @@ func _process(delta: float) -> void:
 			start_alert_phase()
 	elif status == "ALERT":
 		explosion_timer -= delta
-		if alert_label:
-			alert_label.text = "SYNC NECESSÁRIO!\nTempo: %.1f" % max(0.0, explosion_timer)
 
 		if explosion_timer <= 0.0:
 			explode()

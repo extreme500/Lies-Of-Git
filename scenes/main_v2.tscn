@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
 [ext_resource type="Texture2D" uid="uid://cxg70bvxtinmb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
 [ext_resource type="Script" uid="uid://dybnb6g8y0bfw" path="res://scripts/centro_sc.gd" id="9_centro"]
+[ext_resource type="FontFile" uid="uid://b8fvccynkdd65" path="res://assets/Xeriko-R9R1A.otf" id="10_vh1sb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -659,6 +660,7 @@ layout_mode = 2
 [node name="TimerLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/TimeContainer" unique_id=1139221717]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_fonts/font = ExtResource("10_vh1sb")
 theme_override_font_sizes/font_size = 18
 text = "Manter por: 01:00"
 
@@ -669,6 +671,7 @@ theme_override_constants/separation = 12
 [node name="IntegrityLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/IntegrityContainer" unique_id=1496021784]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_fonts/font = ExtResource("10_vh1sb")
 theme_override_font_sizes/font_size = 16
 text = "Integridade da Máquina: 100%"
 
@@ -685,6 +688,7 @@ layout_mode = 2
 [node name="FaultsLabel" type="Label" parent="FramesLayer/TopBar/MarginContainer/HBoxContainer/FaultsContainer" unique_id=1684251392]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_fonts/font = ExtResource("10_vh1sb")
 theme_override_font_sizes/font_size = 16
 text = "Dificuldade: [VALOR]"
 
@@ -738,7 +742,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.95, 0.45, 1)
 theme_override_font_sizes/font_size = 22
-text = "🎉 VITÓRIA! MÁQUINA SALVA! 🎉"
+text = " VITÓRIA! MÁQUINA SALVA! "
 horizontal_alignment = 1
 
 [node name="SummaryLabel" type="Label" parent="HUD/VictoryPanel/VBox" unique_id=2091277583]
@@ -779,7 +783,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
 theme_override_font_sizes/font_size = 22
-text = "💥 A MÁQUINA EXPLODIU! 💥"
+text = "A MÁQUINA EXPLODIU! "
 horizontal_alignment = 1
 
 [node name="SummaryLabel" type="Label" parent="HUD/GameOverPanel/VBox" unique_id=1858636968]
@@ -820,7 +824,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 22
-text = "⏸️ JOGO PAUSADO"
+text = " JOGO PAUSADO"
 horizontal_alignment = 1
 
 [node name="DifficultyBox" type="PanelContainer" parent="HUD/PausePanel/VBox" unique_id=1969383879]
@@ -835,14 +839,14 @@ theme_override_constants/separation = 4
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 14
-text = "Dificuldade: [ NORMAL ]"
+text = "Dificuldade: NORMAL "
 horizontal_alignment = 1
 
 [node name="DiffLockedNotice" type="Label" parent="HUD/PausePanel/VBox/DifficultyBox/DiffVBox" unique_id=1707214091]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.25, 1)
 theme_override_font_sizes/font_size = 11
-text = "🔒 precisa voltar no menu para aumentar a dificuldade"
+text = " precisa voltar no menu para aumentar a dificuldade"
 horizontal_alignment = 1
 autowrap_mode = 2
 
