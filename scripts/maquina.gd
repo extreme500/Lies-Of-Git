@@ -51,8 +51,7 @@ func _process(delta: float) -> void:
 
 func register_broken_station() -> void:
 	broken_stations_count += 1
-	if smoke_particles:
-		smoke_particles.emitting = true
+	# Efeito de fumaça temporariamente desativado a pedido do usuário
 	if spark_particles and broken_stations_count >= 2:
 		spark_particles.emitting = true
 
@@ -60,8 +59,6 @@ func register_fixed_station() -> void:
 	broken_stations_count = max(0, broken_stations_count - 1)
 	repair_bonus(6.0) # Bônus de integridade recuperada ao consertar!
 	if broken_stations_count == 0:
-		if smoke_particles:
-			smoke_particles.emitting = false
 		if spark_particles:
 			spark_particles.emitting = false
 
