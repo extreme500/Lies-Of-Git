@@ -109,6 +109,7 @@ scale_amount_max = 4.0
 color = Color(1, 0.7, 0.2, 1)
 
 [node name="NameLabel" type="Label" parent="."]
+visible = false
 offset_left = -60.0
 offset_top = 22.0
 offset_right = 60.0

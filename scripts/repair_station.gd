@@ -45,7 +45,9 @@ var mg_state: Dictionary = {}
 var _arrow_textures_cache: Dictionary = {}
 
 func _ready() -> void:
-	if name_label: name_label.text = station_name
+	if name_label: 
+		name_label.text = station_name
+		name_label.hide()
 	if progress_bar: progress_bar.hide()
 	if warning_icon: warning_icon.hide()
 	if sparks_particles: sparks_particles.emitting = false
@@ -192,7 +194,7 @@ func update_terminal_frames() -> void:
 		"skillcheck":
 			if role == "A":
 				anim_sprite.sprite_frames = FRAMES_GEN
-				sprite_y_offset = -8.0
+				sprite_y_offset = -5.0
 			else:
 				anim_sprite.sprite_frames = FRAMES_BTN
 				sprite_y_offset = 2.0
@@ -205,7 +207,7 @@ func update_terminal_frames() -> void:
 				sprite_y_offset = -8.0
 			elif station_type == "valvula":
 				anim_sprite.sprite_frames = FRAMES_GEN
-				sprite_y_offset = -8.0
+				sprite_y_offset = -5.0
 			elif station_type == "bobina":
 				anim_sprite.sprite_frames = FRAMES_BTN
 				sprite_y_offset = 2.0

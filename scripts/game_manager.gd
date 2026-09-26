@@ -26,6 +26,9 @@ func _ready() -> void:
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
 	
+	# Trilha sonora em loop suave durante a gameplay
+	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
+	
 	# Localizar máquina principal de forma segura
 	maquina = find_child("Máquina", true, false) as CentralMaquina
 	if not maquina:
