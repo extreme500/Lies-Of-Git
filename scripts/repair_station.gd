@@ -16,6 +16,7 @@ var sfx_cooldown: float = 0.0
 var is_interacting: bool = false
 var _interact_timer: float = 0.0
 var _skillcheck_visual_active: bool = false
+var _skillcheck_b_visual_active: bool = false
 var _skillcheck_cooldown: float = 0.0
 var skillcheck_click_interval: float = 1.0 # Intervalo regular entre cliques (em segundos)
 var skillcheck_fails: int = 0
@@ -75,8 +76,11 @@ func _ready() -> void:
 	update_terminal_frames()
 	update_status_visual()
 	call_deferred("snap_to_surface")
-	if minigame_type == "skillcheck" and role == "A":
-		_set_skillcheck_visual_visible(false)
+	if minigame_type == "skillcheck":
+		if role == "A":
+			_set_skillcheck_visual_visible(false)
+		elif role == "B":
+			_set_skillcheck_b_visual_visible(false)
 
 func snap_to_surface() -> void:
 	if not is_inside_tree() or not get_world_2d():
@@ -101,42 +105,57 @@ func on_player_entered(p: Node) -> void:
 
 func on_player_exited(p: Node) -> void:
 	present_players.erase(p)
+	if present_players.is_empty():
+		set_interacting(false)
 	update_ui_visibility()
 
 func is_player_present() -> bool:
 	return present_players.size() > 0
 
 func set_interacting(val: bool) -> void:
+	if is_interacting == val and (not val or _interact_timer > 0.15):
+		if val: _interact_timer = 0.3
+		return
 	is_interacting = val
 	if not val:
 		_interact_timer = 0.0
 	else:
 		_interact_timer = 0.3
 	update_ui_visibility()
-	if minigame_type == "skillcheck" and role == "A":
-		if val:
-			_position_skillcheck_visual_over_station()
+	if minigame_type == "skillcheck":
+		if role == "A":
+			if val:
+				_position_skillcheck_visual_over_station()
+		elif role == "B":
+			if val:
+				_position_skillcheck_b_over_station()
 
 func update_ui_visibility() -> void:
-	if minigame_type == "skillcheck" and role == "A":
-		# Só exibe se estiver quebrado E o Jogador A estiver presente no gerador!
-		_set_skillcheck_visual_visible(status == "BROKEN" and is_player_present())
+	if minigame_type == "skillcheck":
+		if role == "A":
+			# SÓ aparece na tela se o jogador interagir com o gerador!
+			_set_skillcheck_visual_visible(status == "BROKEN" and is_interacting)
+		elif role == "B":
+			# SÓ aparece na tela se o jogador interagir com o gerador!
+			_set_skillcheck_b_visual_visible(status == "BROKEN" and is_interacting)
 
 	if not minigame_ui: return
 	if status != "BROKEN":
 		minigame_ui.visible = false
 		return
 	
-	if minigame_type == "password" and role == "A":
-		minigame_ui.visible = true
-	elif minigame_type in ["password", "simon"]:
+	if minigame_type in ["password", "simon", "skillcheck"]:
+		# SÓ aparece na tela se o jogador interagir com o terminal/gerador!
 		minigame_ui.visible = is_interacting
 	else:
 		minigame_ui.visible = true
 
 func _exit_tree() -> void:
-	if minigame_type == "skillcheck" and role == "A":
-		_set_skillcheck_visual_visible(false)
+	if minigame_type == "skillcheck":
+		if role == "A":
+			_set_skillcheck_visual_visible(false)
+		elif role == "B":
+			_set_skillcheck_b_visual_visible(false)
 
 func _position_skillcheck_visual_over_station() -> void:
 	if not is_inside_tree(): return
@@ -177,6 +196,35 @@ func _set_skillcheck_visual_visible(val: bool) -> void:
 		if centro and not nodes.has(centro):
 			nodes.append(centro)
 			
+	for n in nodes:
+		if is_instance_valid(n):
+			if n.has_method("set_active"):
+				n.set_active(val)
+			else:
+				n.visible = val
+
+func _position_skillcheck_b_over_station() -> void:
+	if not is_inside_tree(): return
+	var nodes = get_tree().get_nodes_in_group("barra_sc")
+	if nodes.is_empty():
+		nodes = get_tree().get_nodes_in_group("skillcheck_visual_b")
+	for n in nodes:
+		if is_instance_valid(n):
+			n.global_position = global_position + Vector2(0, -75)
+
+func _set_skillcheck_b_visual_visible(val: bool) -> void:
+	if _skillcheck_b_visual_active == val:
+		return
+	_skillcheck_b_visual_active = val
+	if not is_inside_tree():
+		return
+	
+	if val:
+		_position_skillcheck_b_over_station()
+	
+	var nodes = get_tree().get_nodes_in_group("barra_sc")
+	if nodes.is_empty():
+		nodes = get_tree().get_nodes_in_group("skillcheck_visual_b")
 	for n in nodes:
 		if is_instance_valid(n):
 			if n.has_method("set_active"):
@@ -448,12 +496,20 @@ func break_down(n_iterations: int = -1) -> void:
 	# Reseta estado do minigame ao quebrar
 	if minigame_type == "password" and role == "B":
 		generate_new_password()
-	elif minigame_type == "skillcheck" and role == "A":
-		mg_state["needle"] = 0.0
-		var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
-		for c in centro_nodes:
-			if is_instance_valid(c) and c.has_method("sortear_novo_alvo"):
-				c.sortear_novo_alvo()
+	elif minigame_type == "skillcheck":
+		if role == "A":
+			mg_state["needle"] = 0.0
+			var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
+			for c in centro_nodes:
+				if is_instance_valid(c) and c.has_method("sortear_novo_alvo"):
+					c.sortear_novo_alvo()
+			_set_skillcheck_visual_visible(false)
+		elif role == "B":
+			var barra_nodes = get_tree().get_nodes_in_group("barra_sc")
+			for b in barra_nodes:
+				if is_instance_valid(b) and b.has_method("sortear_novo_alvo"):
+					b.sortear_novo_alvo()
+			_set_skillcheck_b_visual_visible(false)
 	elif minigame_type == "item" and role == "A":
 		mg_state["has_item"] = false
 		if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("dispense"):
@@ -531,24 +587,8 @@ func repair_tick(delta: float, player: Node = null) -> void:
 				fixed_now = true
 
 	elif minigame_type == "skillcheck":
-		if role == "B":
-			if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
-				anim_sprite.play("running")
-			if _skillcheck_cooldown <= 0.0:
-				var hit = false
-				var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
-				if not centro_nodes.is_empty() and centro_nodes[0].has_method("is_alvo_atingido"):
-					hit = centro_nodes[0].is_alvo_atingido()
-				elif paired_station:
-					var n = paired_station.mg_state.get("needle", 0.0)
-					var s = paired_station.mg_state.get("target_start", 0.0)
-					var e = paired_station.mg_state.get("target_end", 0.0)
-					hit = (n >= s and n <= e)
-				if hit:
-					fixed_now = true
-				else:
-					_skillcheck_cooldown = 0.5
-					SoundManager.play(get_tree(), "lose", 0.4)
+		# Calibração do skillcheck é feita explicitamente pelo try_skillcheck_calibrate()
+		pass
 
 	elif minigame_type == "simon":
 		pass
@@ -608,7 +648,7 @@ func get_skillcheck_interval_left() -> float:
 	return max(0.0, _skillcheck_cooldown)
 
 func try_skillcheck_calibrate() -> bool:
-	if status != "BROKEN" or minigame_type != "skillcheck" or role != "B":
+	if status != "BROKEN" or minigame_type != "skillcheck":
 		return false
 	if _skillcheck_cooldown > 0.0:
 		return false
@@ -616,14 +656,16 @@ func try_skillcheck_calibrate() -> bool:
 	# Só pode clicar em intervalos regulares (inicia o cooldown do intervalo)
 	_skillcheck_cooldown = skillcheck_click_interval
 	
-	# O Jogador A PRECISA estar no gerador dele também!
-	if paired_station and not paired_station.is_player_present():
+	# O outro jogador PRECISA estar no gerador dele E interagindo!
+	if paired_station and not paired_station.is_interacting:
 		skillcheck_fails += 1
 		SoundManager.play(get_tree(), "lose", 0.4)
 		return false
 	
 	if anim_sprite and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation("running"):
 		anim_sprite.play("running")
+	if paired_station and paired_station.anim_sprite and paired_station.anim_sprite.sprite_frames and paired_station.anim_sprite.sprite_frames.has_animation("running"):
+		paired_station.anim_sprite.play("running")
 	
 	var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
 	var centro = centro_nodes[0] if not centro_nodes.is_empty() else null
@@ -642,7 +684,7 @@ func try_skillcheck_calibrate() -> bool:
 		barra_na_zona = true
 		dial_atingido = true
 	
-	# Condição obrigatória: SÓ pode dar ok se estiver dentro dessa barra verde, caso contrário conta como fail!
+	# Condição obrigatória: SÓ pode dar ok se estiver dentro da barra verde!
 	if not barra_na_zona:
 		skillcheck_fails += 1
 		SoundManager.play(get_tree(), "lose", 0.4)
@@ -763,9 +805,9 @@ func fix_station() -> void:
 	is_interacting = false
 	_interact_timer = 0.0
 	if warning_icon: warning_icon.hide()
-	if sparks_particles: sparks_particles.emitting = false
-	if minigame_type == "skillcheck" and role == "A":
+	if minigame_type == "skillcheck":
 		_set_skillcheck_visual_visible(false)
+		_set_skillcheck_b_visual_visible(false)
 	if minigame_type == "simon":
 		mg_state["flash_queue"] = []
 		mg_state["flash_timer"] = 0.0

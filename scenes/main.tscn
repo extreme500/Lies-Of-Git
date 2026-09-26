@@ -9,7 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://c7jtnasq6r4cb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/Frame_38.png" id="7_ui_frame"]
 [ext_resource type="Texture2D" uid="uid://cxg70bvxtinmb" path="res://assets/Free-GUI-for-Cyberpunk-Pixel-Art1/1 Frames/frame_assembled_9patch.png" id="8_outer_frame"]
 [ext_resource type="Script" uid="uid://be7up8f7cndwd" path="res://scripts/centro_sc.gd" id="9_centro"]
-[ext_resource type="Texture2D" uid="uid://bermoyj6sf6nn" path="res://assets/background/Robot-Factory-Pixel-Game-Backgrounds2.png" id="10_bg_factory"]
+[ext_resource type="Texture2D" uid="uid://cjdyjlpbo4wwj" path="res://assets/background/1.png" id="10_bg_factory"]
+[ext_resource type="Script" path="res://scripts/barra_sc.gd" id="11_barra"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 60)
@@ -416,6 +417,11 @@ script = ExtResource("9_centro")
 visible = false
 points = PackedVector2Array(0, 0, 65, 0)
 width = 6.0
+
+[node name="BarraSC" type="Node2D" parent="Stations" groups=["barra_sc", "skillcheck_visual_b"]]
+z_index = 25
+position = Vector2(1070, 135)
+script = ExtResource("11_barra")
 
 [node name="Player1" parent="." unique_id=1272765090 instance=ExtResource("3_player")]
 position = Vector2(100, 630)

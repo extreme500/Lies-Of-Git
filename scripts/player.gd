@@ -143,8 +143,10 @@ func _physics_process(delta: float) -> void:
 	var active_station = get_active_broken_station()
 	if is_repairing and (active_station == null or not active_station.is_broken() or exit_down):
 		is_repairing = false
+		if active_station and active_station.has_method("set_interacting"):
+			active_station.set_interacting(false)
 
-	var operating_generator = (active_station and active_station.minigame_type == "skillcheck" and active_station.role == "A")
+	var operating_generator_b = (active_station and active_station.minigame_type == "skillcheck" and active_station.role == "B")
 
 	# Inputs específicos de cada jogador
 	var wants_jump = false
@@ -155,22 +157,15 @@ func _physics_process(delta: float) -> void:
 		wants_jump = check_jump_pressed()
 		jump_released = check_jump_released()
 		input_x = get_horizontal_input()
-	elif operating_generator:
+	else:
 		velocity = Vector2.ZERO
-		if check_jump_pressed():
-			var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
-			for c in centro_nodes:
-				if is_instance_valid(c) and c.has_method("impulse_blue_bar"):
-					c.impulse_blue_bar()
+		# Só quando o jogador interagir com o gerador do jogador 2 (ficar travado), o pulo impulsiona a barra azul
+		if operating_generator_b and check_jump_pressed():
+			var barra_nodes = get_tree().get_nodes_in_group("barra_sc")
+			for b in barra_nodes:
+				if is_instance_valid(b) and b.has_method("impulse_blue_bar"):
+					b.impulse_blue_bar()
 					SoundManager.play(get_tree(), "step", 0.15)
-
-	# Se for o gerador role A e pulou (mesmo sem estar travado em is_repairing), impulsiona a barra azul
-	if not is_repairing and operating_generator and wants_jump:
-		var centro_nodes = get_tree().get_nodes_in_group("centro_sc")
-		for c in centro_nodes:
-			if is_instance_valid(c) and c.has_method("impulse_blue_bar"):
-				c.impulse_blue_bar()
-				SoundManager.play(get_tree(), "step", 0.15)
 
 	if wants_jump:
 		jump_buffer_timer = jump_buffer_time
@@ -342,33 +337,48 @@ func process_interaction(interact_down: bool, interact_just_pressed: bool, delta
 				is_repairing = false
 		elif mg_type == "skillcheck":
 			if role == "B":
-				# Gerador de Calibragem (Player 2) - Calibra ao apertar interagir em intervalos regulares
+				# Gerador de Calibragem (Player 2) - Mantém a barra azul na zona verde com pulo (Up)
 				if prompt_label:
 					prompt_label.visible = true
-					var time_left = current_station.get_skillcheck_interval_left() if current_station.has_method("get_skillcheck_interval_left") else 0.0
-					if time_left > 0.0:
-						prompt_label.text = "Aguarde (%.1fs)..." % time_left
+					if not is_repairing:
+						prompt_label.text = "[,] Operar Gerador"
 					else:
-						prompt_label.text = "[,] Sincronizar"
+						prompt_label.text = "[Seta Cima] Manter Barra | [.] Sair"
 				if interact_just_pressed:
-					current_station.try_skillcheck_calibrate()
-				is_repairing = false
+					is_repairing = not is_repairing
+				if current_station.has_method("set_interacting"):
+					current_station.set_interacting(is_repairing)
 			elif role == "A":
-				# Gerador (Player 1) - Controla a barra azul com o botão de pulo (Espaço / W)
+				# Gerador de Força (Player 1) - Calibra ao apertar interagir em intervalos regulares
 				if prompt_label:
 					prompt_label.visible = true
 					if not is_repairing:
 						prompt_label.text = "[E] Operar Gerador"
 					else:
-						prompt_label.text = "[Espaço] Subir Barra | [Q] Sair"
+						var time_left = current_station.get_skillcheck_interval_left() if current_station.has_method("get_skillcheck_interval_left") else 0.0
+						if time_left > 0.0:
+							prompt_label.text = "Aguarde (%.1fs)... | [Q] Sair" % time_left
+						else:
+							prompt_label.text = "[E] Sincronizar | [Q] Sair"
 				if interact_just_pressed:
-					is_repairing = not is_repairing
+					if not is_repairing:
+						is_repairing = true
+					else:
+						current_station.try_skillcheck_calibrate()
+				if current_station.has_method("set_interacting"):
+					current_station.set_interacting(is_repairing)
 		elif mg_type == "password" and role == "A":
-			# Receptor de Senha (Player 1) - apenas exibe o código para o Player 2
+			# Receptor de Senha (Player 1) - exibe a senha apenas enquanto estiver interagindo
 			if prompt_label:
 				prompt_label.visible = true
-				prompt_label.text = "Código de Acesso"
-			is_repairing = false
+				if not is_repairing:
+					prompt_label.text = "[E] Ver Código"
+				else:
+					prompt_label.text = "[Q] Sair"
+			if interact_just_pressed:
+				is_repairing = not is_repairing
+			if current_station.has_method("set_interacting"):
+				current_station.set_interacting(is_repairing)
 		else:
 			# Minigames com sequência de setas (Password B e Simon A/B)
 			var enter_key = "E" if player_id == 1 else ","

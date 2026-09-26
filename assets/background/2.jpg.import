@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ceex1y2k7p0h5"
-path="res://.godot/imported/Robot-Factory-Pixel-Game-Backgrounds2.png-3f8184b6966b70b8d2a229675c2ff928.ctex"
+uid="uid://bj5pj72um8577"
+path="res://.godot/imported/2.jpg-d16cf1a464625dc59bc2607cac6db417.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/background/Robot-Factory-Pixel-Game-Backgrounds2.png"
-dest_files=["res://.godot/imported/Robot-Factory-Pixel-Game-Backgrounds2.png-3f8184b6966b70b8d2a229675c2ff928.ctex"]
+source_file="res://assets/background/2.jpg"
+dest_files=["res://.godot/imported/2.jpg-d16cf1a464625dc59bc2607cac6db417.ctex"]
 
 [params]
 

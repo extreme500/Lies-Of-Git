@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://fqdrbxo17k5j"
+path="res://.godot/imported/Keep it 4.mp3-c4b9682915e2340d5ad698c8f2262d4a.mp3str"
+
+[deps]
+
+source_file="res://assets/voice/Keep it 4.mp3"
+dest_files=["res://.godot/imported/Keep it 4.mp3-c4b9682915e2340d5ad698c8f2262d4a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -19,6 +19,9 @@ var debug_fail_btn: Button = null
 var debug_msg_label: Label = null
 var _debug_msg_timer: float = 0.0
 
+var background_textures: Array = []
+var current_bg_index: int = 0
+
 @onready var hud: CanvasLayer = $HUD
 @onready var timer_label: Label = find_child("TimerLabel", true, false)
 @onready var integrity_label: Label = find_child("IntegrityLabel", true, false)
@@ -39,6 +42,8 @@ func _ready() -> void:
 	time_remaining = survival_time
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS # GameManager keeps running for inputs
+	
+	_load_background_textures()
 	
 	# Trilha sonora em loop suave durante a gameplay
 	SoundManager.play_bgm(get_tree(), "res://assets/Ost/MELHOR loop fundo principal.mp3", -15.0)
@@ -209,6 +214,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_3: break_pair(3)
 			KEY_4: break_pair(4)
 			KEY_5: break_pair(5)
+			KEY_8, KEY_KP_8: cycle_background(-1)
+			KEY_0, KEY_KP_0: cycle_background(1)
 			KEY_H: toggle_debug_ui()
 
 func toggle_debug_ui() -> void:
@@ -299,9 +306,29 @@ func create_debug_ui() -> void:
 	debug_fail_btn.pressed.connect(func(): toggle_auto_failures())
 	vbox.add_child(debug_fail_btn)
 	
-	# Dica teclas 1 a 5 e H
+	# Botões [8] e [0]: Alternar fundo
+	var hbox_bg = HBoxContainer.new()
+	hbox_bg.add_theme_constant_override("separation", 4)
+	
+	var btn_bg_prev = Button.new()
+	btn_bg_prev.text = "[8] Fundo Ant."
+	btn_bg_prev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn_bg_prev.add_theme_font_size_override("font_size", 10)
+	btn_bg_prev.pressed.connect(func(): cycle_background(-1))
+	hbox_bg.add_child(btn_bg_prev)
+	
+	var btn_bg_next = Button.new()
+	btn_bg_next.text = "[0] Fundo Próx."
+	btn_bg_next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn_bg_next.add_theme_font_size_override("font_size", 10)
+	btn_bg_next.pressed.connect(func(): cycle_background(1))
+	hbox_bg.add_child(btn_bg_next)
+	
+	vbox.add_child(hbox_bg)
+	
+	# Dica teclas
 	var hint = Label.new()
-	hint.text = "Teclas [1] a [5]: Quebrar pares\nTecla [H]: Ocultar/Mostrar menu"
+	hint.text = "Teclas [1] a [5]: Quebrar pares\n[8] / [0]: Alternar Fundo\nTecla [H]: Ocultar/Mostrar menu"
 	hint.add_theme_color_override("font_color", Color(0.65, 0.75, 0.85, 0.8))
 	hint.add_theme_font_size_override("font_size", 10)
 	vbox.add_child(hint)
@@ -338,6 +365,55 @@ func _show_debug_msg(msg: String) -> void:
 	if debug_msg_label:
 		debug_msg_label.text = msg
 		_debug_msg_timer = 3.0
+
+func _load_background_textures() -> void:
+	background_textures.clear()
+	var bg_dir_path = "res://assets/background"
+	var dir = DirAccess.open(bg_dir_path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		var file_paths: Array[String] = []
+		while file_name != "":
+			if not dir.current_is_dir() and not file_name.ends_with(".import"):
+				var ext = file_name.get_extension().to_lower()
+				if ext in ["png", "jpg", "jpeg", "webp"]:
+					file_paths.append(bg_dir_path.path_join(file_name))
+			file_name = dir.get_next()
+		file_paths.sort()
+		for fp in file_paths:
+			var tex = load(fp)
+			if tex is Texture2D:
+				background_textures.append(tex)
+	
+	if background_textures.is_empty():
+		var fallbacks = ["res://assets/background/1.png", "res://assets/background/2.jpg", "res://assets/background/3.png"]
+		for p in fallbacks:
+			if ResourceLoader.exists(p):
+				var tex = load(p)
+				if tex is Texture2D:
+					background_textures.append(tex)
+
+func cycle_background(dir_step: int) -> void:
+	if background_textures.is_empty():
+		_load_background_textures()
+	if background_textures.is_empty():
+		return
+	
+	current_bg_index = (current_bg_index + dir_step) % background_textures.size()
+	if current_bg_index < 0:
+		current_bg_index += background_textures.size()
+	
+	var chosen_tex = background_textures[current_bg_index]
+	var bg_p1 = get_node_or_null("Background/Chamber1View/BG_P1") as TextureRect
+	var bg_p2 = get_node_or_null("Background/Chamber2View/BG_P2") as TextureRect
+	if bg_p1:
+		bg_p1.texture = chosen_tex
+	if bg_p2:
+		bg_p2.texture = chosen_tex
+	
+	var file_name = chosen_tex.resource_path.get_file()
+	_show_debug_msg("🖼️ Fundo: %s (%d/%d)" % [file_name, current_bg_index + 1, background_textures.size()])
 
 func break_pair(pair_num: int) -> void:
 	match pair_num:
