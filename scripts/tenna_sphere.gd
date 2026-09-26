@@ -2,15 +2,16 @@ extends Node3D
 class_name TennaSphere
 
 @export var full_spin: bool = false
+@export var show_tenna_face: bool = true
 @export var base_sway_speed: float = 1.8
 @export var float_speed: float = 2.6
 @export var float_amplitude: float = 0.07
 
-@onready var head_mesh: MeshInstance3D = $SphereRoot/HeadMesh
-@onready var face_mesh: MeshInstance3D = $SphereRoot/FaceMesh
-@onready var antenna_tip: MeshInstance3D = $SphereRoot/AntennaTip
-@onready var omni_light: OmniLight3D = $SphereRoot/FaceLight
-@onready var sphere_root: Node3D = $SphereRoot
+@onready var sphere_root: Node3D = self
+@onready var drone_model: Node3D = get_node_or_null("DroneModel")
+@onready var face_mesh: MeshInstance3D = get_node_or_null("FaceMesh")
+@onready var antenna_tip: MeshInstance3D = get_node_or_null("AntennaTip")
+@onready var omni_light: OmniLight3D = get_node_or_null("FaceLight")
 
 var tex_normal: Texture2D = preload("res://assets/maquina/tenna_face_normal.png")
 var tex_warning: Texture2D = preload("res://assets/maquina/tenna_face_warning.png")
@@ -23,25 +24,29 @@ var face_material: StandardMaterial3D
 var antenna_material: StandardMaterial3D
 
 func _ready() -> void:
-	# Duplicar materiais para podermos trocar texturas e emissão dinamicamente sem afetar outros
 	if face_mesh:
-		face_material = face_mesh.get_surface_override_material(0)
-		if face_material:
-			face_material = face_material.duplicate()
-			face_mesh.set_surface_override_material(0, face_material)
+		face_mesh.visible = show_tenna_face
+		var mat = face_mesh.material_override
+		if not mat:
+			mat = face_mesh.get_surface_override_material(0)
+		if mat:
+			face_material = mat.duplicate()
+			face_mesh.material_override = face_material
 	
 	if antenna_tip:
-		antenna_material = antenna_tip.get_surface_override_material(0)
-		if antenna_material:
-			antenna_material = antenna_material.duplicate()
-			antenna_tip.set_surface_override_material(0, antenna_material)
+		var a_mat = antenna_tip.material_override
+		if not a_mat:
+			a_mat = antenna_tip.get_surface_override_material(0)
+		if a_mat:
+			antenna_material = a_mat.duplicate()
+			antenna_tip.material_override = antenna_material
 	
 	update_expression()
 
 func _process(delta: float) -> void:
 	time += delta
 	
-	# Flutuação vertical (efeito senoidal orgânico de robô 3D)
+	# Flutuação vertical orgânica
 	var current_float_speed = float_speed
 	var current_float_amp = float_amplitude
 	if integrity_pct < 0.3:
@@ -50,7 +55,7 @@ func _process(delta: float) -> void:
 	
 	var bob = sin(time * current_float_speed) * current_float_amp
 	
-	# Shake de dano / glitch quando integridade está baixa
+	# Tremores / Glitch de integridade
 	var shake_x = 0.0
 	var shake_y = 0.0
 	if integrity_pct < 0.5 and not is_exploded:
@@ -63,7 +68,7 @@ func _process(delta: float) -> void:
 	
 	sphere_root.position = Vector3(shake_x, bob + shake_y, 0.0)
 	
-	# Rotação carismática de showman estilo Deltarune (ou rotação contínua)
+	# Rotação / Sway estilo showman de Deltarune
 	if is_exploded:
 		sphere_root.rotate_y(delta * 12.0)
 		sphere_root.rotate_z(delta * 6.0)
@@ -72,11 +77,10 @@ func _process(delta: float) -> void:
 		if integrity_pct < 0.3: spin_speed = 3.5
 		sphere_root.rotate_y(delta * spin_speed)
 	else:
-		# Sway expressivo de TV mascot encarando a tela com inclinação 3D
 		var sway_angle = sin(time * base_sway_speed) * 0.45 + sin(time * 0.7) * 0.15
 		var tilt_angle = cos(time * base_sway_speed * 0.8) * 0.08
 		if integrity_pct < 0.3:
-			sway_angle += randf_range(-0.1, 0.1) # twitching
+			sway_angle += randf_range(-0.1, 0.1) # jitter
 		sphere_root.rotation.y = sway_angle
 		sphere_root.rotation.z = tilt_angle
 
@@ -97,9 +101,6 @@ func get_state_from_pct(pct: float) -> String:
 		return "critical"
 
 func update_expression() -> void:
-	if not face_material:
-		return
-	
 	var state = get_state_from_pct(integrity_pct)
 	var target_tex: Texture2D = tex_normal
 	var glow_color: Color = Color(0.1, 1.0, 0.75, 1.0) # Ciano/Verde neon
@@ -114,9 +115,10 @@ func update_expression() -> void:
 		target_tex = tex_critical
 		glow_color = Color(1.0, 0.15, 0.15, 1.0) # Vermelho crítico
 	
-	face_material.albedo_texture = target_tex
-	face_material.emission_texture = target_tex
-	face_material.emission = glow_color
+	if face_material:
+		face_material.albedo_texture = target_tex
+		face_material.emission_texture = target_tex
+		face_material.emission = glow_color
 	
 	if antenna_material:
 		antenna_material.albedo_color = glow_color
@@ -124,6 +126,10 @@ func update_expression() -> void:
 	
 	if omni_light:
 		omni_light.light_color = glow_color
+		if state == "critical":
+			omni_light.light_energy = 2.5
+		else:
+			omni_light.light_energy = 1.5
 
 func on_explode() -> void:
 	is_exploded = true
