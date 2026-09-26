@@ -16,4 +16,5 @@ mono_crash.*.json
 .DS_Store
 Thumbs.db
 *.tmp
-
+# User specific ignores
+scripts/*.uid
